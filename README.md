@@ -14,6 +14,7 @@ Aplikasi belajar bahasa Inggris gratis, dari **A1 Basic** sampai **C2 Expert**, 
 - Simulasi tes berwaktu (tata bahasa, membaca, mendengar) dengan perkiraan level CEFR
 - Grafik XP 7/30 hari dan peta kemampuan per skill di Profil
 - Kataku: kamus pribadi untuk menyimpan, mencari, dan melatih kata
+- Koin & Lemari Bubu: jawab soal untuk dapat koin, dandani Bubu dengan 72 kostum (12 barang khusus terbuka lewat prestasi)
 - Mode gelap (otomatis mengikuti perangkat, atau pilih di Profil)
 - Bisa dipasang di layar utama HP dan jalan tanpa internet
 - Progres tersimpan di perangkat; bisa dipindahkan lewat kode progres di menu Profil

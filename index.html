@@ -676,6 +676,77 @@ body.sub .toast,body.focus .toast{bottom:calc(20px + env(safe-area-inset-bottom,
 :root[data-theme="dark"] .round.cur .rn,:root[data-theme="dark"] .round.ok .rn{color:#141629}
 @media (max-height:700px){.qhead b{font-size:19px}.round{min-height:54px;padding:8px 12px}.round .rn{width:34px;height:34px}.qinfo{gap:10px}}
 
+/* ---------- koin & Lemari Bubu ---------- */
+.coin-ic{width:18px;height:18px;flex:none}
+.chip.coin{background:var(--sun-l);box-shadow:0 3px 0 var(--sun-s);color:var(--xp-ink);min-height:36px}
+button.chip.coin{cursor:pointer}
+@media (max-width:420px){.brand .wm{display:none}}
+.plus.coin{display:inline-flex;align-items:center;gap:3px;margin-left:6px;background:var(--sun-l);color:var(--xp-ink)}
+.plus.coin .coin-ic{width:15px;height:15px}
+.coinpill{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:10px 16px;border-radius:18px;background:var(--sun-l);box-shadow:0 4px 0 var(--sun-s);color:var(--ink);text-align:left;font-weight:700}
+.coinpill .coin-ic{width:26px;height:26px}
+.coinpill span{flex:1}
+.coinpill b{color:var(--xp-ink)}
+.coinpill>.ic{width:20px;height:20px;color:var(--muted)}
+.wteaser{display:grid;gap:10px;border-top:6px solid var(--sun)}
+.wt-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.wt-b{display:flex;align-items:center;gap:14px}
+.wt-b b{display:block;font:600 21px/1.2 var(--display)}
+.wt-bubu{flex:none;display:block;margin-top:14px}
+.setbubu{display:grid;place-items:center;flex:none;width:44px;height:44px;margin-top:6px}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.bubu.bob{animation:bob 2.6s ease-in-out infinite}
+.wardv{display:flex;flex-direction:column;gap:10px;max-width:760px;margin:0 auto;height:calc(100vh - 28px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - 28px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+.wardv .lv-top .chip{margin-left:auto}
+.wbody{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.wstage{flex:none;display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:var(--r-lg);background:var(--surface);box-shadow:var(--sh);overflow:hidden}
+.wbig{flex:none;display:grid;place-items:center;width:154px;height:172px;padding-top:40px;box-sizing:border-box;border-radius:50%;background:radial-gradient(circle at 50% 62%,var(--primary-l) 0 58%,transparent 59%)}
+.wtxt{display:grid;gap:4px;min-width:0}
+.wtxt .eyebrow.sp{color:var(--xp-ink)}
+.wname{font:600 22px/1.15 var(--display);color:var(--ink)}
+.wtxt .muted{font-size:14px;font-weight:700}
+.wpick{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px}
+.wtabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.wtabs button[aria-selected="true"]{background:var(--primary-l);color:var(--primary-d)}
+:root[data-theme="dark"] .wtabs button[aria-selected="true"]{background:var(--primary);color:#fff}
+.wgrid{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:max-content;align-content:start;gap:10px;padding:4px 2px 8px}
+.witem{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border:3px solid transparent;border-radius:20px;background:var(--surface);box-shadow:0 4px 0 var(--line);min-height:120px;transition:transform .1s}
+.witem:active{transform:translateY(2px)}
+.witem.sel{border-color:var(--primary);background:var(--soft)}
+.witem.special{border-color:var(--sun-s)}
+.witem.special.sel{border-color:var(--primary)}
+.witem.locked .wthumb{opacity:.5}
+.wthumb{display:grid;place-items:center;width:76px;height:86px;padding-top:24px;box-sizing:border-box}
+.wn{font:800 13px/1.15 var(--body);text-align:center}
+.wchip{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:99px;font:800 12px/1.2 var(--body);background:var(--sun-l);color:var(--xp-ink)}
+.wchip .ic{width:12px;height:12px}
+.wchip.on{background:var(--mint-l);color:var(--good-ink)}
+.wchip.own{background:var(--primary-l);color:var(--primary-d)}
+.wchip.sp{background:var(--ink);color:var(--sun)}
+:root[data-theme="dark"] .wchip.own{color:#d9d9ff}
+:root[data-theme="dark"] .wchip.sp{background:#000;color:var(--sun)}
+.wnote{font-size:13px;font-weight:700;text-align:center}
+.wfoot{flex:none}
+.wfoot .btn{width:100%}
+.wfoot .btn:disabled{background:var(--line);color:var(--muted);box-shadow:none}
+.btn.sun{background:var(--sun);color:#24264a;box-shadow:0 5px 0 var(--sun-d)}
+.wsheet-bg{position:fixed;inset:0;z-index:55;display:flex;align-items:flex-end;justify-content:center;background:rgba(20,22,41,.5);animation:fade .2s}
+.wsheet{width:min(560px,100%);display:grid;gap:14px;padding:22px 20px calc(22px + env(safe-area-inset-bottom,0px));border-radius:28px 28px 0 0;background:var(--surface);animation:rise .25s}
+.wsh-b{display:flex;align-items:center;gap:14px}
+.wsh-b>span{flex:none;padding-top:20px}
+@media (min-width:900px) and (orientation:landscape){
+  .wardv{max-width:1180px}
+  .wbody{display:grid;grid-template-columns:380px minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:16px 22px}
+  .wstage{grid-row:1;flex-direction:column;justify-content:center;text-align:center}
+  .wbig{width:240px;height:270px;padding-top:60px}
+  .wpick{grid-column:2;grid-row:1 / span 2}
+  .wfoot{grid-column:1;grid-row:2}
+  .wgrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media (min-width:600px) and (max-width:899px),(min-width:900px) and (orientation:portrait){.wgrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-height:700px){.wnote{display:none}.wstage{padding:8px 14px}.wbig{width:128px;height:140px;padding-top:32px}.witem{min-height:108px}.wname{font-size:19px}}
+@media (prefers-reduced-motion:reduce){.bubu.bob{animation:none}}
+
 /* ---------- mode gelap: token yang sama, nilai gelap ---------- */
 :root[data-theme="dark"]{
   --bg:#141629; --surface:#1f2238; --soft:#262a45; --line:#32375c;
@@ -4008,6 +4079,11 @@ expert: { title: "Menyampaikan kabar buruk", place: "Panggilan video dengan klie
 ] }
 };
 
+// Dibuat otomatis oleh tools/gen-wardrobe.py dari tools/costumes.py. Jangan disunting langsung.
+const COSTUME = {"color": [{"id": "violet", "n": "Ungu Bubu", "p": 0, "fill": "#5b5bf0", "u": null}, {"id": "mint", "n": "Mint", "p": 100, "fill": "#2fb88c", "u": null}, {"id": "coral", "n": "Koral", "p": 100, "fill": "#ff7a59", "u": null}, {"id": "sky", "n": "Langit", "p": 150, "fill": "#3f8cf0", "u": null}, {"id": "candy", "n": "Permen", "p": 150, "fill": "#ec5f9a", "u": null}, {"id": "orange", "n": "Jeruk", "p": 150, "fill": "#f59f1b", "u": null}, {"id": "teal", "n": "Toska", "p": 200, "fill": "#14a3a3", "u": null}, {"id": "moss", "n": "Lumut", "p": 200, "fill": "#6a9f3a", "u": null}, {"id": "grape", "n": "Anggur", "p": 250, "fill": "#8e44c9", "u": null}, {"id": "red", "n": "Merah cabai", "p": 250, "fill": "#e5484d", "u": null}, {"id": "choco", "n": "Cokelat", "p": 300, "fill": "#8b5e3c", "u": null}, {"id": "slate", "n": "Abu batu", "p": 300, "fill": "#64748b", "u": null}, {"id": "night", "n": "Malam", "p": 400, "fill": "#2b2d55", "u": null}, {"id": "berry", "n": "Beri", "p": 400, "fill": "#b8326b", "u": null}, {"id": "sea", "n": "Laut dalam", "p": 500, "fill": "#1f5fa8", "u": null}, {"id": "gold", "n": "Emas", "p": null, "fill": "url(#bbGold)", "u": ["c2", "Lulus Tes Level C2"]}, {"id": "rainbow", "n": "Pelangi", "p": null, "fill": "url(#bbRain)", "u": ["streak30", "Streak 30 hari"]}, {"id": "galaxy", "n": "Galaksi", "p": null, "fill": "url(#bbGal)", "u": ["stars36", "3 bintang di 36 pelajaran"]}], "hat": [{"id": "none", "n": "Tanpa topi", "p": 0, "svg": "", "u": null, "layer": "hat"}, {"id": "party", "n": "Topi pesta", "p": 120, "svg": "<path d=\"M43 -26 L57 6 H29 Z\" fill=\"#ff7a59\"/><path d=\"M36 -8 H50 M33 0 H53\" stroke=\"#fff\" stroke-width=\"3\"/><circle cx=\"43\" cy=\"-27\" r=\"5\" fill=\"#ffc845\"/>", "u": null, "layer": "hat"}, {"id": "beanie", "n": "Kupluk", "p": 150, "svg": "<path d=\"M17 8 Q43 -28 69 8 Z\" fill=\"#34c79a\"/><rect x=\"14\" y=\"3\" width=\"58\" height=\"9\" rx=\"4.5\" fill=\"#21a37b\"/><circle cx=\"43\" cy=\"-13\" r=\"6\" fill=\"#21a37b\"/>", "u": null, "layer": "hat"}, {"id": "cap", "n": "Topi pet", "p": 150, "svg": "<path d=\"M18 8 Q20 -16 43 -16 Q66 -16 68 8 Z\" fill=\"#3f8cf0\"/><path d=\"M60 6 Q80 4 88 10 Q72 12 58 10 Z\" fill=\"#2c6fd1\"/><circle cx=\"43\" cy=\"-16\" r=\"3\" fill=\"#2c6fd1\"/>", "u": null, "layer": "hat"}, {"id": "beret", "n": "Baret", "p": 180, "svg": "<ellipse cx=\"40\" cy=\"4\" rx=\"30\" ry=\"9\" fill=\"#e5484d\"/><path d=\"M14 6 Q40 -16 68 2\" fill=\"#e5484d\"/><circle cx=\"42\" cy=\"-8\" r=\"3\" fill=\"#b8323a\"/>", "u": null, "layer": "hat"}, {"id": "bunny", "n": "Telinga kelinci", "p": 200, "svg": "<path d=\"M28 6 Q20 -30 30 -32 Q38 -30 36 6 Z\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><path d=\"M50 6 Q48 -30 56 -32 Q66 -30 58 6 Z\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><path d=\"M30 2 Q26 -22 31 -25 Q34 -22 33 2 Z\" fill=\"#ff9bb3\"/><path d=\"M53 2 Q52 -22 56 -25 Q60 -22 56 2 Z\" fill=\"#ff9bb3\"/>", "u": null, "layer": "hat"}, {"id": "cat", "n": "Telinga kucing", "p": 200, "svg": "<path d=\"M14 10 L18 -14 L36 4 Z\" fill=\"#24264a\"/><path d=\"M72 10 L68 -14 L50 4 Z\" fill=\"#24264a\"/><path d=\"M19 4 L21 -6 L29 3 Z\" fill=\"#ff9bb3\"/><path d=\"M67 4 L65 -6 L57 3 Z\" fill=\"#ff9bb3\"/>", "u": null, "layer": "hat"}, {"id": "flower", "n": "Mahkota bunga", "p": 250, "svg": "<path d=\"M14 6 Q43 -6 72 6\" fill=\"none\" stroke=\"#6a9f3a\" stroke-width=\"4\"/><g><circle cx=\"20\" cy=\"3\" r=\"6\" fill=\"#ff9bb3\"/><circle cx=\"32\" cy=\"-1\" r=\"6\" fill=\"#ffc845\"/><circle cx=\"44\" cy=\"-2\" r=\"6\" fill=\"#ff7a59\"/><circle cx=\"56\" cy=\"-1\" r=\"6\" fill=\"#ec5f9a\"/><circle cx=\"68\" cy=\"3\" r=\"6\" fill=\"#ffc845\"/></g><g fill=\"#fff\"><circle cx=\"20\" cy=\"3\" r=\"2\"/><circle cx=\"32\" cy=\"-1\" r=\"2\"/><circle cx=\"44\" cy=\"-2\" r=\"2\"/><circle cx=\"56\" cy=\"-1\" r=\"2\"/><circle cx=\"68\" cy=\"3\" r=\"2\"/></g>", "u": null, "layer": "hat"}, {"id": "chef", "n": "Topi koki", "p": 250, "svg": "<rect x=\"24\" y=\"-6\" width=\"38\" height=\"14\" rx=\"3\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><circle cx=\"30\" cy=\"-12\" r=\"10\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><circle cx=\"43\" cy=\"-18\" r=\"12\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><circle cx=\"56\" cy=\"-12\" r=\"10\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><rect x=\"25\" y=\"-8\" width=\"36\" height=\"8\" fill=\"#fff\"/>", "u": null, "layer": "hat"}, {"id": "cowboy", "n": "Topi koboi", "p": 300, "svg": "<path d=\"M2 4 Q10 12 43 10 Q76 12 84 4 Q74 2 66 6 Z\" fill=\"#8b5e3c\"/><path d=\"M24 6 Q24 -18 43 -16 Q62 -18 62 6 Z\" fill=\"#a8743f\"/><rect x=\"24\" y=\"0\" width=\"38\" height=\"5\" fill=\"#5b3a1e\"/>", "u": null, "layer": "hat"}, {"id": "pirate", "n": "Topi bajak laut", "p": 350, "svg": "<path d=\"M8 8 Q43 -30 78 8 Q43 0 8 8 Z\" fill=\"#24264a\"/><circle cx=\"43\" cy=\"-4\" r=\"5\" fill=\"#fff\"/><path d=\"M39 2 L47 6 M47 2 L39 6\" stroke=\"#fff\" stroke-width=\"2\"/>", "u": null, "layer": "hat"}, {"id": "wizard", "n": "Topi penyihir", "p": 400, "svg": "<path d=\"M43 -34 L64 6 H22 Z\" fill=\"#5b3fb8\"/><ellipse cx=\"43\" cy=\"6\" rx=\"30\" ry=\"6\" fill=\"#4a2f9e\"/><path d=\"M40 -14 l2 4 4 .6-3 3 .7 4-3.7-2-3.7 2 .7-4-3-3 4-.6z\" fill=\"#ffc845\"/>", "u": null, "layer": "hat"}, {"id": "tophat", "n": "Topi tinggi", "p": 450, "svg": "<ellipse cx=\"43\" cy=\"6\" rx=\"30\" ry=\"5\" fill=\"#24264a\"/><rect x=\"27\" y=\"-24\" width=\"32\" height=\"30\" rx=\"3\" fill=\"#24264a\"/><rect x=\"27\" y=\"-2\" width=\"32\" height=\"5\" fill=\"#e5484d\"/>", "u": null, "layer": "hat"}, {"id": "propeller", "n": "Topi baling-baling", "p": 500, "svg": "<path d=\"M18 8 Q43 -22 68 8 Z\" fill=\"#ffc845\"/><path d=\"M18 8 Q30 -12 43 -14 L43 8 Z\" fill=\"#e5484d\"/><rect x=\"41.5\" y=\"-22\" width=\"3\" height=\"9\" fill=\"#24264a\"/><ellipse cx=\"33\" cy=\"-22\" rx=\"10\" ry=\"3\" fill=\"#3f8cf0\"/><ellipse cx=\"53\" cy=\"-22\" rx=\"10\" ry=\"3\" fill=\"#34c79a\"/>", "u": null, "layer": "hat"}, {"id": "astro", "n": "Helm astronot", "p": 700, "svg": "<path d=\"M10 30 Q10 -18 43 -18 Q76 -18 76 30\" fill=\"none\" stroke=\"#e6e9f2\" stroke-width=\"7\"/><path d=\"M14 30 Q14 -12 43 -12 Q72 -12 72 30\" fill=\"rgba(160,200,255,.22)\"/><rect x=\"6\" y=\"24\" width=\"10\" height=\"16\" rx=\"3\" fill=\"#cfd5e3\"/><rect x=\"70\" y=\"24\" width=\"10\" height=\"16\" rx=\"3\" fill=\"#cfd5e3\"/>", "u": null, "layer": "hat"}, {"id": "crown", "n": "Mahkota juara", "p": null, "svg": "<path d=\"M23 7 L23 -12 L33 -2 L43 -18 L53 -2 L63 -12 L63 7 Z\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><circle cx=\"43\" cy=\"-1\" r=\"3\" fill=\"#ff7a59\"/><circle cx=\"30\" cy=\"2\" r=\"2\" fill=\"#3f8cf0\"/><circle cx=\"56\" cy=\"2\" r=\"2\" fill=\"#34c79a\"/>", "u": ["alltests", "Lulus semua tes level A1–C2"], "layer": "hat"}, {"id": "toga", "n": "Toga emas", "p": null, "svg": "<rect x=\"27\" y=\"-2\" width=\"32\" height=\"10\" rx=\"3\" fill=\"#24264a\"/><path d=\"M43 -16 L80 -4 L43 8 L6 -4 Z\" fill=\"#24264a\"/><path d=\"M72 -3v15\" stroke=\"#ffc845\" stroke-width=\"2.5\"/><circle cx=\"72\" cy=\"14\" r=\"3.5\" fill=\"#ffc845\"/>", "u": ["cert", "Dapat sertifikat pertama"], "layer": "hat"}, {"id": "detective", "n": "Topi detektif", "p": null, "svg": "<path d=\"M12 8 Q14 -16 43 -16 Q72 -16 74 8 Z\" fill=\"#a8743f\"/><path d=\"M12 8 Q43 -2 74 8 Q43 14 12 8 Z\" fill=\"#8b5e3c\"/><path d=\"M20 -2 Q43 -10 66 -2\" fill=\"none\" stroke=\"#5b3a1e\" stroke-width=\"3\"/>", "u": ["talk12", "Selesaikan 12 percakapan"], "layer": "hat"}], "face": [{"id": "none", "n": "Tanpa", "p": 0, "svg": "", "u": null, "layer": "face"}, {"id": "round", "n": "Kacamata bulat", "p": 100, "svg": "<circle cx=\"32\" cy=\"32\" r=\"10\" fill=\"rgba(255,255,255,.18)\" stroke=\"#24264a\" stroke-width=\"3\"/><circle cx=\"54\" cy=\"32\" r=\"10\" fill=\"rgba(255,255,255,.18)\" stroke=\"#24264a\" stroke-width=\"3\"/><path d=\"M42 31h2\" stroke=\"#24264a\" stroke-width=\"3\" stroke-linecap=\"round\"/>", "u": null, "layer": "face"}, {"id": "square", "n": "Kacamata kotak", "p": 120, "svg": "<rect x=\"21\" y=\"24\" width=\"21\" height=\"16\" rx=\"3\" fill=\"rgba(255,255,255,.18)\" stroke=\"#24264a\" stroke-width=\"3\"/><rect x=\"44\" y=\"24\" width=\"21\" height=\"16\" rx=\"3\" fill=\"rgba(255,255,255,.18)\" stroke=\"#24264a\" stroke-width=\"3\"/>", "u": null, "layer": "face"}, {"id": "sun", "n": "Kacamata hitam", "p": 150, "svg": "<rect x=\"19\" y=\"24\" width=\"22\" height=\"15\" rx=\"6\" fill=\"#24264a\"/><rect x=\"45\" y=\"24\" width=\"22\" height=\"15\" rx=\"6\" fill=\"#24264a\"/><path d=\"M41 29h4\" stroke=\"#24264a\" stroke-width=\"3\"/><path d=\"M24 28h6M50 28h6\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\".7\"/>", "u": null, "layer": "face"}, {"id": "heart", "n": "Kacamata hati", "p": 180, "svg": "<path d=\"M32 42 L22 31 A5.5 5.5 0 0 1 32 24 A5.5 5.5 0 0 1 42 31 Z\" fill=\"#ec5f9a\"/><path d=\"M54 42 L44 31 A5.5 5.5 0 0 1 54 24 A5.5 5.5 0 0 1 64 31 Z\" fill=\"#ec5f9a\"/>", "u": null, "layer": "face"}, {"id": "star", "n": "Kacamata bintang", "p": 200, "svg": "<path d=\"M32 21l3.3 6.7 7.4 1.1-5.4 5.2 1.3 7.4-6.6-3.5-6.6 3.5 1.3-7.4-5.4-5.2 7.4-1.1z\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"1.5\"/><path d=\"M54 21l3.3 6.7 7.4 1.1-5.4 5.2 1.3 7.4-6.6-3.5-6.6 3.5 1.3-7.4-5.4-5.2 7.4-1.1z\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"1.5\"/>", "u": null, "layer": "face"}, {"id": "cateye", "n": "Kacamata kucing", "p": 200, "svg": "<path d=\"M20 28 Q24 22 40 26 Q40 38 30 38 Q20 38 20 28 Z\" fill=\"rgba(255,255,255,.2)\" stroke=\"#e5484d\" stroke-width=\"3\"/><path d=\"M66 28 Q62 22 46 26 Q46 38 56 38 Q66 38 66 28 Z\" fill=\"rgba(255,255,255,.2)\" stroke=\"#e5484d\" stroke-width=\"3\"/>", "u": null, "layer": "face"}, {"id": "goggles", "n": "Kacamata renang", "p": 220, "svg": "<path d=\"M10 30 H76\" stroke=\"#3f8cf0\" stroke-width=\"4\"/><ellipse cx=\"32\" cy=\"31\" rx=\"11\" ry=\"9\" fill=\"rgba(63,140,240,.35)\" stroke=\"#2c6fd1\" stroke-width=\"3\"/><ellipse cx=\"54\" cy=\"31\" rx=\"11\" ry=\"9\" fill=\"rgba(63,140,240,.35)\" stroke=\"#2c6fd1\" stroke-width=\"3\"/>", "u": null, "layer": "face"}, {"id": "threed", "n": "Kacamata 3D", "p": 250, "svg": "<rect x=\"19\" y=\"24\" width=\"48\" height=\"15\" rx=\"3\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"1.5\"/><rect x=\"22\" y=\"26\" width=\"17\" height=\"11\" rx=\"2\" fill=\"rgba(229,72,77,.75)\"/><rect x=\"47\" y=\"26\" width=\"17\" height=\"11\" rx=\"2\" fill=\"rgba(63,140,240,.75)\"/>", "u": null, "layer": "face"}, {"id": "hero", "n": "Topeng pahlawan", "p": 300, "svg": "<path d=\"M14 26 Q43 18 72 26 Q72 40 58 38 Q50 36 43 33 Q36 36 28 38 Q14 40 14 26 Z\" fill=\"#e5484d\"/><ellipse cx=\"31\" cy=\"30\" rx=\"5\" ry=\"4\" fill=\"#fff\"/><ellipse cx=\"55\" cy=\"30\" rx=\"5\" ry=\"4\" fill=\"#fff\"/>", "u": null, "layer": "face"}, {"id": "patch", "n": "Penutup mata", "p": 300, "svg": "<path d=\"M14 18 L72 40\" stroke=\"#24264a\" stroke-width=\"2.5\"/><ellipse cx=\"54\" cy=\"32\" rx=\"9\" ry=\"8\" fill=\"#24264a\"/>", "u": null, "layer": "face"}, {"id": "mustache", "n": "Kumis", "p": 350, "svg": "<path d=\"M43 44 Q36 38 28 42 Q24 46 30 47 Q36 46 43 44 Q50 46 56 47 Q62 46 58 42 Q50 38 43 44 Z\" fill=\"#24264a\"/>", "u": null, "layer": "face"}, {"id": "freckle", "n": "Bintik bintang", "p": 350, "svg": "<g fill=\"#ffc845\"><path d=\"M22 42l1 2 2 .3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1L19 44.3l2-.3z\"/><path d=\"M64 42l1 2 2 .3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1L61 44.3l2-.3z\"/></g>", "u": null, "layer": "face"}, {"id": "visor", "n": "Visor masa depan", "p": 450, "svg": "<path d=\"M16 24 Q43 18 70 24 L68 38 Q43 42 18 38 Z\" fill=\"rgba(52,199,154,.55)\" stroke=\"#21a37b\" stroke-width=\"2\"/><path d=\"M22 28 H40\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\".8\"/>", "u": null, "layer": "face"}, {"id": "diving", "n": "Masker selam", "p": 500, "svg": "<rect x=\"16\" y=\"20\" width=\"54\" height=\"22\" rx=\"10\" fill=\"rgba(160,210,255,.45)\" stroke=\"#f59f1b\" stroke-width=\"4\"/><path d=\"M76 10 V40\" stroke=\"#f59f1b\" stroke-width=\"5\" stroke-linecap=\"round\"/>", "u": null, "layer": "face"}, {"id": "monocle", "n": "Monokel", "p": null, "svg": "<circle cx=\"54\" cy=\"32\" r=\"10\" fill=\"rgba(255,255,255,.18)\" stroke=\"#d9a21f\" stroke-width=\"3\"/><path d=\"M64 34 Q70 50 64 62\" fill=\"none\" stroke=\"#d9a21f\" stroke-width=\"1.5\"/>", "u": ["examc1", "Simulasi tes dengan hasil C1"], "layer": "face"}, {"id": "reader", "n": "Kacamata baca emas", "p": null, "svg": "<path d=\"M20 34 H40 V30 Q30 26 20 30 Z M46 34 H66 V30 Q56 26 46 30 Z\" fill=\"rgba(255,255,255,.2)\" stroke=\"#d9a21f\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M40 32 H46\" stroke=\"#d9a21f\" stroke-width=\"3\"/>", "u": ["read18", "Selesaikan 18 bacaan"], "layer": "face"}, {"id": "goldstar", "n": "Bintang emas", "p": null, "svg": "<path d=\"M32 19l3.8 7.7 8.5 1.2-6.2 6 1.5 8.5-7.6-4-7.6 4 1.5-8.5-6.2-6 8.5-1.2z\" fill=\"#ffe07a\" stroke=\"#c98a00\" stroke-width=\"2\"/><path d=\"M54 19l3.8 7.7 8.5 1.2-6.2 6 1.5 8.5-7.6-4-7.6 4 1.5-8.5-6.2-6 8.5-1.2z\" fill=\"#ffe07a\" stroke=\"#c98a00\" stroke-width=\"2\"/>", "u": ["perfect10", "Skor 100% sebanyak 10 kali"], "layer": "face"}], "acc": [{"id": "none", "n": "Tanpa", "p": 0, "svg": "", "u": null, "layer": "front"}, {"id": "bow", "n": "Dasi kupu-kupu", "p": 100, "svg": "<path d=\"M33 60 L43 66 L33 72 Z M53 60 L43 66 L53 72 Z\" fill=\"#ff7a59\"/><circle cx=\"43\" cy=\"66\" r=\"3.5\" fill=\"#d9583a\"/>", "u": null, "layer": "front"}, {"id": "tie", "n": "Dasi kantor", "p": 120, "svg": "<path d=\"M39 62 H47 L45 67 L49 84 L43 90 L37 84 L41 67 Z\" fill=\"#3f8cf0\"/><path d=\"M40 72 L46 70 M39 78 L47 76\" stroke=\"#2c6fd1\" stroke-width=\"1.5\"/>", "u": null, "layer": "front"}, {"id": "scarf", "n": "Syal", "p": 150, "svg": "<path d=\"M16 58 Q43 70 70 58 L70 66 Q43 78 16 66 Z\" fill=\"#ffc845\"/><path d=\"M58 64 L64 84 L56 84 L52 66 Z\" fill=\"#d9a21f\"/>", "u": null, "layer": "front"}, {"id": "flowerpin", "n": "Bunga di kepala", "p": 150, "svg": "<g transform=\"translate(66 10)\"><circle cx=\"0\" cy=\"-6\" r=\"5\" fill=\"#ff9bb3\"/><circle cx=\"6\" cy=\"0\" r=\"5\" fill=\"#ff9bb3\"/><circle cx=\"0\" cy=\"6\" r=\"5\" fill=\"#ff9bb3\"/><circle cx=\"-6\" cy=\"0\" r=\"5\" fill=\"#ff9bb3\"/><circle cx=\"0\" cy=\"0\" r=\"4\" fill=\"#ffc845\"/></g>", "u": null, "layer": "front"}, {"id": "bell", "n": "Kalung lonceng", "p": 180, "svg": "<path d=\"M20 62 Q43 72 66 62\" fill=\"none\" stroke=\"#e5484d\" stroke-width=\"4\"/><circle cx=\"43\" cy=\"72\" r=\"6\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"2\"/><path d=\"M39 72 H47\" stroke=\"#d9a21f\" stroke-width=\"1.5\"/>", "u": null, "layer": "front"}, {"id": "pearls", "n": "Kalung mutiara", "p": 200, "svg": "<g fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"1\"><circle cx=\"20\" cy=\"54\" r=\"3\"/><circle cx=\"26\" cy=\"57.5\" r=\"3\"/><circle cx=\"33\" cy=\"60\" r=\"3\"/><circle cx=\"41\" cy=\"61\" r=\"3\"/><circle cx=\"49\" cy=\"61\" r=\"3\"/><circle cx=\"56\" cy=\"60\" r=\"3\"/><circle cx=\"62\" cy=\"57.5\" r=\"3\"/><circle cx=\"68\" cy=\"54\" r=\"3\"/></g>", "u": null, "layer": "front"}, {"id": "phones", "n": "Headphone", "p": 250, "svg": "<path d=\"M10 34 Q43 -12 76 34\" fill=\"none\" stroke=\"#24264a\" stroke-width=\"6\" stroke-linecap=\"round\"/><rect x=\"3\" y=\"26\" width=\"12\" height=\"20\" rx=\"5\" fill=\"#ff7a59\"/><rect x=\"71\" y=\"26\" width=\"12\" height=\"20\" rx=\"5\" fill=\"#ff7a59\"/>", "u": null, "layer": "front"}, {"id": "book", "n": "Buku", "p": 250, "svg": "<g transform=\"translate(78 44) rotate(10)\"><rect x=\"-10\" y=\"-12\" width=\"20\" height=\"26\" rx=\"2\" fill=\"#3f8cf0\"/><rect x=\"-7\" y=\"-9\" width=\"14\" height=\"5\" rx=\"1\" fill=\"#fff\" opacity=\".8\"/><rect x=\"8\" y=\"-12\" width=\"3\" height=\"26\" fill=\"#2c6fd1\"/></g>", "u": null, "layer": "front"}, {"id": "mic", "n": "Mikrofon", "p": 300, "svg": "<g transform=\"translate(80 40) rotate(20)\"><rect x=\"-2.5\" y=\"2\" width=\"5\" height=\"22\" rx=\"2\" fill=\"#24264a\"/><circle cx=\"0\" cy=\"-2\" r=\"8\" fill=\"#64748b\"/><path d=\"M-6 -4 H6 M-6 0 H6\" stroke=\"#fff\" stroke-width=\"1\" opacity=\".6\"/></g>", "u": null, "layer": "front"}, {"id": "balloon", "n": "Balon", "p": 300, "svg": "<path d=\"M78 70 Q82 40 86 16\" fill=\"none\" stroke=\"#55587a\" stroke-width=\"1.5\"/><ellipse cx=\"86\" cy=\"2\" rx=\"11\" ry=\"14\" fill=\"#e5484d\"/><path d=\"M82 -4 Q84 -8 88 -8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\".7\"/>", "u": null, "layer": "back"}, {"id": "cape", "n": "Jubah pahlawan", "p": 400, "svg": "<path d=\"M14 20 Q4 60 0 84 Q43 74 86 84 Q82 60 72 20 Z\" fill=\"#e5484d\"/>", "u": null, "layer": "back"}, {"id": "backpack", "n": "Ransel", "p": 400, "svg": "<rect x=\"62\" y=\"16\" width=\"26\" height=\"40\" rx=\"9\" fill=\"#f59f1b\"/><rect x=\"66\" y=\"34\" width=\"18\" height=\"14\" rx=\"4\" fill=\"#d9831a\"/><path d=\"M66 18 Q60 30 64 50\" fill=\"none\" stroke=\"#d9831a\" stroke-width=\"4\"/>", "u": null, "layer": "back"}, {"id": "lanyard", "n": "Kartu pelajar", "p": 450, "svg": "<path d=\"M24 58 L43 74 L62 58\" fill=\"none\" stroke=\"#3f8cf0\" stroke-width=\"3\"/><rect x=\"35\" y=\"72\" width=\"16\" height=\"20\" rx=\"3\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"1.5\"/><rect x=\"38\" y=\"76\" width=\"10\" height=\"7\" rx=\"1\" fill=\"#c8f0df\"/><path d=\"M38 87 H48\" stroke=\"#55587a\" stroke-width=\"1.5\"/>", "u": null, "layer": "front"}, {"id": "umbrella", "n": "Payung", "p": 500, "svg": "<path d=\"M58 -6 Q80 -26 102 -6 Z\" fill=\"#14a3a3\"/><path d=\"M80 -6 V52 Q80 58 74 56\" fill=\"none\" stroke=\"#24264a\" stroke-width=\"2.5\" stroke-linecap=\"round\"/>", "u": null, "layer": "back"}, {"id": "medal", "n": "Medali juara", "p": null, "svg": "<path d=\"M33 56 L39 70 M53 56 L47 70\" stroke=\"#3f8cf0\" stroke-width=\"5\"/><circle cx=\"43\" cy=\"76\" r=\"9\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"2.5\"/><path d=\"M43 71l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5z\" fill=\"#fff\"/>", "u": ["streak7", "Streak 7 hari"], "layer": "front"}, {"id": "trophy", "n": "Piala", "p": null, "svg": "<g transform=\"translate(82 46)\"><path d=\"M-9 -14 H9 V-4 Q9 6 0 7 Q-9 6 -9 -4 Z\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"2\"/><path d=\"M-9 -10 Q-15 -10 -14 -4 Q-13 1 -8 0 M9 -10 Q15 -10 14 -4 Q13 1 8 0\" fill=\"none\" stroke=\"#d9a21f\" stroke-width=\"2\"/><rect x=\"-2\" y=\"7\" width=\"4\" height=\"6\" fill=\"#d9a21f\"/><rect x=\"-7\" y=\"13\" width=\"14\" height=\"5\" rx=\"1.5\" fill=\"#8b5e3c\"/></g>", "u": ["exam90", "Skor simulasi tes 90 ke atas"], "layer": "front"}, {"id": "wings", "n": "Sayap", "p": null, "svg": "<path d=\"M12 24 Q-14 4 -12 34 Q-8 50 14 44 Z\" fill=\"#e6e6ff\" stroke=\"#9aa6d8\" stroke-width=\"2\"/><path d=\"M74 24 Q100 4 98 34 Q94 50 72 44 Z\" fill=\"#e6e6ff\" stroke=\"#9aa6d8\" stroke-width=\"2\"/><path d=\"M-4 22 Q2 30 4 40 M90 22 Q84 30 82 40\" fill=\"none\" stroke=\"#9aa6d8\" stroke-width=\"2\"/>", "u": ["streak100", "Streak 100 hari"], "layer": "back"}]};
+const COSTUME_DEFS = "<defs><linearGradient id=\"bbGold\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffe07a\"/><stop offset=\".55\" stop-color=\"#f2b705\"/><stop offset=\"1\" stop-color=\"#c98a00\"/></linearGradient><linearGradient id=\"bbRain\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff6b6b\"/><stop offset=\".25\" stop-color=\"#ffc845\"/><stop offset=\".5\" stop-color=\"#34c79a\"/><stop offset=\".75\" stop-color=\"#3f8cf0\"/><stop offset=\"1\" stop-color=\"#8e44c9\"/></linearGradient><radialGradient id=\"bbGal\" cx=\".3\" cy=\".3\" r=\".9\"><stop offset=\"0\" stop-color=\"#7b5cff\"/><stop offset=\".6\" stop-color=\"#2b1d6b\"/><stop offset=\"1\" stop-color=\"#120c33\"/></radialGradient></defs>";
+const COSTUME_GAL = "<g fill=\"#fff\" opacity=\".9\"><circle cx=\"20\" cy=\"14\" r=\"1.3\"/><circle cx=\"66\" cy=\"12\" r=\"1\"/><circle cx=\"70\" cy=\"50\" r=\"1.4\"/><circle cx=\"16\" cy=\"54\" r=\"1\"/><circle cx=\"44\" cy=\"10\" r=\".9\"/></g>";
+
 /* Percakapan interaktif: satu adegan per level.
    ["p", kalimat partner, terjemahan] atau ["u", [jawaban benar, salah, salah], penjelasan].
    {n} diganti nama panggilan pengguna. */
@@ -4151,8 +4227,22 @@ const BUBU_FACE = {
   base: '<circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="54" cy="32" r="7" fill="#fff"/><circle cx="34" cy="33" r="3.4" fill="#24264a"/><circle cx="56" cy="33" r="3.4" fill="#24264a"/><circle cx="24" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><circle cx="62" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><path d="M33 46q10 8 20 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>'
 };
 // mood: base (default), happy (benar), oops (salah, tetap menyemangati), wow (combo/sempurna)
-const BUBU = (size, cls = "", label = "", mood = "base") => `<svg xmlns="http://www.w3.org/2000/svg" class="bubu ${cls}" width="${size}" height="${Math.round(size * 92 / 86)}" viewBox="0 0 86 92" ${label ? 'role="img" aria-label="' + label + '"' : 'aria-hidden="true"'}><ellipse cx="43" cy="89" rx="24" ry="3" fill="rgba(36,38,74,.12)"/><path d="M10 14a10 10 0 0 1 10-10h46a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H38l-14 14 2-14h-6a10 10 0 0 1-10-10z" fill="#5b5bf0"/>${BUBU_FACE[mood] || BUBU_FACE.base}</svg>`;
-const LOGO = (size, label) => `<span style="display:grid;place-items:center;width:${size}px;height:${size}px;border-radius:26%;background:#ffc845;box-shadow:0 4px 0 #d9a21f;flex:none" ${label ? 'role="img" aria-label="' + label + '"' : ""}>${BUBU(Math.round(size * .62))}</span>`;
+// Kostum: look = { color, hat, face, acc }. Default memakai kostum pemain (S.look); false = Bubu polos (logo).
+const COIN = '<svg class="coin-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#ffc845" stroke="#d9a21f" stroke-width="2"/><path d="M12 7l1.5 3.1 3.4.5-2.5 2.4.6 3.4-3-1.6-3 1.6.6-3.4-2.5-2.4 3.4-.5z" fill="#fff"/></svg>';
+const LOOK0 = { color: "violet", hat: "none", face: "none", acc: "none" };
+const cItem = (cat, id) => COSTUME[cat].find(x => x.id === id);
+const BUBU = (size, cls = "", label = "", mood = "base", look) => {
+  const L = look === false ? LOOK0 : Object.assign({}, LOOK0, look || (typeof S !== "undefined" && S && S.look) || {});
+  const col = cItem("color", L.color) || COSTUME.color[0], hat = cItem("hat", L.hat), face = cItem("face", L.face), acc = cItem("acc", L.acc);
+  const k = size / 86, h = Math.round(size * 92 / 86), W = Math.round(size * 114 / 86), Hh = Math.round(size * 132 / 86);
+  const dressed = !!((hat && hat.svg) || (face && face.svg) || (acc && acc.svg) || col.fill.startsWith("url"));
+  const box = dressed ? `width="${W}" height="${Hh}" viewBox="-14 -34 114 132" style="margin:${(-34 * k).toFixed(1)}px ${(-14 * k).toFixed(1)}px ${(-6 * k).toFixed(1)}px"` : `width="${size}" height="${h}" viewBox="0 0 86 92"`;
+  const back = acc && acc.layer === "back" ? acc.svg : "", front = acc && acc.layer !== "back" ? acc.svg : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" class="bubu ${cls}" ${box} ${label ? 'role="img" aria-label="' + label + '"' : 'aria-hidden="true"'}>${col.fill.startsWith("url") ? COSTUME_DEFS : ""}<ellipse cx="43" cy="89" rx="24" ry="3" fill="rgba(36,38,74,.12)"/>${back}<path d="M10 14a10 10 0 0 1 10-10h46a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H38l-14 14 2-14h-6a10 10 0 0 1-10-10z" fill="${col.fill}"/>${L.color === "galaxy" ? COSTUME_GAL : ""}${BUBU_FACE[mood] || BUBU_FACE.base}${face ? face.svg : ""}${hat ? hat.svg : ""}${front}</svg>`;
+};
+// Ukuran gambar Bubu untuk kanvas (kartu bagikan): kotak penuh termasuk topi.
+const bubuBox = (size, mood, look) => { const k = size / 86; const svg = BUBU(size, "", "", mood, look); const dressed = svg.includes('viewBox="-14'); return dressed ? { svg, w: 114 * k, h: 132 * k, dx: -14 * k, dy: -34 * k } : { svg, w: size, h: 92 * k, dx: 0, dy: 0 }; };
+const LOGO = (size, label) => `<span style="display:grid;place-items:center;width:${size}px;height:${size}px;border-radius:26%;background:#ffc845;box-shadow:0 4px 0 #d9a21f;flex:none" ${label ? 'role="img" aria-label="' + label + '"' : ""}>${BUBU(Math.round(size * .62), "", "", "base", false)}</span>`;
 const REPO = "https://github.com/iiddon/english-study";
 
 /* ================= content ================= */
@@ -4194,11 +4284,11 @@ const KIND = { m: "Pilihan ganda", t: "Isian", f: "Benar/salah", o: "Susun kalim
 
 /* ================= state ================= */
 const KEY = "englishpath_v1";
-const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {}, mine: {}, sk: {}, exams: [], rounds: {} });
+const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {}, mine: {}, sk: {}, exams: [], rounds: {}, look: Object.assign({}, LOOK0), coins: 0, coinsAll: 0, owned: {}, seenSp: {}, perf: 0 });
 let S = fresh();
 function hydrate(o) {
   const s = Object.assign(fresh(), o || {});
-  ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert", "mine", "sk", "rounds"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
+  ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert", "mine", "sk", "rounds", "owned", "seenSp"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
   ["xp", "streak", "best", "ans", "cor", "combo", "matchBest", "ts", "resetAt", "chests", "onb"].forEach(k => { s[k] = Number(s[k]) || 0; });
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
@@ -4207,6 +4297,9 @@ function hydrate(o) {
   s.name = typeof s.name === "string" ? s.name.slice(0, 24) : "";
   if (!["auto", "light", "dark"].includes(s.theme)) s.theme = "auto";
   if (!Array.isArray(s.exams)) s.exams = [];
+  s.look = Object.assign({}, LOOK0, s.look && typeof s.look === "object" ? s.look : {});
+  ["color", "hat", "face", "acc"].forEach(c => { if (!cItem(c, s.look[c])) s.look[c] = LOOK0[c]; });
+  ["coins", "coinsAll", "perf"].forEach(k => { s[k] = Math.max(0, Number(s[k]) || 0); });
   return s;
 }
 function loadLocal() { try { const r = localStorage.getItem(KEY); if (r) S = hydrate(JSON.parse(r)); } catch (e) {} }
@@ -4236,10 +4329,22 @@ const streakNow = () => (S.lastDay === dkey() || S.lastDay === dayAgo(1)) ? S.st
 function rankOf(xp) { let k = 0; RANKS.forEach((r, i) => { if (xp >= r[0]) k = i; }); const n = RANKS[k + 1]; return { name: RANKS[k][1], at: RANKS[k][0], next: n ? { at: n[0], name: n[1] } : null }; }
 function addXp(n) {
   const t = dkey();
-  if (S.lastDay !== t) { S.streak = (S.lastDay === dayAgo(1) ? S.streak : 0) + 1; S.lastDay = t; S.best = Math.max(S.best, S.streak); }
+  const before = S.streak;
+  if (S.lastDay !== t) { S.streak = (S.lastDay === dayAgo(1) ? S.streak : 0) + 1; S.lastDay = t; S.best = Math.max(S.best, S.streak); if (S.streak % 7 === 0 && S.streak !== before) { addCoins(25); setTimeout(() => toast("Streak " + S.streak + " hari: +25 koin!"), 600); } }
   S.xp += n; S.days[t] = (S.days[t] || 0) + n;
   ["days", "dc", "dcombo"].forEach(m => { const ks = Object.keys(S[m]).sort(); while (ks.length > 60) delete S[m][ks.shift()]; });
 }
+// Koin: mata uang Lemari Bubu, terpisah dari XP.
+function addCoins(n) { S.coins += n; S.coinsAll += n; }
+const SPECIAL = {
+  c2: () => !!S.cert.expert, streak30: () => S.best >= 30, streak100: () => S.best >= 100, streak7: () => S.best >= 7,
+  stars36: () => LESSONS.every(x => starsOf(x) === 3), alltests: () => LEVELS.every(L => S.cert[L.id]), cert: () => Object.keys(S.cert).length > 0,
+  talk12: () => TALKS.every(T => S.talk[T.id] != null), examc1: () => S.exams.some(e => e.li >= 4), exam90: () => S.exams.some(e => e.sc >= 90),
+  read18: () => LEVELS.every(L => L.reads.every(r => S.read[r.sid] != null)), perfect10: () => S.perf >= 10
+};
+const spOpen = it => it.p === null && !!(it.u && SPECIAL[it.u[0]] && SPECIAL[it.u[0]]());
+const ownsItem = (cat, it) => it.p === 0 || !!S.owned[cat + ":" + it.id] || spOpen(it);
+const CATN = { color: "Warna", hat: "Topi", face: "Wajah", acc: "Aksesori" };
 const missions = () => { const t = dkey(); return [
   { n: "Kumpulkan " + S.goal + " XP", v: S.days[t] || 0, max: S.goal },
   { n: "Jawab 15 soal dengan benar", v: S.dc[t] || 0, max: 15 },
@@ -4285,7 +4390,12 @@ function badgeSummary() {
     ${near.length ? `<p class="eyebrow" style="margin-top:4px">Hampir dapat</p><div class="badges">${near.map(b => badgeHTML(b, true)).join("")}</div>` : ""}
     <details class="more"><summary>Lihat semua ${BADGES.length} lencana ${I("down")}</summary><div class="badges">${BADGES.map(b => badgeHTML(b, true)).join("")}</div></details>`;
 }
-function newBadges() { const out = []; BADGES.forEach(b => { if (!S.badges[b.id] && b.t()) { S.badges[b.id] = dkey(); out.push(b); } }); return out; }
+function newBadges() {
+  const out = []; BADGES.forEach(b => { if (!S.badges[b.id] && b.t()) { S.badges[b.id] = dkey(); out.push(b); } });
+  // Kostum khusus yang baru terbuka ikut diumumkan di tempat yang sama.
+  Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { const k = c + ":" + it.id; if (it.p === null && !S.seenSp[k] && spOpen(it)) { S.seenSp[k] = dkey(); out.push({ k: "Kostum khusus terbuka", n: it.n, d: it.u[1] + " · pakai di Lemari Bubu", ic: "star" }); } }));
+  return out;
+}
 
 /* ================= account sync (optional) ================= */
 let REMOTE = null, SYNC = "off", pushT = null, pushing = false, dirty = false;
@@ -4300,6 +4410,8 @@ function merge(a, b) {
   out.scores = maxMap("scores"); out.days = maxMap("days"); out.dc = maxMap("dc"); out.dcombo = maxMap("dcombo");
   out.chest = (a.chest || "") > (b.chest || "") ? a.chest : (b.chest || "");
   out.read = maxMap("read"); out.talk = maxMap("talk"); out.rounds = maxMap("rounds");
+  out.owned = Object.assign({}, a.owned, b.owned); out.seenSp = Object.assign({}, a.seenSp, b.seenSp);
+  out.coinsAll = Math.max(a.coinsAll || 0, b.coinsAll || 0); out.perf = Math.max(a.perf || 0, b.perf || 0);
   out.mine = Object.assign({}, a.mine, b.mine);
   { const k = {}; [a.sk || {}, b.sk || {}].forEach(o => Object.keys(o).forEach(c => { const v = o[c]; if (Array.isArray(v) && (!k[c] || v[0] > k[c][0])) k[c] = v; })); out.sk = k; }
   { const seen = {}; [...(a.exams || []), ...(b.exams || [])].forEach(e => { if (e && e.at) seen[e.at] = e; }); out.exams = Object.values(seen).sort((x, y) => x.at - y.at).slice(-12); }
@@ -4404,7 +4516,7 @@ function confetti() {
 /* ================= router ================= */
 let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null, QT = null;
 const VIEWS = {};
-const SECTION = { settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
+const SECTION = { wardrobe: "profile", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
 /* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
    Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
@@ -4421,6 +4533,7 @@ function hashOf(v, a) {
     case "mine": return "#kataku";
     case "profile": return "#profil";
     case "settings": return "#pengaturan";
+    case "wardrobe": return "#lemari";
     case "welcome": return "#mulai-" + (a[0] || 0);
     default: return "#rute";
   }
@@ -4434,6 +4547,7 @@ function parseHash(h) {
     case "kataku": return { v: "mine", a: [] };
     case "profil": return { v: "profile", a: [] };
     case "pengaturan": return { v: "settings", a: [] };
+    case "lemari": return { v: "wardrobe", a: [] };
     case "flashcard": return { v: "flash", a: [LEVELS.some(L => L.id === p[1]) || p[1] === "mine" ? p[1] : "all"] };
     case "mulai": return { v: "welcome", a: [Math.min(3, n(p[1]) || 0)] };
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
@@ -4489,8 +4603,8 @@ const rerender = () => nav(ROUTE.v, ...ROUTE.a);
 const here = () => { const r = ROUTE; return () => nav(r.v, ...r.a); };
 function chrome() {
   applyTheme();
-  $("#top").innerHTML = `<button class="brand" data-g="home" aria-label="English Path, buka rute"><span class="mark">${BUBU(26)}</span><span class="wm">English Path</span></button>
-    <div class="chips"><span class="chip" title="Hari beruntun">${I("flame")}${streakNow()}</span><span class="chip xp" title="Total XP">${I("star")}${S.xp}</span></div>`;
+  $("#top").innerHTML = `<button class="brand" data-g="home" aria-label="English Path, buka rute"><span class="mark">${BUBU(26, "", "", "base", false)}</span><span class="wm">English Path</span></button>
+    <div class="chips"><span class="chip" title="Hari beruntun">${I("flame")}${streakNow()}</span><span class="chip xp" title="Total XP">${I("star")}${S.xp}</span><button class="chip coin" data-g="wardrobe" aria-label="${S.coins} koin, buka Lemari Bubu">${COIN}${S.coins}</button></div>`;
   const cur = SECTION[ROUTE.v] || "home";
   $("#nav").innerHTML = [["home", "Rute", "map"], ["practice", "Latihan", "zap"], ["profile", "Profil", "user"]]
     .map(([v, t, ic]) => `<button data-g="${v}"${cur === v ? ' aria-current="page"' : ""} aria-label="${t}">${I(ic)}<span class="t">${t}</span></button>`).join("");
@@ -4574,7 +4688,7 @@ VIEWS.home = function () {
         ${ms.map(m => { const ok = m.v >= m.max; return `<div class="mrow${ok ? " done" : ""}"><span class="mbox">${ok ? I("check") : ""}</span><span><span class="mt">${m.n}</span>${ok ? "" : `<span class="pbar" style="display:block"><i style="width:${m.v / m.max * 100}%"></i></span>`}</span><span class="mn">${Math.min(m.v, m.max)}/${m.max}</span></div>`; }).join("")}
         ${chest}
       </section>
-      ${wotdHTML()}</div><div class="sdots" aria-hidden="true"><i class="on"></i><i></i><span>Geser untuk Kata hari ini</span></div>
+      ${wotdHTML()}${wardTeaser()}</div><div class="sdots" aria-hidden="true"><i class="on"></i><i></i><i></i><span>Geser untuk kartu lainnya</span></div>
       <div class="tiles">
         <button class="tile" style="--tc:var(--sun-l);--ts:var(--sun-s);--ti:var(--sun-d)" data-a="daily">${I("calendar")}<b>Tantangan harian</b><small>${S.daily === t ? "Selesai hari ini" : "10 soal · +30 XP"}</small></button>
         <button class="tile" style="--tc:var(--coral-l);--ts:var(--coral-s);--ti:var(--coral)" data-a="mist"${nW ? "" : " disabled"}>${I("retry")}<b>Ulangan hari ini</b><small>${nW ? nW + " soal jatuh tempo" : later ? later + " soal terjadwal nanti" : "Belum ada"}</small></button>
@@ -4587,7 +4701,7 @@ VIEWS.home = function () {
       <div class="levels">${LEVELS.map(lvcard).join("")}</div>
     </section></div>`;
   { const sw = $("#swipe"), dots = $$(".sdots i"), lab = $(".sdots span");
-    if (sw) sw.addEventListener("scroll", () => { const k = Math.round(sw.scrollLeft / Math.max(1, sw.scrollWidth - sw.clientWidth)); dots.forEach((d, n) => d.classList.toggle("on", n === k)); if (lab) lab.textContent = k ? "Geser untuk Misi hari ini" : "Geser untuk Kata hari ini"; }, { passive: true }); }
+    if (sw) sw.addEventListener("scroll", () => { const k = Math.round(sw.scrollLeft / Math.max(1, sw.scrollWidth - sw.clientWidth) * (dots.length - 1)); dots.forEach((d, n) => d.classList.toggle("on", n === k)); if (lab) lab.textContent = ["Geser untuk kartu lainnya", "Geser untuk Lemari Bubu", "Geser kembali ke Misi"][k] || ""; }, { passive: true }); }
   H = {
     open(el) { nav("lesson", +el.dataset.l, +el.dataset.j); },
     allopen() { const all = OPENLV.size === LEVELS.length; $$("details.lvcard").forEach(dd => { dd.open = !all; }); },
@@ -4600,7 +4714,7 @@ VIEWS.home = function () {
     flash() { nav("flash"); },
     chest() {
       if (S.chest === dkey() || !missions().every(m => m.v >= m.max)) return;
-      S.chest = dkey(); S.chests++; addXp(50); newBadges(); save();
+      S.chest = dkey(); S.chests++; addXp(50); addCoins(10); newBadges(); save(); setTimeout(() => toast("Peti dibuka: +50 XP dan +10 koin"), 300);
       const y = window.scrollY; rerender(); try { window.scrollTo(0, y); } catch (e) {}
       sfx.win(); confetti();
     },
@@ -4735,8 +4849,11 @@ function lessonQuiz(li, j, r = 1) {
     back: () => nav("lesson", li, j, "q"), again: () => lessonQuiz(li, j, r),
     share: { title: x.title + " · Babak " + r, sub: "Pelajaran " + LEVELS[li].cefr + " · " + LEVELS[li].name, li },
     onEnd(p) {
+      const was = roundPassed(x, r), had3 = starsOf(x) === 3;
       if (r === 1) { S.scores[x.id] = Math.max(S.scores[x.id] || 0, p); if (p >= 75) S.done[x.id] = 1; }
       else { const k = x.id + ":" + r; S.rounds[k] = Math.max(S.rounds[k] || 0, p); }
+      if (!was && roundPassed(x, r)) addCoins(5);
+      if (!had3 && starsOf(x) === 3) addCoins(15);
     }
   });
 }
@@ -4789,6 +4906,7 @@ const fmtQ = s => esc(s).replace(/___/g, '<span class="blank"></span>');
 
 function runQuiz(items, o) {
   if (!items.length) return o.back();
+  const coin0 = S.coins;
   enterSession();
   clearInterval(TICK); TICK = null; stopSpeak();
   document.body.classList.add("focus");
@@ -4851,7 +4969,7 @@ function runQuiz(items, o) {
     if (o.silent) { i++; return show(); }
     S.ans++;
     { const cat = c.t === "l" ? "l" : c.key && c.key.startsWith("r_") ? "r" : "g", v = S.sk[cat] || [0, 0]; S.sk[cat] = [v[0] + 1, v[1] + (ok ? 1 : 0)]; }
-    if (ok) { right++; combo++; maxCombo = Math.max(maxCombo, combo); S.cor++; { const td = dkey(); S.dc[td] = (S.dc[td] || 0) + 1; S.dcombo[td] = Math.max(S.dcombo[td] || 0, combo); } if (combo > S.combo) S.combo = combo; if (c.key) srsHit(S.wrong, c.key, true); addXp(10); gained += 10; sfx.ok(); }
+    if (ok) { right++; combo++; maxCombo = Math.max(maxCombo, combo); S.cor++; { const td = dkey(); S.dc[td] = (S.dc[td] || 0) + 1; S.dcombo[td] = Math.max(S.dcombo[td] || 0, combo); } if (combo > S.combo) S.combo = combo; if (c.key) srsHit(S.wrong, c.key, true); addXp(10); addCoins(1); gained += 10; sfx.ok(); }
     else { combo = 0; if (c.key) srsHit(S.wrong, c.key, false); missed.push(c); sfx.no(); }
     save();
     const blk = $$(".blocks span")[i]; if (blk) blk.className = ok ? "ok" : "no";
@@ -4860,7 +4978,7 @@ function runQuiz(items, o) {
     const milestone = ok && COMBO_LINES[combo];
     if (milestone) { const cb = $("#combo .combo"); if (cb) cb.classList.add("boom"); buzz([15, 40, 15]); }
     const mood = !ok ? "oops" : milestone ? "wow" : "happy", line = !ok ? pick(NO_LINES) : milestone || pick(OK_LINES);
-    $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(50, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Belum tepat"}</span>${ok ? '<span class="plus">+10 XP</span>' : ""}</p><p class="bline">${line}</p></div></div>
+    $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(50, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Belum tepat"}</span>${ok ? '<span class="plus">+10 XP</span><span class="plus coin">' + COIN + '+1</span>' : ""}</p><p class="bline">${line}</p></div></div>
       ${!ok || c.t === "l" ? `<p>Jawaban: <b>${esc(answerOf(c))}</b></p>` : ""}${c.t === "l" ? `<p>${esc(c.tr)}</p>` : ""}${c.e ? `<p>${esc(c.e)}</p>` : ""}${c.key ? `<a class="report" href="${reportUrl(c)}" target="_blank" rel="noopener">Ada yang salah dengan soal ini? Laporkan</a>` : ""}
       <button class="btn ${ok ? "good" : "bad"}" data-a="next" id="nx">${i + 1 < N ? "Lanjut" : "Lihat hasil"}</button></div>`;
     try { $("#nx").focus({ preventScroll: true }); } catch (e) {}
@@ -4877,6 +4995,8 @@ function runQuiz(items, o) {
     if (o.extra) bonus += o.extra(pct) || 0;
     if (bonus) addXp(bonus);
     if (o.onEnd) o.onEnd(pct);
+    if (pct === 100) S.perf++;
+    const coinGain = S.coins - coin0;
     const nb = newBadges(); save();
     const passed = o.pass ? pct >= o.pass : pct >= 60;
     const head = pct === 100 ? "Sempurna!" : passed ? (o.pass ? "Lulus!" : "Kerja bagus!") : pct >= 50 ? "Hampir sampai" : "Belum sampai";
@@ -4889,8 +5009,9 @@ function runQuiz(items, o) {
       <p class="eyebrow">${esc(o.title)}</p>
       <div class="res-top">${ring(pct / 100, pct + "%", right + " dari " + N + " benar", "big")}<div><h1>${head}</h1><p class="muted">${sub}</p></div></div>
       <div class="greet res-bubu">${BUBU(58, "react " + mood, "Bubu", mood)}<div class="say"><span>${mline}</span></div></div>
+      ${coinGain > 0 ? `<button class="coinpill" data-g="wardrobe">${COIN}<span><b>+${coinGain} koin</b> · total ${S.coins}</span>${I("right")}</button>` : ""}
       <dl class="stats3"><div><dt>XP didapat</dt><dd>+${gained + bonus}</dd></div><div><dt>Combo terbaik</dt><dd>${maxCombo}×</dd></div><div><dt>Perlu diulang</dt><dd>${missed.length}</dd></div></dl>
-      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
       ${certBtn}${goNext ? `<button class="btn lv" data-a="next">${o.nextLabel || "Pelajaran berikutnya"} ${I("right")}</button>` : ""}${shareBtn}
       ${missed.length ? `<button class="btn ${goNext ? "ghost" : "lv"}" data-a="redo">Ulangi ${missed.length} soal yang salah</button>` : ""}
       <div class="pair"><button class="btn ghost" data-a="again">Dari awal</button><button class="btn ghost" data-a="back">Kembali</button></div>
@@ -5003,7 +5124,7 @@ function matchGame(pool, o) {
       <p class="eyebrow">Cocokkan kata</p>
       <h1>${rec ? "Rekor baru!" : miss ? "Semua pasangan ketemu" : "Tanpa salah!"}</h1>
       <dl class="stats3"><div><dt>Waktu</dt><dd>${secs} dtk</dd></div><div><dt>Salah pasang</dt><dd>${miss}</dd></div><div><dt>XP didapat</dt><dd>+${xp}</dd></div></dl>
-      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
       <button class="btn lv" data-a="again">Main lagi</button><button class="btn ghost" data-a="back">Kembali</button></div>`;
     H = { again() { o.again(); }, back() { o.back(); } };
     toTop();
@@ -5157,7 +5278,7 @@ VIEWS.speak = function (li) {
       <div aria-live="polite">${fb}</div>
       <div class="pair"><button class="btn ghost" data-a="prev"${k === 0 ? " disabled" : ""}>Sebelumnya</button><button class="btn lv" data-a="next">${k + 1 < L.speak.length ? "Berikutnya" : "Selesai"}</button></div></div>`;
   };
-  const pass = () => { if (done()[k]) return; S.spoke[L.id] = Object.assign({}, done(), { [k]: 1 }); addXp(5); newBadges(); save(); chrome(); };
+  const pass = () => { if (done()[k]) return; S.spoke[L.id] = Object.assign({}, done(), { [k]: 1 }); addXp(5); addCoins(1); newBadges(); save(); chrome(); };
   H = {
     jump(el) { stopRec(); k = +el.dataset.k; st = "idle"; draw(); },
     prev() { stopRec(); if (k > 0) { k--; st = "idle"; draw(); } },
@@ -5251,6 +5372,7 @@ VIEWS.profile = function () {
     ${badgeSummary()}
     <h2 style="margin-top:10px">Sertifikat</h2>
     ${LEVELS.some(L => S.cert[L.id]) ? `<div class="certs">${LEVELS.filter(L => S.cert[L.id]).map(L => `<button class="cert" data-a="cert" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="roundel sm">${L.cefr}</span><span><b>${L.name}</b><small>Skor ${S.cert[L.id].p}% · ${longDate(S.cert[L.id].d)}</small></span>${I("award")}</button>`).join("")}</div>` : `<div class="card"><p class="muted">Lulus tes level (skor 75% ke atas) untuk mendapat sertifikat bernama yang bisa kamu bagikan.</p></div>`}
+    <button class="setrow" data-g="wardrobe"><span class="setbubu">${BUBU(40, "", "", "happy")}</span><span class="grow"><b>Lemari Bubu</b><small>${S.coins} koin · koleksi ${wardCount()[0]} dari ${wardCount()[1]}</small></span>${I("right")}</button>
     <button class="setrow" data-g="settings">${I("gear")}<span class="grow"><b>Pengaturan</b><small>Nama, target harian, tampilan, suara, pindahkan progres</small></span>${I("right")}</button></div>`;
   H = {
     range(el) { const n = +el.dataset.v; $("#xpc").innerHTML = xpChart(n); $$('[data-a="range"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
@@ -5365,11 +5487,11 @@ async function drawCard(spec) {
   x.fillStyle = "#dbe4f7"; rr(x, 70, 168, 940, 1040, 60); x.fill();
   x.fillStyle = "#fff"; rr(x, 70, 156, 940, 1040, 60); x.fill();
   x.fillStyle = "#ffc845"; rr(x, 70, 44, 84, 84, 24); x.fill();
-  x.drawImage(await svgImg(BUBU(56)), 84, 56, 56, 60);
+  x.drawImage(await svgImg(BUBU(56, "", "", "base", false)), 84, 56, 56, 60);
   x.fillStyle = "#24264a"; x.textBaseline = "middle"; x.font = `700 44px ${FD}`; x.fillText("English Path", 176, 88);
   x.textAlign = "center";
   const mood = spec.kind === "cert" || spec.pct !== 100 ? "happy" : "wow";
-  x.drawImage(await svgImg(BUBU(230, "", "", mood)), W / 2 - 115, 200, 230, 246);
+  { const bb = bubuBox(210, mood); x.drawImage(await svgImg(bb.svg), W / 2 - 105 + bb.dx, 214 + bb.dy, bb.w, bb.h); }
   const pill = (t, y, bg, fg, size) => { x.font = `800 ${size}px ${FB}`; const w = x.measureText(t).width + size * 1.4; x.fillStyle = bg; rr(x, W / 2 - w / 2, y - size * .9, w, size * 1.8, size * .9); x.fill(); x.fillStyle = fg; x.fillText(t, W / 2, y + 2); };
   if (spec.kind === "cert") {
     x.strokeStyle = LVD[li]; x.lineWidth = 6; x.setLineDash([2, 14]); x.lineCap = "round"; rr(x, 100, 186, 880, 980, 44); x.stroke(); x.setLineDash([]);
@@ -5493,7 +5615,7 @@ VIEWS.talk = function (n) {
     S.talk[T.id] = Math.max(S.talk[T.id] || 0, pct); const nb = newBadges(); save(); chrome();
     const [mood, line] = resultMood(pct, pct >= 60);
     reply.innerHTML = `<div class="talkend"><div class="greet">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><b>${score} dari ${nU} tepat</b><span>${line} +${bonus} XP</span></div></div>
-      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
       <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn lv" data-a="exit">Selesai</button></div></div>`;
     if (pct >= 60) { sfx.win(); confetti(); }
   }
@@ -5505,7 +5627,7 @@ VIEWS.talk = function (n) {
     send() {
       if (locked || sel == null) return; locked = true;
       const t = turns[k], ok = opts[sel].ok; asked++;
-      if (ok) { score++; addXp(5); sfx.ok(); } else sfx.no();
+      if (ok) { score++; addXp(5); addCoins(1); sfx.ok(); } else sfx.no();
       $("#tc").textContent = asked + "/" + nU;
       $$("#reply .opt").forEach((b, n) => { b.disabled = true; b.classList.remove("sel"); if (opts[n].ok) b.classList.add("right"); else if (n === sel) b.classList.add("wrong"); });
       $("#chk").remove(); save(); chrome();
@@ -5615,7 +5737,7 @@ function examResult(items, res, tm, timeUp) {
   S.ans += items.length; S.cor += right;
   const L = CEFR_OF(est);
   S.exams.push({ at: Date.now(), d: dkey(), sc, lv: L.cefr, li: est, tm }); S.exams = S.exams.slice(-12);
-  addXp(20 + right * 2); const nb = newBadges(); save();
+  addXp(20 + right * 2); addCoins(right); const nb = newBadges(); save();
   const prev = S.exams.length > 1 ? S.exams[S.exams.length - 2] : null;
   const [mood, line] = resultMood(sc, sc >= 60);
   const tip = { "Tata bahasa": ["Ulangi pelajaran level " + L.cefr, () => nav("lesson", est, 0)], "Membaca": ["Latihan bacaan " + L.cefr, () => nav("read", est)], "Mendengar": ["Latihan dengar & susun", globalListen] }[weak.n];
@@ -5625,7 +5747,7 @@ function examResult(items, res, tm, timeUp) {
     <div class="greet res-bubu">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><span>${line}</span></div></div>
     <div class="card stack"><h2>Per bagian</h2>${secs.map(x => `<div class="skrow"><span class="skn">${x.n}</span><span class="skbar"><i style="width:${x.ok / x.all * 100}%"></i></span><span class="skv">${x.ok}/${x.all}</span></div>`).join("")}</div>
     <div class="card stack"><h2>Per level</h2>${LEVELS.map((l, li) => byLv[li] == null ? "" : `<div class="skrow" style="--ldk:var(--ld${li + 1})"><span class="skn">${l.cefr}</span><span class="skbar"><i style="width:${byLv[li] * 100}%"></i></span><span class="skv">${Math.round(byLv[li] * 100)}%</span></div>`).join("")}<p class="muted">Level dianggap dikuasai jika 60% soalnya benar, berurutan dari A1.</p></div>
-    ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+    ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
     <div class="card stack"><h2>Saran berikutnya</h2><p class="muted">Bagian terlemahmu: <b>${weak.n}</b>.${wrongKeys.length ? " " + wrongKeys.length + " soal yang salah sudah masuk ke Ulangan hari ini." : ""}</p><button class="btn lv" data-a="tip">${tip[0]} ${I("right")}</button></div>
     <div class="pair"><button class="btn ghost" data-a="again">Tes lagi</button><button class="btn ghost" data-a="back">Selesai</button></div></div>`;
   H = { tip: tip[1], again: startExam, back() { nav("exam"); } };
@@ -5671,6 +5793,94 @@ function progressHTML(n) {
     ${S.exams.length ? `<p class="muted">Simulasi tes terakhir: <b>${S.exams[S.exams.length - 1].lv}</b>, skor ${S.exams[S.exams.length - 1].sc}.</p>` : `<button class="btn ghost" data-a="toexam">${I("timer")} Ukur levelmu dengan simulasi tes</button>`}
   </section>`;
 }
+
+/* ================= Lemari Bubu (koin & kostum) ================= */
+const wardCount = () => { let have = 0, all = 0; Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { all++; if (ownsItem(c, it)) have++; })); return [have, all]; };
+// Barang terdekat yang bisa dibeli: dipakai di kartu beranda.
+function nextGoal() {
+  let best = null; Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { if (it.p && !ownsItem(c, it) && (!best || it.p < best.it.p)) best = { c, it }; }));
+  return best;
+}
+function wardTeaser() {
+  const g = nextGoal(), [have, all] = wardCount();
+  const msg = !g ? "Semua barang sudah kamu punya. Keren!" : S.coins >= g.it.p ? `Koinmu cukup untuk ${esc(g.it.n)}. Coba sekarang!` : `Kumpulkan ${g.it.p - S.coins} koin lagi untuk ${esc(g.it.n)}.`;
+  const look = g ? Object.assign({}, S.look, { [g.c]: g.it.id }) : S.look;
+  return `<section class="card wteaser" aria-label="Lemari Bubu">
+    <div class="wt-h"><p class="eyebrow">Lemari Bubu · ${have}/${all}</p><span class="chip coin">${COIN}${S.coins}</span></div>
+    <div class="wt-b"><span class="wt-bubu">${BUBU(84, "", "", "happy", look)}</span><div><b>${g ? esc(g.it.n) : "Koleksi lengkap"}</b><p class="muted">${msg}</p></div></div>
+    <button class="btn ghost" data-g="wardrobe">${I("star")} Buka Lemari Bubu</button>
+  </section>`;
+}
+VIEWS.wardrobe = function () {
+  document.body.classList.add("sub");
+  let tab = "hat", sel = S.look.hat, confirm = false;
+  app.innerHTML = `<div class="wardv">
+    <div class="lv-top"><button class="iconbtn" data-a="exit" aria-label="Kembali">${I("left")}</button><div class="lv-tt"><p class="eyebrow" id="wcol"></p><h1>Lemari Bubu</h1></div><span class="chip coin" id="wcoin"></span></div>
+    <div class="wbody">
+      <section class="wstage" aria-label="Pratinjau Bubu"><div class="wbig" id="wbig"></div><div class="wtxt"><p class="eyebrow" id="wlab"></p><p class="wname" id="wname"></p><p class="muted" id="whint"></p></div></section>
+      <div class="wpick">
+        <div class="seg wtabs" role="tablist" aria-label="Kategori">${Object.keys(CATN).map(c => `<button role="tab" data-a="tab" data-c="${c}">${CATN[c]}</button>`).join("")}</div>
+        <div class="wgrid" id="wgrid"></div>
+        <p class="muted wnote">Ketuk untuk mencoba. Bertanda <b>Khusus</b> tidak dijual: terbuka lewat prestasi.</p>
+      </div>
+      <div class="wfoot"><button class="btn" id="wact" data-a="act"></button></div>
+    </div>
+    <div id="wsheet"></div>
+  </div>`;
+  const item = (c, id) => cItem(c, id);
+  function draw(keepScroll) {
+    const g = $("#wgrid"), y = g.scrollTop, cur = item(tab, sel), owned = ownsItem(tab, cur), worn = S.look[tab] === sel;
+    const look = Object.assign({}, S.look, { [tab]: sel });
+    const [have, all] = wardCount();
+    $("#wcol").textContent = "Koleksi " + have + " dari " + all;
+    $("#wcoin").innerHTML = COIN + S.coins; $("#wcoin").setAttribute("aria-label", S.coins + " koin");
+    const big = matchMedia("(min-width:900px) and (orientation:landscape)").matches ? 170 : innerHeight < 700 ? 92 : 112;
+    $("#wbig").innerHTML = BUBU(big, "bob", "Bubu memakai " + cur.n, "happy", look);
+    $("#wlab").textContent = worn ? "Bubu kamu" : cur.p === null ? "Barang khusus" : "Sedang mencoba";
+    $("#wlab").classList.toggle("sp", !worn && cur.p === null);
+    $("#wname").textContent = cur.n;
+    $("#whint").textContent = worn ? "Sedang kamu pakai. Pilih barang lain untuk mencoba." : owned ? (cur.p === null ? "Barang khusus milikmu. Ketuk Pakai." : "Sudah kamu punya. Ketuk Pakai.") : cur.p === null ? "Tidak dijual. Terbuka saat: " + cur.u[1] + "." : S.coins >= cur.p ? "Harga " + cur.p + " koin." : "Kurang " + (cur.p - S.coins) + " koin. Jawab soal dengan benar untuk menambah koin.";
+    $$(".wtabs button").forEach(b => { const on = b.dataset.c === tab; b.setAttribute("aria-selected", on); b.setAttribute("aria-pressed", on); });
+    g.innerHTML = COSTUME[tab].map(it => {
+      const own = ownsItem(tab, it), on = S.look[tab] === it.id, sp = it.p === null, s2 = it.id === sel;
+      const chip = on ? "Dipakai" : own ? (sp ? "Khusus ✓" : "Punya") : sp ? "Khusus" : it.p + " koin";
+      const cls = on ? "on" : own ? "own" : sp ? "sp" : "buy";
+      return `<button class="witem${s2 ? " sel" : ""}${sp ? " special" : ""}${!own && sp ? " locked" : ""}" data-a="pick" data-id="${it.id}" aria-pressed="${s2}" aria-label="${esc(it.n)}, ${on ? "sedang dipakai" : own ? "sudah dimiliki" : sp ? "barang khusus: " + esc(it.u[1]) : it.p + " koin"}"><span class="wthumb">${BUBU(56, "", "", "base", Object.assign({}, S.look, { [tab]: it.id }))}</span><span class="wn">${esc(it.n)}</span><span class="wchip ${cls}">${sp && !own ? I("lock") : ""}${chip}</span></button>`;
+    }).join("");
+    if (keepScroll) g.scrollTop = y;
+    const act = $("#wact");
+    let label = "Sedang dipakai", off = true, kind = "";
+    if (!worn) {
+      if (owned) { label = "Pakai " + cur.n; off = false; kind = "lv"; }
+      else if (cur.p === null) label = "Terkunci · barang khusus";
+      else if (S.coins >= cur.p) { label = "Beli · " + cur.p + " koin"; off = false; kind = "sun"; }
+      else label = "Butuh " + (cur.p - S.coins) + " koin lagi";
+    }
+    act.textContent = label; act.disabled = off; act.className = "btn " + (off ? "" : kind);
+    $("#wsheet").innerHTML = confirm ? `<div class="wsheet-bg"><div class="wsheet" role="dialog" aria-modal="true" aria-labelledby="wsh">
+      <div class="wsh-b"><span>${BUBU(76, "", "", "happy", look)}</span><div><p class="wname" id="wsh">Beli ${esc(cur.n)}?</p><p class="muted">${cur.p} koin akan dipakai. Sisa koinmu jadi ${S.coins - cur.p}.</p></div></div>
+      <div class="pair"><button class="btn ghost" data-a="no">Batal</button><button class="btn lv" data-a="yes">Ya, beli</button></div></div></div>` : "";
+    if (confirm) try { $('#wsheet [data-a="yes"]').focus({ preventScroll: true }); } catch (e) {}
+  }
+  H = {
+    exit() { nav("profile"); },
+    tab(el) { tab = el.dataset.c; sel = S.look[tab]; draw(false); $("#wgrid").scrollTop = 0; },
+    pick(el) { sel = el.dataset.id; buzz(8); draw(true); },
+    act() {
+      const cur = item(tab, sel);
+      if (S.look[tab] === sel) return;
+      if (ownsItem(tab, cur)) { S.look[tab] = sel; save(); chrome(); sfx.ok(); toast(cur.n + " dipakai!"); draw(true); return; }
+      if (cur.p !== null && S.coins >= cur.p) { confirm = true; draw(true); }
+    },
+    no() { confirm = false; draw(true); try { $("#wact").focus({ preventScroll: true }); } catch (e) {} },
+    yes() {
+      const cur = item(tab, sel); if (cur.p === null || S.coins < cur.p) return;
+      S.coins -= cur.p; S.owned[tab + ":" + sel] = dkey(); S.look[tab] = sel; confirm = false;
+      save(); chrome(); sfx.win(); confetti(); buzz([10, 40, 10]); toast(cur.n + " dibeli dan dipakai!"); draw(true);
+    }
+  };
+  draw(false);
+};
 
 /* ================= install (PWA) ================= */
 let DEFER = null;

@@ -57,8 +57,22 @@ const BUBU_FACE = {
   base: '<circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="54" cy="32" r="7" fill="#fff"/><circle cx="34" cy="33" r="3.4" fill="#24264a"/><circle cx="56" cy="33" r="3.4" fill="#24264a"/><circle cx="24" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><circle cx="62" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><path d="M33 46q10 8 20 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>'
 };
 // mood: base (default), happy (benar), oops (salah, tetap menyemangati), wow (combo/sempurna)
-const BUBU = (size, cls = "", label = "", mood = "base") => `<svg xmlns="http://www.w3.org/2000/svg" class="bubu ${cls}" width="${size}" height="${Math.round(size * 92 / 86)}" viewBox="0 0 86 92" ${label ? 'role="img" aria-label="' + label + '"' : 'aria-hidden="true"'}><ellipse cx="43" cy="89" rx="24" ry="3" fill="rgba(36,38,74,.12)"/><path d="M10 14a10 10 0 0 1 10-10h46a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H38l-14 14 2-14h-6a10 10 0 0 1-10-10z" fill="#5b5bf0"/>${BUBU_FACE[mood] || BUBU_FACE.base}</svg>`;
-const LOGO = (size, label) => `<span style="display:grid;place-items:center;width:${size}px;height:${size}px;border-radius:26%;background:#ffc845;box-shadow:0 4px 0 #d9a21f;flex:none" ${label ? 'role="img" aria-label="' + label + '"' : ""}>${BUBU(Math.round(size * .62))}</span>`;
+// Kostum: look = { color, hat, face, acc }. Default memakai kostum pemain (S.look); false = Bubu polos (logo).
+const COIN = '<svg class="coin-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#ffc845" stroke="#d9a21f" stroke-width="2"/><path d="M12 7l1.5 3.1 3.4.5-2.5 2.4.6 3.4-3-1.6-3 1.6.6-3.4-2.5-2.4 3.4-.5z" fill="#fff"/></svg>';
+const LOOK0 = { color: "violet", hat: "none", face: "none", acc: "none" };
+const cItem = (cat, id) => COSTUME[cat].find(x => x.id === id);
+const BUBU = (size, cls = "", label = "", mood = "base", look) => {
+  const L = look === false ? LOOK0 : Object.assign({}, LOOK0, look || (typeof S !== "undefined" && S && S.look) || {});
+  const col = cItem("color", L.color) || COSTUME.color[0], hat = cItem("hat", L.hat), face = cItem("face", L.face), acc = cItem("acc", L.acc);
+  const k = size / 86, h = Math.round(size * 92 / 86), W = Math.round(size * 114 / 86), Hh = Math.round(size * 132 / 86);
+  const dressed = !!((hat && hat.svg) || (face && face.svg) || (acc && acc.svg) || col.fill.startsWith("url"));
+  const box = dressed ? `width="${W}" height="${Hh}" viewBox="-14 -34 114 132" style="margin:${(-34 * k).toFixed(1)}px ${(-14 * k).toFixed(1)}px ${(-6 * k).toFixed(1)}px"` : `width="${size}" height="${h}" viewBox="0 0 86 92"`;
+  const back = acc && acc.layer === "back" ? acc.svg : "", front = acc && acc.layer !== "back" ? acc.svg : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" class="bubu ${cls}" ${box} ${label ? 'role="img" aria-label="' + label + '"' : 'aria-hidden="true"'}>${col.fill.startsWith("url") ? COSTUME_DEFS : ""}<ellipse cx="43" cy="89" rx="24" ry="3" fill="rgba(36,38,74,.12)"/>${back}<path d="M10 14a10 10 0 0 1 10-10h46a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H38l-14 14 2-14h-6a10 10 0 0 1-10-10z" fill="${col.fill}"/>${L.color === "galaxy" ? COSTUME_GAL : ""}${BUBU_FACE[mood] || BUBU_FACE.base}${face ? face.svg : ""}${hat ? hat.svg : ""}${front}</svg>`;
+};
+// Ukuran gambar Bubu untuk kanvas (kartu bagikan): kotak penuh termasuk topi.
+const bubuBox = (size, mood, look) => { const k = size / 86; const svg = BUBU(size, "", "", mood, look); const dressed = svg.includes('viewBox="-14'); return dressed ? { svg, w: 114 * k, h: 132 * k, dx: -14 * k, dy: -34 * k } : { svg, w: size, h: 92 * k, dx: 0, dy: 0 }; };
+const LOGO = (size, label) => `<span style="display:grid;place-items:center;width:${size}px;height:${size}px;border-radius:26%;background:#ffc845;box-shadow:0 4px 0 #d9a21f;flex:none" ${label ? 'role="img" aria-label="' + label + '"' : ""}>${BUBU(Math.round(size * .62), "", "", "base", false)}</span>`;
 const REPO = "https://github.com/iiddon/english-study";
 
 /* ================= content ================= */
@@ -100,11 +114,11 @@ const KIND = { m: "Pilihan ganda", t: "Isian", f: "Benar/salah", o: "Susun kalim
 
 /* ================= state ================= */
 const KEY = "englishpath_v1";
-const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {}, mine: {}, sk: {}, exams: [], rounds: {} });
+const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {}, mine: {}, sk: {}, exams: [], rounds: {}, look: Object.assign({}, LOOK0), coins: 0, coinsAll: 0, owned: {}, seenSp: {}, perf: 0 });
 let S = fresh();
 function hydrate(o) {
   const s = Object.assign(fresh(), o || {});
-  ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert", "mine", "sk", "rounds"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
+  ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert", "mine", "sk", "rounds", "owned", "seenSp"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
   ["xp", "streak", "best", "ans", "cor", "combo", "matchBest", "ts", "resetAt", "chests", "onb"].forEach(k => { s[k] = Number(s[k]) || 0; });
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
@@ -113,6 +127,9 @@ function hydrate(o) {
   s.name = typeof s.name === "string" ? s.name.slice(0, 24) : "";
   if (!["auto", "light", "dark"].includes(s.theme)) s.theme = "auto";
   if (!Array.isArray(s.exams)) s.exams = [];
+  s.look = Object.assign({}, LOOK0, s.look && typeof s.look === "object" ? s.look : {});
+  ["color", "hat", "face", "acc"].forEach(c => { if (!cItem(c, s.look[c])) s.look[c] = LOOK0[c]; });
+  ["coins", "coinsAll", "perf"].forEach(k => { s[k] = Math.max(0, Number(s[k]) || 0); });
   return s;
 }
 function loadLocal() { try { const r = localStorage.getItem(KEY); if (r) S = hydrate(JSON.parse(r)); } catch (e) {} }
@@ -142,10 +159,22 @@ const streakNow = () => (S.lastDay === dkey() || S.lastDay === dayAgo(1)) ? S.st
 function rankOf(xp) { let k = 0; RANKS.forEach((r, i) => { if (xp >= r[0]) k = i; }); const n = RANKS[k + 1]; return { name: RANKS[k][1], at: RANKS[k][0], next: n ? { at: n[0], name: n[1] } : null }; }
 function addXp(n) {
   const t = dkey();
-  if (S.lastDay !== t) { S.streak = (S.lastDay === dayAgo(1) ? S.streak : 0) + 1; S.lastDay = t; S.best = Math.max(S.best, S.streak); }
+  const before = S.streak;
+  if (S.lastDay !== t) { S.streak = (S.lastDay === dayAgo(1) ? S.streak : 0) + 1; S.lastDay = t; S.best = Math.max(S.best, S.streak); if (S.streak % 7 === 0 && S.streak !== before) { addCoins(25); setTimeout(() => toast("Streak " + S.streak + " hari: +25 koin!"), 600); } }
   S.xp += n; S.days[t] = (S.days[t] || 0) + n;
   ["days", "dc", "dcombo"].forEach(m => { const ks = Object.keys(S[m]).sort(); while (ks.length > 60) delete S[m][ks.shift()]; });
 }
+// Koin: mata uang Lemari Bubu, terpisah dari XP.
+function addCoins(n) { S.coins += n; S.coinsAll += n; }
+const SPECIAL = {
+  c2: () => !!S.cert.expert, streak30: () => S.best >= 30, streak100: () => S.best >= 100, streak7: () => S.best >= 7,
+  stars36: () => LESSONS.every(x => starsOf(x) === 3), alltests: () => LEVELS.every(L => S.cert[L.id]), cert: () => Object.keys(S.cert).length > 0,
+  talk12: () => TALKS.every(T => S.talk[T.id] != null), examc1: () => S.exams.some(e => e.li >= 4), exam90: () => S.exams.some(e => e.sc >= 90),
+  read18: () => LEVELS.every(L => L.reads.every(r => S.read[r.sid] != null)), perfect10: () => S.perf >= 10
+};
+const spOpen = it => it.p === null && !!(it.u && SPECIAL[it.u[0]] && SPECIAL[it.u[0]]());
+const ownsItem = (cat, it) => it.p === 0 || !!S.owned[cat + ":" + it.id] || spOpen(it);
+const CATN = { color: "Warna", hat: "Topi", face: "Wajah", acc: "Aksesori" };
 const missions = () => { const t = dkey(); return [
   { n: "Kumpulkan " + S.goal + " XP", v: S.days[t] || 0, max: S.goal },
   { n: "Jawab 15 soal dengan benar", v: S.dc[t] || 0, max: 15 },
@@ -191,7 +220,12 @@ function badgeSummary() {
     ${near.length ? `<p class="eyebrow" style="margin-top:4px">Hampir dapat</p><div class="badges">${near.map(b => badgeHTML(b, true)).join("")}</div>` : ""}
     <details class="more"><summary>Lihat semua ${BADGES.length} lencana ${I("down")}</summary><div class="badges">${BADGES.map(b => badgeHTML(b, true)).join("")}</div></details>`;
 }
-function newBadges() { const out = []; BADGES.forEach(b => { if (!S.badges[b.id] && b.t()) { S.badges[b.id] = dkey(); out.push(b); } }); return out; }
+function newBadges() {
+  const out = []; BADGES.forEach(b => { if (!S.badges[b.id] && b.t()) { S.badges[b.id] = dkey(); out.push(b); } });
+  // Kostum khusus yang baru terbuka ikut diumumkan di tempat yang sama.
+  Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { const k = c + ":" + it.id; if (it.p === null && !S.seenSp[k] && spOpen(it)) { S.seenSp[k] = dkey(); out.push({ k: "Kostum khusus terbuka", n: it.n, d: it.u[1] + " · pakai di Lemari Bubu", ic: "star" }); } }));
+  return out;
+}
 
 /* ================= account sync (optional) ================= */
 let REMOTE = null, SYNC = "off", pushT = null, pushing = false, dirty = false;
@@ -206,6 +240,8 @@ function merge(a, b) {
   out.scores = maxMap("scores"); out.days = maxMap("days"); out.dc = maxMap("dc"); out.dcombo = maxMap("dcombo");
   out.chest = (a.chest || "") > (b.chest || "") ? a.chest : (b.chest || "");
   out.read = maxMap("read"); out.talk = maxMap("talk"); out.rounds = maxMap("rounds");
+  out.owned = Object.assign({}, a.owned, b.owned); out.seenSp = Object.assign({}, a.seenSp, b.seenSp);
+  out.coinsAll = Math.max(a.coinsAll || 0, b.coinsAll || 0); out.perf = Math.max(a.perf || 0, b.perf || 0);
   out.mine = Object.assign({}, a.mine, b.mine);
   { const k = {}; [a.sk || {}, b.sk || {}].forEach(o => Object.keys(o).forEach(c => { const v = o[c]; if (Array.isArray(v) && (!k[c] || v[0] > k[c][0])) k[c] = v; })); out.sk = k; }
   { const seen = {}; [...(a.exams || []), ...(b.exams || [])].forEach(e => { if (e && e.at) seen[e.at] = e; }); out.exams = Object.values(seen).sort((x, y) => x.at - y.at).slice(-12); }
@@ -310,7 +346,7 @@ function confetti() {
 /* ================= router ================= */
 let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null, QT = null;
 const VIEWS = {};
-const SECTION = { settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
+const SECTION = { wardrobe: "profile", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
 /* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
    Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
@@ -327,6 +363,7 @@ function hashOf(v, a) {
     case "mine": return "#kataku";
     case "profile": return "#profil";
     case "settings": return "#pengaturan";
+    case "wardrobe": return "#lemari";
     case "welcome": return "#mulai-" + (a[0] || 0);
     default: return "#rute";
   }
@@ -340,6 +377,7 @@ function parseHash(h) {
     case "kataku": return { v: "mine", a: [] };
     case "profil": return { v: "profile", a: [] };
     case "pengaturan": return { v: "settings", a: [] };
+    case "lemari": return { v: "wardrobe", a: [] };
     case "flashcard": return { v: "flash", a: [LEVELS.some(L => L.id === p[1]) || p[1] === "mine" ? p[1] : "all"] };
     case "mulai": return { v: "welcome", a: [Math.min(3, n(p[1]) || 0)] };
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
@@ -395,8 +433,8 @@ const rerender = () => nav(ROUTE.v, ...ROUTE.a);
 const here = () => { const r = ROUTE; return () => nav(r.v, ...r.a); };
 function chrome() {
   applyTheme();
-  $("#top").innerHTML = `<button class="brand" data-g="home" aria-label="English Path, buka rute"><span class="mark">${BUBU(26)}</span><span class="wm">English Path</span></button>
-    <div class="chips"><span class="chip" title="Hari beruntun">${I("flame")}${streakNow()}</span><span class="chip xp" title="Total XP">${I("star")}${S.xp}</span></div>`;
+  $("#top").innerHTML = `<button class="brand" data-g="home" aria-label="English Path, buka rute"><span class="mark">${BUBU(26, "", "", "base", false)}</span><span class="wm">English Path</span></button>
+    <div class="chips"><span class="chip" title="Hari beruntun">${I("flame")}${streakNow()}</span><span class="chip xp" title="Total XP">${I("star")}${S.xp}</span><button class="chip coin" data-g="wardrobe" aria-label="${S.coins} koin, buka Lemari Bubu">${COIN}${S.coins}</button></div>`;
   const cur = SECTION[ROUTE.v] || "home";
   $("#nav").innerHTML = [["home", "Rute", "map"], ["practice", "Latihan", "zap"], ["profile", "Profil", "user"]]
     .map(([v, t, ic]) => `<button data-g="${v}"${cur === v ? ' aria-current="page"' : ""} aria-label="${t}">${I(ic)}<span class="t">${t}</span></button>`).join("");
@@ -480,7 +518,7 @@ VIEWS.home = function () {
         ${ms.map(m => { const ok = m.v >= m.max; return `<div class="mrow${ok ? " done" : ""}"><span class="mbox">${ok ? I("check") : ""}</span><span><span class="mt">${m.n}</span>${ok ? "" : `<span class="pbar" style="display:block"><i style="width:${m.v / m.max * 100}%"></i></span>`}</span><span class="mn">${Math.min(m.v, m.max)}/${m.max}</span></div>`; }).join("")}
         ${chest}
       </section>
-      ${wotdHTML()}</div><div class="sdots" aria-hidden="true"><i class="on"></i><i></i><span>Geser untuk Kata hari ini</span></div>
+      ${wotdHTML()}${wardTeaser()}</div><div class="sdots" aria-hidden="true"><i class="on"></i><i></i><i></i><span>Geser untuk kartu lainnya</span></div>
       <div class="tiles">
         <button class="tile" style="--tc:var(--sun-l);--ts:var(--sun-s);--ti:var(--sun-d)" data-a="daily">${I("calendar")}<b>Tantangan harian</b><small>${S.daily === t ? "Selesai hari ini" : "10 soal · +30 XP"}</small></button>
         <button class="tile" style="--tc:var(--coral-l);--ts:var(--coral-s);--ti:var(--coral)" data-a="mist"${nW ? "" : " disabled"}>${I("retry")}<b>Ulangan hari ini</b><small>${nW ? nW + " soal jatuh tempo" : later ? later + " soal terjadwal nanti" : "Belum ada"}</small></button>
@@ -493,7 +531,7 @@ VIEWS.home = function () {
       <div class="levels">${LEVELS.map(lvcard).join("")}</div>
     </section></div>`;
   { const sw = $("#swipe"), dots = $$(".sdots i"), lab = $(".sdots span");
-    if (sw) sw.addEventListener("scroll", () => { const k = Math.round(sw.scrollLeft / Math.max(1, sw.scrollWidth - sw.clientWidth)); dots.forEach((d, n) => d.classList.toggle("on", n === k)); if (lab) lab.textContent = k ? "Geser untuk Misi hari ini" : "Geser untuk Kata hari ini"; }, { passive: true }); }
+    if (sw) sw.addEventListener("scroll", () => { const k = Math.round(sw.scrollLeft / Math.max(1, sw.scrollWidth - sw.clientWidth) * (dots.length - 1)); dots.forEach((d, n) => d.classList.toggle("on", n === k)); if (lab) lab.textContent = ["Geser untuk kartu lainnya", "Geser untuk Lemari Bubu", "Geser kembali ke Misi"][k] || ""; }, { passive: true }); }
   H = {
     open(el) { nav("lesson", +el.dataset.l, +el.dataset.j); },
     allopen() { const all = OPENLV.size === LEVELS.length; $$("details.lvcard").forEach(dd => { dd.open = !all; }); },
@@ -506,7 +544,7 @@ VIEWS.home = function () {
     flash() { nav("flash"); },
     chest() {
       if (S.chest === dkey() || !missions().every(m => m.v >= m.max)) return;
-      S.chest = dkey(); S.chests++; addXp(50); newBadges(); save();
+      S.chest = dkey(); S.chests++; addXp(50); addCoins(10); newBadges(); save(); setTimeout(() => toast("Peti dibuka: +50 XP dan +10 koin"), 300);
       const y = window.scrollY; rerender(); try { window.scrollTo(0, y); } catch (e) {}
       sfx.win(); confetti();
     },
@@ -641,8 +679,11 @@ function lessonQuiz(li, j, r = 1) {
     back: () => nav("lesson", li, j, "q"), again: () => lessonQuiz(li, j, r),
     share: { title: x.title + " · Babak " + r, sub: "Pelajaran " + LEVELS[li].cefr + " · " + LEVELS[li].name, li },
     onEnd(p) {
+      const was = roundPassed(x, r), had3 = starsOf(x) === 3;
       if (r === 1) { S.scores[x.id] = Math.max(S.scores[x.id] || 0, p); if (p >= 75) S.done[x.id] = 1; }
       else { const k = x.id + ":" + r; S.rounds[k] = Math.max(S.rounds[k] || 0, p); }
+      if (!was && roundPassed(x, r)) addCoins(5);
+      if (!had3 && starsOf(x) === 3) addCoins(15);
     }
   });
 }
@@ -695,6 +736,7 @@ const fmtQ = s => esc(s).replace(/___/g, '<span class="blank"></span>');
 
 function runQuiz(items, o) {
   if (!items.length) return o.back();
+  const coin0 = S.coins;
   enterSession();
   clearInterval(TICK); TICK = null; stopSpeak();
   document.body.classList.add("focus");
@@ -757,7 +799,7 @@ function runQuiz(items, o) {
     if (o.silent) { i++; return show(); }
     S.ans++;
     { const cat = c.t === "l" ? "l" : c.key && c.key.startsWith("r_") ? "r" : "g", v = S.sk[cat] || [0, 0]; S.sk[cat] = [v[0] + 1, v[1] + (ok ? 1 : 0)]; }
-    if (ok) { right++; combo++; maxCombo = Math.max(maxCombo, combo); S.cor++; { const td = dkey(); S.dc[td] = (S.dc[td] || 0) + 1; S.dcombo[td] = Math.max(S.dcombo[td] || 0, combo); } if (combo > S.combo) S.combo = combo; if (c.key) srsHit(S.wrong, c.key, true); addXp(10); gained += 10; sfx.ok(); }
+    if (ok) { right++; combo++; maxCombo = Math.max(maxCombo, combo); S.cor++; { const td = dkey(); S.dc[td] = (S.dc[td] || 0) + 1; S.dcombo[td] = Math.max(S.dcombo[td] || 0, combo); } if (combo > S.combo) S.combo = combo; if (c.key) srsHit(S.wrong, c.key, true); addXp(10); addCoins(1); gained += 10; sfx.ok(); }
     else { combo = 0; if (c.key) srsHit(S.wrong, c.key, false); missed.push(c); sfx.no(); }
     save();
     const blk = $$(".blocks span")[i]; if (blk) blk.className = ok ? "ok" : "no";
@@ -766,7 +808,7 @@ function runQuiz(items, o) {
     const milestone = ok && COMBO_LINES[combo];
     if (milestone) { const cb = $("#combo .combo"); if (cb) cb.classList.add("boom"); buzz([15, 40, 15]); }
     const mood = !ok ? "oops" : milestone ? "wow" : "happy", line = !ok ? pick(NO_LINES) : milestone || pick(OK_LINES);
-    $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(50, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Belum tepat"}</span>${ok ? '<span class="plus">+10 XP</span>' : ""}</p><p class="bline">${line}</p></div></div>
+    $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(50, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Belum tepat"}</span>${ok ? '<span class="plus">+10 XP</span><span class="plus coin">' + COIN + '+1</span>' : ""}</p><p class="bline">${line}</p></div></div>
       ${!ok || c.t === "l" ? `<p>Jawaban: <b>${esc(answerOf(c))}</b></p>` : ""}${c.t === "l" ? `<p>${esc(c.tr)}</p>` : ""}${c.e ? `<p>${esc(c.e)}</p>` : ""}${c.key ? `<a class="report" href="${reportUrl(c)}" target="_blank" rel="noopener">Ada yang salah dengan soal ini? Laporkan</a>` : ""}
       <button class="btn ${ok ? "good" : "bad"}" data-a="next" id="nx">${i + 1 < N ? "Lanjut" : "Lihat hasil"}</button></div>`;
     try { $("#nx").focus({ preventScroll: true }); } catch (e) {}
@@ -783,6 +825,8 @@ function runQuiz(items, o) {
     if (o.extra) bonus += o.extra(pct) || 0;
     if (bonus) addXp(bonus);
     if (o.onEnd) o.onEnd(pct);
+    if (pct === 100) S.perf++;
+    const coinGain = S.coins - coin0;
     const nb = newBadges(); save();
     const passed = o.pass ? pct >= o.pass : pct >= 60;
     const head = pct === 100 ? "Sempurna!" : passed ? (o.pass ? "Lulus!" : "Kerja bagus!") : pct >= 50 ? "Hampir sampai" : "Belum sampai";
@@ -795,8 +839,9 @@ function runQuiz(items, o) {
       <p class="eyebrow">${esc(o.title)}</p>
       <div class="res-top">${ring(pct / 100, pct + "%", right + " dari " + N + " benar", "big")}<div><h1>${head}</h1><p class="muted">${sub}</p></div></div>
       <div class="greet res-bubu">${BUBU(58, "react " + mood, "Bubu", mood)}<div class="say"><span>${mline}</span></div></div>
+      ${coinGain > 0 ? `<button class="coinpill" data-g="wardrobe">${COIN}<span><b>+${coinGain} koin</b> · total ${S.coins}</span>${I("right")}</button>` : ""}
       <dl class="stats3"><div><dt>XP didapat</dt><dd>+${gained + bonus}</dd></div><div><dt>Combo terbaik</dt><dd>${maxCombo}×</dd></div><div><dt>Perlu diulang</dt><dd>${missed.length}</dd></div></dl>
-      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
       ${certBtn}${goNext ? `<button class="btn lv" data-a="next">${o.nextLabel || "Pelajaran berikutnya"} ${I("right")}</button>` : ""}${shareBtn}
       ${missed.length ? `<button class="btn ${goNext ? "ghost" : "lv"}" data-a="redo">Ulangi ${missed.length} soal yang salah</button>` : ""}
       <div class="pair"><button class="btn ghost" data-a="again">Dari awal</button><button class="btn ghost" data-a="back">Kembali</button></div>
@@ -909,7 +954,7 @@ function matchGame(pool, o) {
       <p class="eyebrow">Cocokkan kata</p>
       <h1>${rec ? "Rekor baru!" : miss ? "Semua pasangan ketemu" : "Tanpa salah!"}</h1>
       <dl class="stats3"><div><dt>Waktu</dt><dd>${secs} dtk</dd></div><div><dt>Salah pasang</dt><dd>${miss}</dd></div><div><dt>XP didapat</dt><dd>+${xp}</dd></div></dl>
-      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
       <button class="btn lv" data-a="again">Main lagi</button><button class="btn ghost" data-a="back">Kembali</button></div>`;
     H = { again() { o.again(); }, back() { o.back(); } };
     toTop();
@@ -1063,7 +1108,7 @@ VIEWS.speak = function (li) {
       <div aria-live="polite">${fb}</div>
       <div class="pair"><button class="btn ghost" data-a="prev"${k === 0 ? " disabled" : ""}>Sebelumnya</button><button class="btn lv" data-a="next">${k + 1 < L.speak.length ? "Berikutnya" : "Selesai"}</button></div></div>`;
   };
-  const pass = () => { if (done()[k]) return; S.spoke[L.id] = Object.assign({}, done(), { [k]: 1 }); addXp(5); newBadges(); save(); chrome(); };
+  const pass = () => { if (done()[k]) return; S.spoke[L.id] = Object.assign({}, done(), { [k]: 1 }); addXp(5); addCoins(1); newBadges(); save(); chrome(); };
   H = {
     jump(el) { stopRec(); k = +el.dataset.k; st = "idle"; draw(); },
     prev() { stopRec(); if (k > 0) { k--; st = "idle"; draw(); } },
@@ -1157,6 +1202,7 @@ VIEWS.profile = function () {
     ${badgeSummary()}
     <h2 style="margin-top:10px">Sertifikat</h2>
     ${LEVELS.some(L => S.cert[L.id]) ? `<div class="certs">${LEVELS.filter(L => S.cert[L.id]).map(L => `<button class="cert" data-a="cert" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="roundel sm">${L.cefr}</span><span><b>${L.name}</b><small>Skor ${S.cert[L.id].p}% · ${longDate(S.cert[L.id].d)}</small></span>${I("award")}</button>`).join("")}</div>` : `<div class="card"><p class="muted">Lulus tes level (skor 75% ke atas) untuk mendapat sertifikat bernama yang bisa kamu bagikan.</p></div>`}
+    <button class="setrow" data-g="wardrobe"><span class="setbubu">${BUBU(40, "", "", "happy")}</span><span class="grow"><b>Lemari Bubu</b><small>${S.coins} koin · koleksi ${wardCount()[0]} dari ${wardCount()[1]}</small></span>${I("right")}</button>
     <button class="setrow" data-g="settings">${I("gear")}<span class="grow"><b>Pengaturan</b><small>Nama, target harian, tampilan, suara, pindahkan progres</small></span>${I("right")}</button></div>`;
   H = {
     range(el) { const n = +el.dataset.v; $("#xpc").innerHTML = xpChart(n); $$('[data-a="range"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
@@ -1271,11 +1317,11 @@ async function drawCard(spec) {
   x.fillStyle = "#dbe4f7"; rr(x, 70, 168, 940, 1040, 60); x.fill();
   x.fillStyle = "#fff"; rr(x, 70, 156, 940, 1040, 60); x.fill();
   x.fillStyle = "#ffc845"; rr(x, 70, 44, 84, 84, 24); x.fill();
-  x.drawImage(await svgImg(BUBU(56)), 84, 56, 56, 60);
+  x.drawImage(await svgImg(BUBU(56, "", "", "base", false)), 84, 56, 56, 60);
   x.fillStyle = "#24264a"; x.textBaseline = "middle"; x.font = `700 44px ${FD}`; x.fillText("English Path", 176, 88);
   x.textAlign = "center";
   const mood = spec.kind === "cert" || spec.pct !== 100 ? "happy" : "wow";
-  x.drawImage(await svgImg(BUBU(230, "", "", mood)), W / 2 - 115, 200, 230, 246);
+  { const bb = bubuBox(210, mood); x.drawImage(await svgImg(bb.svg), W / 2 - 105 + bb.dx, 214 + bb.dy, bb.w, bb.h); }
   const pill = (t, y, bg, fg, size) => { x.font = `800 ${size}px ${FB}`; const w = x.measureText(t).width + size * 1.4; x.fillStyle = bg; rr(x, W / 2 - w / 2, y - size * .9, w, size * 1.8, size * .9); x.fill(); x.fillStyle = fg; x.fillText(t, W / 2, y + 2); };
   if (spec.kind === "cert") {
     x.strokeStyle = LVD[li]; x.lineWidth = 6; x.setLineDash([2, 14]); x.lineCap = "round"; rr(x, 100, 186, 880, 980, 44); x.stroke(); x.setLineDash([]);
@@ -1399,7 +1445,7 @@ VIEWS.talk = function (n) {
     S.talk[T.id] = Math.max(S.talk[T.id] || 0, pct); const nb = newBadges(); save(); chrome();
     const [mood, line] = resultMood(pct, pct >= 60);
     reply.innerHTML = `<div class="talkend"><div class="greet">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><b>${score} dari ${nU} tepat</b><span>${line} +${bonus} XP</span></div></div>
-      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
       <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn lv" data-a="exit">Selesai</button></div></div>`;
     if (pct >= 60) { sfx.win(); confetti(); }
   }
@@ -1411,7 +1457,7 @@ VIEWS.talk = function (n) {
     send() {
       if (locked || sel == null) return; locked = true;
       const t = turns[k], ok = opts[sel].ok; asked++;
-      if (ok) { score++; addXp(5); sfx.ok(); } else sfx.no();
+      if (ok) { score++; addXp(5); addCoins(1); sfx.ok(); } else sfx.no();
       $("#tc").textContent = asked + "/" + nU;
       $$("#reply .opt").forEach((b, n) => { b.disabled = true; b.classList.remove("sel"); if (opts[n].ok) b.classList.add("right"); else if (n === sel) b.classList.add("wrong"); });
       $("#chk").remove(); save(); chrome();
@@ -1521,7 +1567,7 @@ function examResult(items, res, tm, timeUp) {
   S.ans += items.length; S.cor += right;
   const L = CEFR_OF(est);
   S.exams.push({ at: Date.now(), d: dkey(), sc, lv: L.cefr, li: est, tm }); S.exams = S.exams.slice(-12);
-  addXp(20 + right * 2); const nb = newBadges(); save();
+  addXp(20 + right * 2); addCoins(right); const nb = newBadges(); save();
   const prev = S.exams.length > 1 ? S.exams[S.exams.length - 2] : null;
   const [mood, line] = resultMood(sc, sc >= 60);
   const tip = { "Tata bahasa": ["Ulangi pelajaran level " + L.cefr, () => nav("lesson", est, 0)], "Membaca": ["Latihan bacaan " + L.cefr, () => nav("read", est)], "Mendengar": ["Latihan dengar & susun", globalListen] }[weak.n];
@@ -1531,7 +1577,7 @@ function examResult(items, res, tm, timeUp) {
     <div class="greet res-bubu">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><span>${line}</span></div></div>
     <div class="card stack"><h2>Per bagian</h2>${secs.map(x => `<div class="skrow"><span class="skn">${x.n}</span><span class="skbar"><i style="width:${x.ok / x.all * 100}%"></i></span><span class="skv">${x.ok}/${x.all}</span></div>`).join("")}</div>
     <div class="card stack"><h2>Per level</h2>${LEVELS.map((l, li) => byLv[li] == null ? "" : `<div class="skrow" style="--ldk:var(--ld${li + 1})"><span class="skn">${l.cefr}</span><span class="skbar"><i style="width:${byLv[li] * 100}%"></i></span><span class="skv">${Math.round(byLv[li] * 100)}%</span></div>`).join("")}<p class="muted">Level dianggap dikuasai jika 60% soalnya benar, berurutan dari A1.</p></div>
-    ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+    ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
     <div class="card stack"><h2>Saran berikutnya</h2><p class="muted">Bagian terlemahmu: <b>${weak.n}</b>.${wrongKeys.length ? " " + wrongKeys.length + " soal yang salah sudah masuk ke Ulangan hari ini." : ""}</p><button class="btn lv" data-a="tip">${tip[0]} ${I("right")}</button></div>
     <div class="pair"><button class="btn ghost" data-a="again">Tes lagi</button><button class="btn ghost" data-a="back">Selesai</button></div></div>`;
   H = { tip: tip[1], again: startExam, back() { nav("exam"); } };
@@ -1577,6 +1623,94 @@ function progressHTML(n) {
     ${S.exams.length ? `<p class="muted">Simulasi tes terakhir: <b>${S.exams[S.exams.length - 1].lv}</b>, skor ${S.exams[S.exams.length - 1].sc}.</p>` : `<button class="btn ghost" data-a="toexam">${I("timer")} Ukur levelmu dengan simulasi tes</button>`}
   </section>`;
 }
+
+/* ================= Lemari Bubu (koin & kostum) ================= */
+const wardCount = () => { let have = 0, all = 0; Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { all++; if (ownsItem(c, it)) have++; })); return [have, all]; };
+// Barang terdekat yang bisa dibeli: dipakai di kartu beranda.
+function nextGoal() {
+  let best = null; Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { if (it.p && !ownsItem(c, it) && (!best || it.p < best.it.p)) best = { c, it }; }));
+  return best;
+}
+function wardTeaser() {
+  const g = nextGoal(), [have, all] = wardCount();
+  const msg = !g ? "Semua barang sudah kamu punya. Keren!" : S.coins >= g.it.p ? `Koinmu cukup untuk ${esc(g.it.n)}. Coba sekarang!` : `Kumpulkan ${g.it.p - S.coins} koin lagi untuk ${esc(g.it.n)}.`;
+  const look = g ? Object.assign({}, S.look, { [g.c]: g.it.id }) : S.look;
+  return `<section class="card wteaser" aria-label="Lemari Bubu">
+    <div class="wt-h"><p class="eyebrow">Lemari Bubu · ${have}/${all}</p><span class="chip coin">${COIN}${S.coins}</span></div>
+    <div class="wt-b"><span class="wt-bubu">${BUBU(84, "", "", "happy", look)}</span><div><b>${g ? esc(g.it.n) : "Koleksi lengkap"}</b><p class="muted">${msg}</p></div></div>
+    <button class="btn ghost" data-g="wardrobe">${I("star")} Buka Lemari Bubu</button>
+  </section>`;
+}
+VIEWS.wardrobe = function () {
+  document.body.classList.add("sub");
+  let tab = "hat", sel = S.look.hat, confirm = false;
+  app.innerHTML = `<div class="wardv">
+    <div class="lv-top"><button class="iconbtn" data-a="exit" aria-label="Kembali">${I("left")}</button><div class="lv-tt"><p class="eyebrow" id="wcol"></p><h1>Lemari Bubu</h1></div><span class="chip coin" id="wcoin"></span></div>
+    <div class="wbody">
+      <section class="wstage" aria-label="Pratinjau Bubu"><div class="wbig" id="wbig"></div><div class="wtxt"><p class="eyebrow" id="wlab"></p><p class="wname" id="wname"></p><p class="muted" id="whint"></p></div></section>
+      <div class="wpick">
+        <div class="seg wtabs" role="tablist" aria-label="Kategori">${Object.keys(CATN).map(c => `<button role="tab" data-a="tab" data-c="${c}">${CATN[c]}</button>`).join("")}</div>
+        <div class="wgrid" id="wgrid"></div>
+        <p class="muted wnote">Ketuk untuk mencoba. Bertanda <b>Khusus</b> tidak dijual: terbuka lewat prestasi.</p>
+      </div>
+      <div class="wfoot"><button class="btn" id="wact" data-a="act"></button></div>
+    </div>
+    <div id="wsheet"></div>
+  </div>`;
+  const item = (c, id) => cItem(c, id);
+  function draw(keepScroll) {
+    const g = $("#wgrid"), y = g.scrollTop, cur = item(tab, sel), owned = ownsItem(tab, cur), worn = S.look[tab] === sel;
+    const look = Object.assign({}, S.look, { [tab]: sel });
+    const [have, all] = wardCount();
+    $("#wcol").textContent = "Koleksi " + have + " dari " + all;
+    $("#wcoin").innerHTML = COIN + S.coins; $("#wcoin").setAttribute("aria-label", S.coins + " koin");
+    const big = matchMedia("(min-width:900px) and (orientation:landscape)").matches ? 170 : innerHeight < 700 ? 92 : 112;
+    $("#wbig").innerHTML = BUBU(big, "bob", "Bubu memakai " + cur.n, "happy", look);
+    $("#wlab").textContent = worn ? "Bubu kamu" : cur.p === null ? "Barang khusus" : "Sedang mencoba";
+    $("#wlab").classList.toggle("sp", !worn && cur.p === null);
+    $("#wname").textContent = cur.n;
+    $("#whint").textContent = worn ? "Sedang kamu pakai. Pilih barang lain untuk mencoba." : owned ? (cur.p === null ? "Barang khusus milikmu. Ketuk Pakai." : "Sudah kamu punya. Ketuk Pakai.") : cur.p === null ? "Tidak dijual. Terbuka saat: " + cur.u[1] + "." : S.coins >= cur.p ? "Harga " + cur.p + " koin." : "Kurang " + (cur.p - S.coins) + " koin. Jawab soal dengan benar untuk menambah koin.";
+    $$(".wtabs button").forEach(b => { const on = b.dataset.c === tab; b.setAttribute("aria-selected", on); b.setAttribute("aria-pressed", on); });
+    g.innerHTML = COSTUME[tab].map(it => {
+      const own = ownsItem(tab, it), on = S.look[tab] === it.id, sp = it.p === null, s2 = it.id === sel;
+      const chip = on ? "Dipakai" : own ? (sp ? "Khusus ✓" : "Punya") : sp ? "Khusus" : it.p + " koin";
+      const cls = on ? "on" : own ? "own" : sp ? "sp" : "buy";
+      return `<button class="witem${s2 ? " sel" : ""}${sp ? " special" : ""}${!own && sp ? " locked" : ""}" data-a="pick" data-id="${it.id}" aria-pressed="${s2}" aria-label="${esc(it.n)}, ${on ? "sedang dipakai" : own ? "sudah dimiliki" : sp ? "barang khusus: " + esc(it.u[1]) : it.p + " koin"}"><span class="wthumb">${BUBU(56, "", "", "base", Object.assign({}, S.look, { [tab]: it.id }))}</span><span class="wn">${esc(it.n)}</span><span class="wchip ${cls}">${sp && !own ? I("lock") : ""}${chip}</span></button>`;
+    }).join("");
+    if (keepScroll) g.scrollTop = y;
+    const act = $("#wact");
+    let label = "Sedang dipakai", off = true, kind = "";
+    if (!worn) {
+      if (owned) { label = "Pakai " + cur.n; off = false; kind = "lv"; }
+      else if (cur.p === null) label = "Terkunci · barang khusus";
+      else if (S.coins >= cur.p) { label = "Beli · " + cur.p + " koin"; off = false; kind = "sun"; }
+      else label = "Butuh " + (cur.p - S.coins) + " koin lagi";
+    }
+    act.textContent = label; act.disabled = off; act.className = "btn " + (off ? "" : kind);
+    $("#wsheet").innerHTML = confirm ? `<div class="wsheet-bg"><div class="wsheet" role="dialog" aria-modal="true" aria-labelledby="wsh">
+      <div class="wsh-b"><span>${BUBU(76, "", "", "happy", look)}</span><div><p class="wname" id="wsh">Beli ${esc(cur.n)}?</p><p class="muted">${cur.p} koin akan dipakai. Sisa koinmu jadi ${S.coins - cur.p}.</p></div></div>
+      <div class="pair"><button class="btn ghost" data-a="no">Batal</button><button class="btn lv" data-a="yes">Ya, beli</button></div></div></div>` : "";
+    if (confirm) try { $('#wsheet [data-a="yes"]').focus({ preventScroll: true }); } catch (e) {}
+  }
+  H = {
+    exit() { nav("profile"); },
+    tab(el) { tab = el.dataset.c; sel = S.look[tab]; draw(false); $("#wgrid").scrollTop = 0; },
+    pick(el) { sel = el.dataset.id; buzz(8); draw(true); },
+    act() {
+      const cur = item(tab, sel);
+      if (S.look[tab] === sel) return;
+      if (ownsItem(tab, cur)) { S.look[tab] = sel; save(); chrome(); sfx.ok(); toast(cur.n + " dipakai!"); draw(true); return; }
+      if (cur.p !== null && S.coins >= cur.p) { confirm = true; draw(true); }
+    },
+    no() { confirm = false; draw(true); try { $("#wact").focus({ preventScroll: true }); } catch (e) {} },
+    yes() {
+      const cur = item(tab, sel); if (cur.p === null || S.coins < cur.p) return;
+      S.coins -= cur.p; S.owned[tab + ":" + sel] = dkey(); S.look[tab] = sel; confirm = false;
+      save(); chrome(); sfx.win(); confetti(); buzz([10, 40, 10]); toast(cur.n + " dibeli dan dipakai!"); draw(true);
+    }
+  };
+  draw(false);
+};
 
 /* ================= install (PWA) ================= */
 let DEFER = null;

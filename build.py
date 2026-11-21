@@ -3,7 +3,7 @@
 import pathlib
 root = pathlib.Path(__file__).parent
 r = lambda f: (root / "src" / f).read_text(encoding="utf-8")
-js = "\n".join([r("levels.js"), r("extra.js"), r("lessons2.js"), r("r1.js"), r("r2.js"), r("r3.js"), r("r4.js"), r("r5.js"), r("r6.js"), r("vocab.js"), r("more2.js"), r("talk.js"), r("app.js")])
+js = "\n".join([r("levels.js"), r("extra.js"), r("lessons2.js"), r("r1.js"), r("r2.js"), r("r3.js"), r("r4.js"), r("r5.js"), r("r6.js"), r("vocab.js"), r("more2.js"), r("wardrobe.js"), r("talk.js"), r("app.js")])
 assert "</script" not in js
 html = f"""<!DOCTYPE html>
 <html lang="id">
