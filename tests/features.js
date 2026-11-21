@@ -14,8 +14,9 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
     const errors = [];
     page.on("pageerror", e => errors.push(e.message));
     page.on("console", m => { if (m.type() === "error" && !/Failed to load resource|net::ERR/.test(m.text())) errors.push(m.text()); });
-    await page.addInitScript(() => { if (!localStorage.getItem("englishpath_v1")) localStorage.setItem("englishpath_v1", JSON.stringify({ onb: 1, name: "Dewi", xp: 120 })); });
     await page.goto(url);
+    await page.evaluate(() => localStorage.setItem("englishpath_v1", JSON.stringify({ onb: 1, name: "Dewi", xp: 120 })));
+    await page.reload();
     await page.waitForTimeout(400);
     const theme = await page.evaluate(() => document.documentElement.dataset.theme);
     ok(theme === (scheme === "dark" ? "dark" : "light"), `${name}: tema otomatis ${theme}`);
@@ -98,8 +99,8 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
     await page.screenshot({ path: `${shots}/f-${name}-profile-dark.png`, fullPage: false });
     await page.evaluate(() => nav("home"));
     await page.screenshot({ path: `${shots}/f-${name}-home-dark.png` });
-    await page.reload(); await page.waitForTimeout(300);
-    { const th = await page.evaluate(() => [document.documentElement.dataset.theme, S.theme, localStorage.getItem("englishpath_v1").includes('"theme":"dark"')]); ok(th[0] === "dark", `${name}: gelap bertahan setelah muat ulang ${th}`); }
+    const before = await page.evaluate(() => [S.theme, localStorage.getItem("englishpath_v1").includes('"theme":"dark"')]); await page.waitForTimeout(600); await page.reload(); await page.waitForTimeout(300);
+    { const th = await page.evaluate(() => [document.documentElement.dataset.theme, S.theme, localStorage.getItem("englishpath_v1").includes('"theme":"dark"')]); ok(th[0] === "dark", `${name}: gelap bertahan setelah muat ulang ${th} sebelum ${before}`); }
     await page.evaluate(() => lessonQuiz(1, 0));
     await page.evaluate(() => { document.querySelector(".opt") && document.querySelector(".opt").click(); });
     await page.screenshot({ path: `${shots}/f-${name}-quiz-dark.png` });

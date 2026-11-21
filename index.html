@@ -3067,13 +3067,23 @@ function shareCard(spec) {
   document.addEventListener("keydown", onKey, true);
   m.addEventListener("click", async e => {
     if (e.target === m || e.target.closest("[data-x]")) return close();
+    if (e.target.closest("[data-dl]")) {
+      // Di dalam Claude, unduhan harus lewat kemampuan downloads; di GitHub Pages pakai tautan biasa.
+      let dn = null; try { if (window.claude && typeof window.claude.use === "function") dn = await window.claude.use("downloads"); } catch (err) {}
+      if (dn && blob) {
+        e.preventDefault();
+        try { await dn.save({ filename: fname, data: blob }); m.querySelector("#cmsg").textContent = "Gambar disimpan."; }
+        catch (err) { if (!err || err.code !== "declined") m.querySelector("#cmsg").textContent = "Tidak bisa menyimpan di sini. Tekan lama gambar, lalu pilih Simpan."; }
+      }
+      return;
+    }
     if (e.target.closest("[data-sh]")) {
       const msg = m.querySelector("#cmsg");
       try {
         const file = blob && new File([blob], fname, { type: "image/png" });
         if (file && navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text });
         else if (navigator.share) await navigator.share({ title: "English Path", text, url: "https://" + SITE });
-        else { dl.click(); msg.textContent = "Gambar disimpan. Unggah ke media sosial favoritmu."; }
+        else { dl.click(); msg.textContent = "Simpan gambarnya, lalu unggah ke media sosial favoritmu."; }
       } catch (err) { if (!err || err.name !== "AbortError") msg.textContent = "Berbagi tidak tersedia di sini. Pakai tombol Simpan atau tekan lama gambar."; }
     }
   });
