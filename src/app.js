@@ -956,8 +956,6 @@ VIEWS.profile = function () {
       <div class="setting"><label for="pname"><b>Nama panggilan</b><p class="muted">Dipakai Bubu untuk menyapamu</p></label><input id="pname" type="text" maxlength="24" autocomplete="given-name" data-c="nm" value="${esc(S.name)}" placeholder="Nama"></div>
       <div class="setting"><div><b>Target harian</b><p class="muted">XP yang ingin Anda kumpulkan per hari</p></div><div class="seg" role="group" aria-label="Target harian">${[30, 50, 100].map(g => `<button aria-pressed="${S.goal === g}" data-a="goal" data-v="${g}">${g} XP</button>`).join("")}</div></div>
       <div class="setting"><label class="switch" for="snd"><input type="checkbox" id="snd" data-c="sound"${S.sound ? " checked" : ""}> Efek suara</label></div>
-      <div class="setting"><div><b>Penyimpanan</b><p class="muted">${SYNC === "on" ? "Progres tersimpan di akun Claude Anda, jadi sama di HP dan komputer." : SYNC === "err" ? "Belum bisa menyimpan ke akun. Progres tetap tersimpan di browser ini." : "Progres tersimpan di browser ini."}</p></div></div>
-      <div class="setting"><div><b>Pasang aplikasi</b><p class="muted">${installHint()}</p></div>${DEFER ? `<button class="btn blue auto" data-a="install">${I("download")} Pasang</button>` : ""}</div>
       <div class="setting"><div><b>Reset progres</b><p class="muted">Menghapus semua XP, skor, dan lencana.</p></div><button class="btn ghost auto" data-a="reset">Reset</button></div>
     </div>
     <h2 style="margin-top:10px">Pindahkan progres</h2>
