@@ -32,8 +32,8 @@ require("fs").mkdirSync(shots, { recursive: true });
       const q = all.find(q => q.t === "o" && q.tr === qt);
       return { t: "o", words: q.s.replace(/[.?!]+$/, "").split(" ") };
     });
-    if (info.t === "m") await page.locator(".opts .opt").nth(wrong ? (info.right + 1) % 4 : info.right).click();
-    else if (info.t === "f") await click(`.tf .opt[data-v="${(wrong ? !info.a : info.a) ? 1 : 0}"]`);
+    if (info.t === "m") { const n = wrong ? (info.right + 1) % 4 : info.right; await page.locator(".opts .opt").nth((n + 1) % 4).click(); await page.locator(".opts .opt").nth(n).click(); await click("#chk"); }
+    else if (info.t === "f") { await click(`.tf .opt[data-v="${(wrong ? !info.a : info.a) ? 1 : 0}"]`); await click("#chk"); }
     else if (info.t === "t") { await page.fill("#ans", wrong ? "zzz" : info.a.toUpperCase() + " "); await page.keyboard.press("Enter"); }
     else if (info.t === "o") {
       const words = wrong ? info.words.slice().reverse() : info.words;
@@ -80,6 +80,15 @@ require("fs").mkdirSync(shots, { recursive: true });
   await page.screenshot({ path: path.join(shots, "1-home-mobile.png"), fullPage: false });
   log("stations:", await page.locator(".lrow").count(), "| levels:", await page.locator(".lvcard").count());
 
+  // tapping an answer must only select it
+  await page.evaluate(() => runQuiz([LESSONS[0].qs[0], LESSONS[0].qs.find(q => q.t === "f")], { title: "t", back: () => nav("home"), again: () => {} }));
+  const xpA = (await state()).xp;
+  await page.locator(".opts .opt").nth(0).click(); await page.locator(".opts .opt").nth(2).click();
+  log("tap-select: graded?", await page.locator("#fb .fb").count(), "selected", await page.locator(".opt.sel").count(), "xp unchanged", (await state()).xp === xpA);
+  await page.screenshot({ path: path.join(shots, "14-selected.png") });
+  await page.keyboard.press("Enter"); log("enter confirms:", await page.locator("#fb .fb").count());
+  await click("#nx"); await click('.tf .opt[data-v="1"]'); log("tf graded before confirm?", await page.locator("#fb .fb").count());
+  await click("#chk"); await click("#nx"); await click('[data-a="back"]');
   // lesson tabs
   await click('.lrow[data-a="open"]');
   for (const t of ["c", "k", "q"]) { await click(`.seg [data-t="${t}"]`); }
@@ -134,7 +143,7 @@ require("fs").mkdirSync(shots, { recursive: true });
 
   // placement
   await click('#nav [data-g="practice"]'); await click('[data-a="place"]');
-  for (let k = 0; k < 18; k++) { if (k % 5 === 4) await click('[data-a="skip"]'); else await page.locator(".opts .opt").first().click(); }
+  for (let k = 0; k < 18; k++) { if (k % 5 === 4) await click('[data-a="skip"]'); else { await page.locator(".opts .opt").first().click(); await click("#chk"); } }
   await page.waitForSelector('[data-a="go"]');
   log("placement result:", await page.locator("h1").first().textContent());
   if (await page.locator('[data-a="mark"]').count()) await click('[data-a="mark"]');

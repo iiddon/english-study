@@ -283,7 +283,8 @@ app.addEventListener("change", e => { const el = e.target.closest("[data-c]"); i
 document.addEventListener("keydown", e => {
   if (!QUIZ) return;
   const tag = (e.target.tagName || "").toLowerCase();
-  if (tag === "button" || tag === "input") return;
+  if (tag === "input") return;
+  if (tag === "button" && !(e.key === "Enter" && e.target.classList.contains("opt") && e.target.classList.contains("sel"))) return;
   if (e.key === "Enter") { if (QUIZ.enter()) e.preventDefault(); }
   else if (/^[1-4]$/.test(e.key)) QUIZ.digit(+e.key - 1);
 });
@@ -459,10 +460,10 @@ function runQuiz(items, o) {
     let body = "";
     if (c.t === "m") {
       st.opts = shuffle(c.o);
-      body = `<p class="qtext">${fmtQ(c.q)}</p><div class="opts">${st.opts.map((t, k) => `<button class="opt" data-a="pick" data-k="${k}"><kbd>${k + 1}</kbd><span>${esc(t)}</span></button>`).join("")}</div>`;
+      body = `<p class="qtext">${fmtQ(c.q)}</p><div class="opts">${st.opts.map((t, k) => `<button class="opt" data-a="pick" data-k="${k}"><kbd>${k + 1}</kbd><span>${esc(t)}</span></button>`).join("")}</div><button class="btn lv" data-a="confirm" id="chk" disabled>${o.silent ? "Lanjut" : "Periksa"}</button><p class="muted pickhint">Ketuk jawaban, lalu tekan ${o.silent ? "Lanjut" : "Periksa"}. Masih bisa diganti sebelum itu.</p>`;
     } else if (c.t === "f") {
       const lx = c.key ? LESSONS.find(x => x.id === c.key.split(":")[0]) : null;
-      body = `<div class="tstack"><div class="tcard" id="tcard">${lx ? `<span class="tag">${LEVELS[lx.li].cefr} · ${esc(lx.title)}</span>` : ""}<p class="qtext tq">${esc(c.q)}</p><span class="muted" style="font-weight:600">Kalimat atau pernyataan ini benar?</span></div></div><div class="tf"><button class="opt pop" data-a="tf" data-v="0">${I("x")} Salah</button><button class="opt pop" data-a="tf" data-v="1">${I("check")} Benar</button></div>`;
+      body = `<div class="tstack"><div class="tcard" id="tcard">${lx ? `<span class="tag">${LEVELS[lx.li].cefr} · ${esc(lx.title)}</span>` : ""}<p class="qtext tq">${esc(c.q)}</p><span class="muted" style="font-weight:600">Kalimat atau pernyataan ini benar?</span></div></div><div class="tf"><button class="opt pop" data-a="tf" data-v="0">${I("x")} Salah</button><button class="opt pop" data-a="tf" data-v="1">${I("check")} Benar</button></div><button class="btn lv" data-a="confirm" id="chk" disabled>${o.silent ? "Lanjut" : "Periksa"}</button>`;
     } else if (c.t === "t") {
       body = `<p class="qtext">${fmtQ(c.q)}</p><form class="typer" novalidate><label class="sr" for="ans">Jawaban Anda</label><input id="ans" name="ans" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Ketik di sini"><button class="btn lv" type="submit">Periksa</button></form>`;
     } else {
@@ -540,15 +541,20 @@ function runQuiz(items, o) {
     quit() { $("#confirm").innerHTML = `<div class="confirm"><span>Keluar dari sesi ini? XP yang sudah didapat tetap tersimpan.</span><span class="row"><button class="btn ghost auto" data-a="stay">Lanjutkan</button><button class="btn bad auto" data-a="leave">Keluar</button></span></div>`; },
     stay() { $("#confirm").innerHTML = ""; },
     leave() { o.back(); },
-    pick(el) {
-      if (answered) return;
-      const c = items[i], ok = st.opts[+el.dataset.k] === c.o[0];
-      if (!o.silent) { $$(".opt").forEach((b, k) => { b.disabled = true; if (st.opts[k] === c.o[0]) b.classList.add("right"); }); if (!ok) el.classList.add("wrong"); }
-      grade(ok);
-    },
-    tf(el) {
-      if (answered) return;
-      const c = items[i], v = el.dataset.v === "1", ok = v === c.a;
+    // Ketukan hanya memilih; jawaban dinilai setelah tombol Periksa ditekan.
+    pick(el) { if (answered) return; st.sel = el; $$(".opt").forEach(b => { const on = b === el; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on); }); $("#chk").disabled = false; },
+    tf(el) { H.pick(el); },
+    confirm() {
+      if (answered || !st.sel) return;
+      const c = items[i], el = st.sel;
+      el.classList.remove("sel");
+      $("#chk").remove(); const hint = $(".pickhint"); if (hint) hint.remove();
+      if (c.t === "m") {
+        const ok = st.opts[+el.dataset.k] === c.o[0];
+        if (!o.silent) { $$(".opt").forEach((b, k) => { b.disabled = true; if (st.opts[k] === c.o[0]) b.classList.add("right"); }); if (!ok) el.classList.add("wrong"); }
+        return grade(ok);
+      }
+      const v = el.dataset.v === "1", ok = v === c.a;
       $$(".opt").forEach(b => { b.disabled = true; if ((b.dataset.v === "1") === c.a) b.classList.add("right"); });
       if (!ok) el.classList.add("wrong");
       const tc = $("#tcard"); if (tc) tc.classList.add(v ? "r" : "l", ok ? "ok" : "no");
@@ -583,9 +589,10 @@ function runQuiz(items, o) {
       if (answered) { H.next(); return true; }
       const c = items[i];
       if ((c.t === "o" || c.t === "l") && st.ans.length === st.words.length) { H.check(); return true; }
+      if ((c.t === "m" || c.t === "f") && st.sel) { H.confirm(); return true; }
       return false;
     },
-    digit(k) { if (i < N && items[i].t === "m" && !answered) { const b = $$(".opt")[k]; if (b) H.pick(b); } }
+    digit(k) { if (i < N && (items[i].t === "m" || items[i].t === "f") && !answered) { const b = $$(".opts .opt, .tf .opt")[k]; if (b) H.pick(b); } }
   };
   show();
 }
