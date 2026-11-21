@@ -7,7 +7,10 @@ Aplikasi belajar bahasa Inggris gratis, dari **A1 Basic** sampai **C2 Expert**, 
 - 36 pelajaran tata bahasa, masing-masing 20 soal (pilihan ganda, isian, benar/salah, susun kalimat)
 - Bacaan dan latihan berbicara di setiap level (ucapan dinilai otomatis di Chrome)
 - Ulangan pintar (spaced repetition) untuk soal yang salah dan flashcard
-- Misi harian, XP, streak, lencana, dan game cocokkan kata
+- Percakapan interaktif di setiap level (kafe, hotel, telepon, wawancara kerja, negosiasi)
+- Misi harian, kata hari ini, XP, streak, lencana, dan game cocokkan kata
+- Maskot Bubu yang bereaksi saat menjawab, kartu hasil dan sertifikat bernama untuk dibagikan
+- Mode gelap (otomatis mengikuti perangkat, atau pilih di Profil)
 - Bisa dipasang di layar utama HP dan jalan tanpa internet
 - Progres tersimpan di perangkat; bisa dipindahkan lewat kode progres di menu Profil
 

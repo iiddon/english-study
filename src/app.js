@@ -39,10 +39,20 @@ const ICONS = {
   mic: '<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/>',
   copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
   download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>',
+  chat: '<path d="M21 12a8 8 0 0 1-8 8H7l-4 3V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/><path d="M8 11h8M8 15h5"/>',
+  share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   box: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 11v4"/><path d="M5 9a7 5 0 0 1 14 0"/>'
 };
 const I = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
-const BUBU = (size, cls = "", label = "") => `<svg class="bubu ${cls}" width="${size}" height="${Math.round(size * 92 / 86)}" viewBox="0 0 86 92" ${label ? 'role="img" aria-label="' + label + '"' : 'aria-hidden="true"'}><ellipse cx="43" cy="89" rx="24" ry="3" fill="rgba(36,38,74,.12)"/><path d="M10 14a10 10 0 0 1 10-10h46a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H38l-14 14 2-14h-6a10 10 0 0 1-10-10z" fill="#5b5bf0"/><circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="54" cy="32" r="7" fill="#fff"/><circle cx="34" cy="33" r="3.4" fill="#24264a"/><circle cx="56" cy="33" r="3.4" fill="#24264a"/><circle cx="24" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><circle cx="62" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><path d="M33 46q10 8 20 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>`;
+const BUBU_FACE = {
+  happy: '<path d="M26 33q6-7 12 0M48 33q6-7 12 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><circle cx="24" cy="44" r="4.4" fill="#ff9bb3"/><circle cx="62" cy="44" r="4.4" fill="#ff9bb3"/><path d="M31 44q12 0 24 0q-2 11-12 11t-12-11z" fill="#fff"/>',
+  oops: '<path d="M25 25l12-4M61 25l-12-4" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="33" r="7" fill="#fff"/><circle cx="54" cy="33" r="7" fill="#fff"/><circle cx="33" cy="31" r="3.4" fill="#24264a"/><circle cx="55" cy="31" r="3.4" fill="#24264a"/><circle cx="24" cy="45" r="4" fill="#ff9bb3" opacity=".8"/><circle cx="62" cy="45" r="4" fill="#ff9bb3" opacity=".8"/><path d="M35 50q8-5 16 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>',
+  wow: '<circle cx="32" cy="32" r="8.5" fill="#fff"/><circle cx="54" cy="32" r="8.5" fill="#fff"/><path d="M32 26.5l1.6 3.6 3.9.4-2.9 2.6.8 3.8-3.4-2-3.4 2 .8-3.8-2.9-2.6 3.9-.4zM54 26.5l1.6 3.6 3.9.4-2.9 2.6.8 3.8-3.4-2-3.4 2 .8-3.8-2.9-2.6 3.9-.4z" fill="#ffc845"/><circle cx="24" cy="45" r="4.4" fill="#ff9bb3"/><circle cx="62" cy="45" r="4.4" fill="#ff9bb3"/><ellipse cx="43" cy="50" rx="6" ry="6.5" fill="#fff"/>',
+  base: '<circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="54" cy="32" r="7" fill="#fff"/><circle cx="34" cy="33" r="3.4" fill="#24264a"/><circle cx="56" cy="33" r="3.4" fill="#24264a"/><circle cx="24" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><circle cx="62" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><path d="M33 46q10 8 20 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>'
+};
+// mood: base (default), happy (benar), oops (salah, tetap menyemangati), wow (combo/sempurna)
+const BUBU = (size, cls = "", label = "", mood = "base") => `<svg xmlns="http://www.w3.org/2000/svg" class="bubu ${cls}" width="${size}" height="${Math.round(size * 92 / 86)}" viewBox="0 0 86 92" ${label ? 'role="img" aria-label="' + label + '"' : 'aria-hidden="true"'}><ellipse cx="43" cy="89" rx="24" ry="3" fill="rgba(36,38,74,.12)"/><path d="M10 14a10 10 0 0 1 10-10h46a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H38l-14 14 2-14h-6a10 10 0 0 1-10-10z" fill="#5b5bf0"/>${BUBU_FACE[mood] || BUBU_FACE.base}</svg>`;
 const LOGO = (size, label) => `<span style="display:grid;place-items:center;width:${size}px;height:${size}px;border-radius:26%;background:#ffc845;box-shadow:0 4px 0 #d9a21f;flex:none" ${label ? 'role="img" aria-label="' + label + '"' : ""}>${BUBU(Math.round(size * .62))}</span>`;
 const REPO = "https://github.com/iiddon/english-study";
 
@@ -80,17 +90,18 @@ const KIND = { m: "Pilihan ganda", t: "Isian", f: "Benar/salah", o: "Susun kalim
 
 /* ================= state ================= */
 const KEY = "englishpath_v1";
-const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "" });
+const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {} });
 let S = fresh();
 function hydrate(o) {
   const s = Object.assign(fresh(), o || {});
-  ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
+  ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
   ["xp", "streak", "best", "ans", "cor", "combo", "matchBest", "ts", "resetAt", "chests", "onb"].forEach(k => { s[k] = Number(s[k]) || 0; });
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
   Object.keys(s.known).forEach(k => { if (!s.known[k] || typeof s.known[k] !== "object") s.known[k] = { b: 1, d: td }; });
   if (![30, 50, 100].includes(s.goal)) s.goal = 50;
   s.name = typeof s.name === "string" ? s.name.slice(0, 24) : "";
+  if (!["auto", "light", "dark"].includes(s.theme)) s.theme = "auto";
   return s;
 }
 function loadLocal() { try { const r = localStorage.getItem(KEY); if (r) S = hydrate(JSON.parse(r)); } catch (e) {} }
@@ -140,6 +151,7 @@ const BADGES = [
   { id: "w30", n: "Kolektor kata", d: "Tandai 30 kata sudah hafal", ic: "layers", t: () => knownCount() >= 30 },
   { id: "reader", n: "Pembaca", d: "Skor 60% atau lebih di satu bacaan", ic: "book", t: () => Object.values(S.read).some(v => v >= 60) },
   { id: "speaker", n: "Pembicara", d: "Ucapkan 10 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 10 },
+  { id: "talk3", n: "Teman ngobrol", d: "Selesaikan 3 percakapan", ic: "chat", t: () => Object.keys(S.talk).length >= 3 },
   { id: "chest", n: "Pemburu peti", d: "Buka peti misi harian", ic: "box", t: () => S.chests >= 1 },
   { id: "xp1000", n: "1.000 XP", d: "Kumpulkan 1.000 XP", ic: "star", t: () => S.xp >= 1000 },
   ...LEVELS.map(L => ({ id: "lv_" + L.id, n: "Jalur " + L.cefr, d: "Selesaikan semua pelajaran " + L.name, ic: "award", t: () => L.lessons.every(x => S.done[x.id]) }))
@@ -158,7 +170,8 @@ function merge(a, b) {
   out.known = Object.assign({}, a.known, b.known);
   out.scores = maxMap("scores"); out.days = maxMap("days"); out.dc = maxMap("dc"); out.dcombo = maxMap("dcombo");
   out.chest = (a.chest || "") > (b.chest || "") ? a.chest : (b.chest || "");
-  out.read = maxMap("read");
+  out.read = maxMap("read"); out.talk = maxMap("talk");
+  { const c = {}; [a.cert || {}, b.cert || {}].forEach(o => Object.keys(o).forEach(l => { const v = o[l]; if (v && (!c[l] || (v.p || 0) > (c[l].p || 0))) c[l] = v; })); out.cert = c; }
   { const sp = {}; [a.spoke || {}, b.spoke || {}].forEach(o => Object.keys(o).forEach(l => { sp[l] = Object.assign(sp[l] || {}, o[l]); })); out.spoke = sp; }
   out.onb = Math.max(a.onb || 0, b.onb || 0);
   ["xp", "ans", "cor", "best", "combo", "chests"].forEach(k => { out[k] = Math.max(a[k] || 0, b[k] || 0); });
@@ -259,7 +272,7 @@ function confetti() {
 /* ================= router ================= */
 let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null;
 const VIEWS = {};
-const SECTION = { home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
+const SECTION = { talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
 /* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
    Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
@@ -269,6 +282,7 @@ function hashOf(v, a) {
     case "lesson": return "#pelajaran-" + a[0] + "-" + a[1];
     case "read": return "#bacaan-" + a[0];
     case "speak": return "#bicara-" + a[0];
+    case "talk": return a[0] != null ? "#ngobrol-" + a[0] : "#ngobrol";
     case "flash": return "#flashcard-" + (a[0] || "all");
     case "practice": return "#latihan";
     case "profile": return "#profil";
@@ -286,6 +300,7 @@ function parseHash(h) {
     case "mulai": return { v: "welcome", a: [Math.min(3, n(p[1]) || 0)] };
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
     case "bacaan": { const li = n(p[1]); return LEVELS[li] && LEVELS[li].read ? { v: "read", a: [li] } : null; }
+    case "ngobrol": { const li = n(p[1]); return { v: "talk", a: LEVELS[li] ? [li] : [] }; }
     case "bicara": { const li = n(p[1]); return LEVELS[li] ? { v: "speak", a: [li] } : null; }
     default: return null;
   }
@@ -329,6 +344,7 @@ function nav(v, ...a) {
 const rerender = () => nav(ROUTE.v, ...ROUTE.a);
 const here = () => { const r = ROUTE; return () => nav(r.v, ...r.a); };
 function chrome() {
+  applyTheme();
   $("#top").innerHTML = `<button class="brand" data-g="home" aria-label="English Path, buka rute"><span class="mark">${BUBU(26)}</span><span class="wm">English Path</span></button>
     <div class="chips"><span class="chip" title="Hari beruntun">${I("flame")}${streakNow()}</span><span class="chip xp" title="Total XP">${I("star")}${S.xp}</span></div>`;
   const cur = SECTION[ROUTE.v] || "home";
@@ -343,7 +359,7 @@ document.addEventListener("click", e => {
 app.addEventListener("submit", e => { e.preventDefault(); if (H.submit) H.submit(e.target); });
 app.addEventListener("change", e => { const el = e.target.closest("[data-c]"); if (el && H[el.dataset.c]) H[el.dataset.c](el); });
 document.addEventListener("keydown", e => {
-  if (!QUIZ) return;
+  if (!QUIZ || document.body.classList.contains("modal-open")) return;
   const tag = (e.target.tagName || "").toLowerCase();
   if (tag === "input") return;
   if (tag === "button" && !(e.key === "Enter" && e.target.classList.contains("opt") && e.target.classList.contains("sel"))) return;
@@ -400,6 +416,7 @@ VIEWS.home = function () {
       }).join("")}
       ${L.read ? `<li><button class="lrow${S.read[L.id] != null ? " done" : ""}" data-a="read" data-l="${L.i}"><span class="n">${I("book")}</span><span><b>Bacaan: ${esc(L.read.title)}</b><small>${L.read.qs.length} soal pemahaman${S.read[L.id] != null ? " · terbaik " + S.read[L.id] + "%" : ""}</small></span></button></li>` : ""}
       ${L.speak.length ? `<li><button class="lrow${spokeN(L) >= L.speak.length ? " done" : ""}" data-a="speak" data-l="${L.i}"><span class="n">${I("mic")}</span><span><b>Latihan berbicara</b><small>${spokeN(L)} dari ${L.speak.length} kalimat lancar</small></span></button></li>` : ""}
+      ${TALK[L.id] ? `<li><button class="lrow${S.talk[L.id] != null ? " done" : ""}" data-a="talk" data-l="${L.i}"><span class="n">${I("chat")}</span><span><b>Percakapan: ${esc(TALK[L.id].title)}</b><small>Ngobrol bersama ${esc(TALK[L.id].who)}${S.talk[L.id] != null ? " · terbaik " + S.talk[L.id] + "%" : ""}</small></span></button></li>` : ""}
       <li><button class="lrow test${dn === n ? " done" : ""}" data-a="test" data-l="${L.i}"><span class="n">${I("flag")}</span><span><b>Tes level ${L.cefr}</b><small>20 soal acak · lulus 75% menandai level selesai</small></span></button></li></ol></details>`;
   };
   app.innerHTML = `<div class="home">
@@ -411,11 +428,12 @@ VIEWS.home = function () {
         ${ms.map(m => { const ok = m.v >= m.max; return `<div class="mrow${ok ? " done" : ""}"><span class="mbox">${ok ? I("check") : ""}</span><span><span class="mt">${m.n}</span>${ok ? "" : `<span class="pbar" style="display:block"><i style="width:${m.v / m.max * 100}%"></i></span>`}</span><span class="mn">${Math.min(m.v, m.max)}/${m.max}</span></div>`; }).join("")}
         ${chest}
       </section>
+      ${wotdHTML()}
       <div class="tiles">
-        <button class="tile" style="--tc:var(--sun-l);--ts:#f3dc94;--ti:#e0a400" data-a="daily">${I("calendar")}<b>Tantangan harian</b><small>${S.daily === t ? "Selesai hari ini" : "10 soal · +30 XP"}</small></button>
-        <button class="tile" style="--tc:var(--coral-l);--ts:#f6c6b3;--ti:var(--coral)" data-a="mist"${nW ? "" : " disabled"}>${I("retry")}<b>Ulangan hari ini</b><small>${nW ? nW + " soal jatuh tempo" : later ? later + " soal terjadwal nanti" : "Belum ada"}</small></button>
-        <button class="tile" style="--tc:var(--lilac-l);--ts:#d6ccfa;--ti:#7a5cf0" data-a="matchg">${I("grid")}<b>Cocokkan kata</b><small>${S.matchBest ? "Rekor " + S.matchBest + " dtk" : "6 pasang kata"}</small></button>
-        <button class="tile" style="--tc:var(--mint-l);--ts:#b4e6d2;--ti:var(--mint)" data-a="flash">${I("layers")}<b>Flashcard</b><small>${known} dari ${VOCAB.length} hafal</small></button>
+        <button class="tile" style="--tc:var(--sun-l);--ts:var(--sun-s);--ti:var(--sun-d)" data-a="daily">${I("calendar")}<b>Tantangan harian</b><small>${S.daily === t ? "Selesai hari ini" : "10 soal · +30 XP"}</small></button>
+        <button class="tile" style="--tc:var(--coral-l);--ts:var(--coral-s);--ti:var(--coral)" data-a="mist"${nW ? "" : " disabled"}>${I("retry")}<b>Ulangan hari ini</b><small>${nW ? nW + " soal jatuh tempo" : later ? later + " soal terjadwal nanti" : "Belum ada"}</small></button>
+        <button class="tile" style="--tc:var(--lilac-l);--ts:var(--lilac-s);--ti:var(--ld3)" data-a="matchg">${I("grid")}<b>Cocokkan kata</b><small>${S.matchBest ? "Rekor " + S.matchBest + " dtk" : "6 pasang kata"}</small></button>
+        <button class="tile" style="--tc:var(--mint-l);--ts:var(--mint-s);--ti:var(--mint)" data-a="flash">${I("layers")}<b>Flashcard</b><small>${known} dari ${VOCAB.length} hafal</small></button>
       </div>
     </div>
     <section class="stack" aria-label="Peta level">
@@ -428,6 +446,8 @@ VIEWS.home = function () {
     test(el) { levelTest(+el.dataset.l); },
     read(el) { nav("read", +el.dataset.l); },
     speak(el) { nav("speak", +el.dataset.l); },
+    talk(el) { TALKFROM = "home"; nav("talk", +el.dataset.l); },
+    wknow(el) { const w = el.dataset.w; if (!isKnown(w)) S.known[w] = { b: 1, d: addDays(INT[1]) }; newBadges(); save(); const y = window.scrollY; rerender(); try { window.scrollTo(0, y); } catch (e) {} sfx.ok(); },
     cont() { nav("lesson", next.li, next.j); },
     flash() { nav("flash"); },
     chest() {
@@ -555,6 +575,7 @@ function lessonQuiz(li, j) {
   const next = j + 1 < L.lessons.length ? () => nav("lesson", li, j + 1) : (li + 1 < LEVELS.length ? () => nav("lesson", li + 1, 0) : null);
   runQuiz(shuffle(x.qs), {
     title: x.title, li, bonus: true, pass: 75, next, back: () => nav("lesson", li, j, "q"), again: () => lessonQuiz(li, j),
+    share: { title: x.title, sub: "Pelajaran " + LEVELS[li].cefr + " · " + LEVELS[li].name, li },
     onEnd(p) { S.scores[x.id] = Math.max(S.scores[x.id] || 0, p); if (p >= 75) S.done[x.id] = 1; }
   });
 }
@@ -564,7 +585,8 @@ function levelTest(li) {
     title: "Tes level " + L.cefr + " · " + L.name, li, bonus: true, pass: 75, back, again: () => levelTest(li),
     passMsg: "Semua pelajaran di jalur " + L.cefr + " ditandai selesai.",
     next: li + 1 < LEVELS.length ? () => nav("lesson", li + 1, 0) : null,
-    onEnd(p) { if (p >= 75) L.lessons.forEach(x => { S.done[x.id] = 1; }); }
+    cert: li,
+    onEnd(p) { if (p >= 75) { L.lessons.forEach(x => { S.done[x.id] = 1; }); const c = S.cert[L.id]; if (!c || p > c.p) S.cert[L.id] = { p, d: dkey() }; } }
   });
 }
 function startDaily() {
@@ -586,6 +608,11 @@ function globalListen() {
 
 /* ================= quiz engine ================= */
 const PRAISE = ["Benar!", "Tepat!", "Mantap!", "Bagus!", "Keren!"];
+const OK_LINES = ["Aku tahu kamu bisa!", "Lanjutkan, kamu lagi bagus.", "Pintar! Bubu bangga.", "Tepat sasaran!", "Mudah buatmu, ya?"];
+const NO_LINES = ["Tidak apa-apa, salah itu bagian dari belajar.", "Hampir! Baca penjelasannya sebentar, ya.", "Santai, soal ini akan muncul lagi di Ulangan.", "Pelan-pelan saja, kamu pasti bisa."];
+const COMBO_LINES = { 3: "Combo 3×! Mulai panas nih.", 5: "Combo 5×! Kamu lagi on fire!", 10: "Combo 10×! Luar biasa!", 15: "Combo 15×! Siapa yang bisa hentikanmu?", 20: "Combo 20×! Legenda!" };
+// Kalimat Bubu di layar hasil, sesuai skor.
+const resultMood = (pct, passed) => pct === 100 ? ["wow", "Sempurna! Bubu sampai melongo."] : passed ? ["happy", pick(["Kerja bagus! Satu langkah lebih dekat.", "Hebat, ilmunya masuk!", "Mantap, terus konsisten ya."])] : ["oops", pick(["Belum lulus bukan berarti gagal. Ulangi yang salah dulu, yuk.", "Hampir! Coba lagi setelah baca ulang materinya.", "Bubu tetap di sini. Kita coba sekali lagi?"])];
 const QLABEL = { m: "Pilih jawaban yang tepat", t: "Ketik jawabannya", f: "Benar atau salah?", o: "Susun kalimat bahasa Inggrisnya", l: "Dengarkan, lalu susun kalimatnya" };
 const answerOf = q => q.t === "m" ? q.o[0] : q.t === "t" ? q.a[0] : q.t === "f" ? (q.a ? "Benar" : "Salah") : q.s;
 const norm = s => String(s).toLowerCase().replace(/[‘’`]/g, "'").replace(/\s+/g, " ").trim().replace(/[.!?]+$/, "");
@@ -660,7 +687,10 @@ function runQuiz(items, o) {
     const blk = $$(".blocks span")[i]; if (blk) blk.className = ok ? "ok" : "no";
     const pg = $(".prog i"); if (pg) pg.style.width = (i + 1) / N * 100 + "%";
     $("#combo").innerHTML = comboHTML();
-    $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Belum tepat"}</span>${ok ? '<span class="plus">+10 XP</span>' : ""}</p>
+    const milestone = ok && COMBO_LINES[combo];
+    if (milestone) { const cb = $("#combo .combo"); if (cb) cb.classList.add("boom"); buzz([15, 40, 15]); }
+    const mood = !ok ? "oops" : milestone ? "wow" : "happy", line = !ok ? pick(NO_LINES) : milestone || pick(OK_LINES);
+    $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(50, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Belum tepat"}</span>${ok ? '<span class="plus">+10 XP</span>' : ""}</p><p class="bline">${line}</p></div></div>
       ${!ok || c.t === "l" ? `<p>Jawaban: <b>${esc(answerOf(c))}</b></p>` : ""}${c.t === "l" ? `<p>${esc(c.tr)}</p>` : ""}${c.e ? `<p>${esc(c.e)}</p>` : ""}${c.key ? `<a class="report" href="${reportUrl(c)}" target="_blank" rel="noopener">Ada yang salah dengan soal ini? Laporkan</a>` : ""}
       <button class="btn ${ok ? "good" : "bad"}" data-a="next" id="nx">${i + 1 < N ? "Lanjut" : "Lihat hasil"}</button></div>`;
     try { $("#nx").focus({ preventScroll: true }); } catch (e) {}
@@ -682,17 +712,23 @@ function runQuiz(items, o) {
     const head = pct === 100 ? "Sempurna!" : passed ? (o.pass ? "Lulus!" : "Kerja bagus!") : pct >= 50 ? "Hampir sampai" : "Belum sampai";
     const sub = o.pass ? (passed ? (o.passMsg || "Pelajaran ini ditandai selesai.") : "Butuh " + o.pass + "% untuk lulus. Ulangi soal yang salah, lalu coba lagi.") : (o.msg || "Sesi selesai.");
     const goNext = o.next && passed;
+    const [mood, mline] = resultMood(pct, passed);
+    const shareBtn = passed && o.share ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan hasil</button>` : "";
+    const certBtn = passed && o.cert != null ? `<button class="btn sun" data-a="cert">${I("award")} Lihat sertifikat</button>` : "";
     app.innerHTML = `<div class="quiz stack"${lv}>
       <p class="eyebrow">${esc(o.title)}</p>
       <div class="res-top">${ring(pct / 100, pct + "%", right + " dari " + N + " benar", "big")}<div><h1>${head}</h1><p class="muted">${sub}</p></div></div>
+      <div class="greet res-bubu">${BUBU(58, "react " + mood, "Bubu", mood)}<div class="say"><span>${mline}</span></div></div>
       <dl class="stats3"><div><dt>XP didapat</dt><dd>+${gained + bonus}</dd></div><div><dt>Combo terbaik</dt><dd>${maxCombo}×</dd></div><div><dt>Perlu diulang</dt><dd>${missed.length}</dd></div></dl>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
-      ${goNext ? `<button class="btn lv" data-a="next">Pelajaran berikutnya ${I("right")}</button>` : ""}
+      ${certBtn}${goNext ? `<button class="btn lv" data-a="next">Pelajaran berikutnya ${I("right")}</button>` : ""}${shareBtn}
       ${missed.length ? `<button class="btn ${goNext ? "ghost" : "lv"}" data-a="redo">Ulangi ${missed.length} soal yang salah</button>` : ""}
       <div class="pair"><button class="btn ghost" data-a="again">Dari awal</button><button class="btn ghost" data-a="back">Kembali</button></div>
       ${missed.length ? `<h2 style="margin-top:12px">Yang perlu diulang</h2><ul class="missed">${missed.map(m => `<li>${esc(m.t === "o" || m.t === "l" ? m.tr : m.q)}<br><b>${esc(answerOf(m))}</b>${m.e ? `<small>${esc(m.e)}</small>` : ""}</li>`).join("")}</ul>` : ""}</div>`;
     H = {
       next() { o.next(); }, again() { o.again(); }, back() { o.back(); },
+      share() { shareCard(Object.assign({ kind: "result", pct }, o.share)); },
+      cert() { showCert(o.cert); },
       redo() { runQuiz(shuffle(missed), { title: o.title + " · ulangan", li: o.li, back: o.back, again: o.again, msg: "Ulangan soal yang tadi salah." }); }
     };
     if (passed) { sfx.win(); confetti(); }
@@ -820,12 +856,13 @@ VIEWS.practice = function () {
     <div class="tools">
       ${tool("daily", "calendar", 4, "Tantangan harian", "10 soal acak dari pelajaran yang sudah Anda buka", S.daily === t ? "Selesai" : "+30 XP")}
       ${tool("mist", "retry", 5, "Ulangan hari ini", nW ? "Soal yang pernah salah, dijadwalkan ulang otomatis" : later ? later + " soal dijadwalkan muncul di hari lain" : "Soal yang Anda jawab salah akan dijadwalkan di sini", nW ? nW + " soal" : "Kosong", !nW)}
+      ${tool("talk", "chat", 1, "Percakapan", "Ngobrol di kafe, hotel, sampai wawancara kerja", Object.keys(S.talk).length + "/" + Object.keys(TALK).length)}
       ${tool("matchg", "grid", 3, "Cocokkan kata", "Pasangkan 6 kata dengan artinya secepat mungkin", S.matchBest ? S.matchBest + " dtk" : "Baru")}
       ${tool("flash", "layers", 2, "Flashcard", "Balik kartu dan tandai kata yang sudah hafal", known + "/" + VOCAB.length)}
       ${canSpeak() ? tool("listen", "headphones", 6, "Dengar & susun", "Dengarkan kalimat, lalu susun kata-katanya", "5 kalimat") : ""}
       ${tool("place", "compass", 1, "Tes penempatan", "18 soal untuk menemukan level awal Anda", "A1–C2")}
     </div></div>`;
-  H = { daily: startDaily, mist: startMistakes, matchg: globalMatch, flash() { nav("flash"); }, listen: globalListen, place: startPlacement };
+  H = { daily: startDaily, mist: startMistakes, matchg: globalMatch, talk() { nav("talk"); }, flash() { nav("flash"); }, listen: globalListen, place: startPlacement };
 };
 
 function startPlacement() {
@@ -1030,10 +1067,13 @@ VIEWS.profile = function () {
     <dl class="statgrid">${stat("Hari beruntun", streakNow())}${stat("Rekor beruntun", S.best)}${stat("Pelajaran", doneCount() + "/" + LESSONS.length)}${stat("Akurasi", acc + "%")}${stat("Soal dijawab", S.ans)}${stat("Jawaban benar", S.cor)}${stat("Combo terbaik", S.combo + "×")}${stat("Kata hafal", knownCount())}</dl>
     <h2 style="margin-top:10px">Lencana · ${got} dari ${BADGES.length}</h2>
     <div class="badges">${BADGES.map(b => `<div class="badge${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><small>${b.d}</small></span></div>`).join("")}</div>
+    <h2 style="margin-top:10px">Sertifikat</h2>
+    ${LEVELS.some(L => S.cert[L.id]) ? `<div class="certs">${LEVELS.filter(L => S.cert[L.id]).map(L => `<button class="cert" data-a="cert" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="roundel sm">${L.cefr}</span><span><b>${L.name}</b><small>Skor ${S.cert[L.id].p}% · ${longDate(S.cert[L.id].d)}</small></span>${I("award")}</button>`).join("")}</div>` : `<div class="card"><p class="muted">Lulus tes level (skor 75% ke atas) untuk mendapat sertifikat bernama yang bisa kamu bagikan.</p></div>`}
     <h2 style="margin-top:10px">Pengaturan</h2>
     <div class="card" style="padding-top:4px;padding-bottom:4px">
       <div class="setting"><label for="pname"><b>Nama panggilan</b><p class="muted">Dipakai Bubu untuk menyapamu</p></label><input id="pname" type="text" maxlength="24" autocomplete="given-name" data-c="nm" value="${esc(S.name)}" placeholder="Nama"></div>
       <div class="setting"><div><b>Target harian</b><p class="muted">XP yang ingin Anda kumpulkan per hari</p></div><div class="seg" role="group" aria-label="Target harian">${[30, 50, 100].map(g => `<button aria-pressed="${S.goal === g}" data-a="goal" data-v="${g}">${g} XP</button>`).join("")}</div></div>
+      <div class="setting"><div><b>Tampilan</b><p class="muted">Ikuti perangkat, terang, atau gelap</p></div><div class="seg" role="group" aria-label="Tampilan">${[["auto", "Otomatis"], ["light", "Terang"], ["dark", "Gelap"]].map(([v, t]) => `<button aria-pressed="${S.theme === v}" data-a="theme" data-v="${v}">${t}</button>`).join("")}</div></div>
       <div class="setting"><label class="switch" for="snd"><input type="checkbox" id="snd" data-c="sound"${S.sound ? " checked" : ""}> Efek suara</label></div>
       <div class="setting"><div><b>Reset progres</b><p class="muted">Menghapus semua XP, skor, dan lencana.</p></div><button class="btn ghost auto" data-a="reset">Reset</button></div>
     </div>
@@ -1049,6 +1089,8 @@ VIEWS.profile = function () {
   let armed = false;
   H = {
     goal(el) { S.goal = +el.dataset.v; save(); rerender(); },
+    theme(el) { S.theme = el.dataset.v; save(); applyTheme(); $$('[data-a="theme"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
+    cert(el) { showCert(+el.dataset.l); },
     nm(el) { S.name = (el.value || "").trim().slice(0, 24); save(); },
     sound(el) { S.sound = el.checked; save(); if (S.sound) sfx.ok(); },
     install() { if (!DEFER) return; DEFER.prompt(); DEFER.userChoice.finally(() => { DEFER = null; rerender(); }); },
@@ -1066,16 +1108,207 @@ VIEWS.profile = function () {
       try {
         if (!raw.startsWith("EP1:")) throw 0;
         const obj = JSON.parse(decodeURIComponent(escape(atob(raw.slice(4)))));
-        S = merge(S, hydrate(obj)); S.onb = 1; S.ts = Date.now(); newBadges(); save();
+        S = merge(S, hydrate(obj)); applyTheme(); S.onb = 1; S.ts = Date.now(); newBadges(); save();
         msg.innerHTML = `<div class="fb ok"><p class="fb-h"><span>Progres dipulihkan</span></p><p>${S.xp} XP · ${doneCount()} pelajaran selesai.</p></div>`;
         chrome();
       } catch (e) { msg.innerHTML = `<div class="fb no"><p>Kode tidak dikenali. Pastikan kode diawali EP1: dan tersalin utuh.</p></div>`; }
     },
     reset(el) {
       if (!armed) { armed = true; el.className = "btn bad auto"; el.textContent = "Ketuk lagi untuk menghapus"; return; }
-      S = fresh(); S.resetAt = Date.now(); save(); rerender();
+      const th = S.theme; S = fresh(); S.theme = th; S.resetAt = Date.now(); save(); rerender();
     }
   };
+};
+
+/* ================= tema (terang / gelap) ================= */
+const DARKQ = (() => { try { return matchMedia("(prefers-color-scheme: dark)"); } catch (e) { return null; } })();
+function applyTheme() {
+  const dark = S.theme === "dark" || (S.theme === "auto" && DARKQ && DARKQ.matches);
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", dark ? "#141629" : "#eef4ff");
+}
+try { DARKQ && DARKQ.addEventListener("change", () => { if (S.theme === "auto") applyTheme(); }); } catch (e) {}
+
+/* ================= kata hari ini ================= */
+function wordOfDay() {
+  const n = nextLesson(), top = n ? n.li : LEVELS.length - 1;
+  const pool = VOCAB.filter(v => v.li <= top);
+  let h = 7; for (const ch of dkey()) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  const v = pool[h % pool.length];
+  const re = new RegExp("\\b" + v.w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "i");
+  let ex = null;
+  for (const x of LESSONS) { const e = x.examples.find(([en]) => re.test(en)); if (e && (!ex || x.li === v.li)) { ex = e; if (x.li === v.li) break; } }
+  return { v, ex };
+}
+function wotdHTML() {
+  const { v, ex } = wordOfDay(), k = isKnown(v.w), L = LEVELS[v.li];
+  return `<section class="card wotd" aria-label="Kata hari ini" style="--lv:var(--l${v.li + 1});--ldk:var(--ld${v.li + 1})">
+    <div class="wotd-h"><p class="eyebrow">Kata hari ini · ${L.cefr}</p>${k ? `<span class="okpill">${I("check")} Sudah tahu</span>` : ""}</div>
+    <div class="wotd-w"><b lang="en">${esc(v.w)}</b>${spk(v.w)}</div>
+    <p class="wotd-m">${esc(v.m)}</p>
+    ${ex ? `<p class="wotd-ex"><span lang="en">${esc(ex[0])}</span>${spk(ex[0])}<br><span class="muted">${esc(ex[1])}</span></p>` : ""}
+    ${k ? `<button class="btn ghost" data-a="flash">${I("layers")} Latih kata lain di flashcard</button>` : `<button class="btn ghost" data-a="wknow" data-w="${esc(v.w)}">${I("check")} Saya sudah tahu kata ini</button>`}
+  </section>`;
+}
+
+/* ================= kartu hasil & sertifikat ================= */
+const SITE = "iiddon.github.io/english-study";
+const LVC = ["#c8f0df", "#d6e3ff", "#e3dbff", "#ffe0c2", "#ffd9e2", "#fff0bf"], LVD = ["#21a37b", "#3f6fe0", "#7a5cf0", "#e07a1f", "#e0527a", "#c99300"];
+const svgImg = svg => new Promise((ok, no) => { const im = new Image(); im.onload = () => ok(im); im.onerror = no; im.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg); });
+function rr(x, X, Y, W, Hh, r) { x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + W, Y, X + W, Y + Hh, r); x.arcTo(X + W, Y + Hh, X, Y + Hh, r); x.arcTo(X, Y + Hh, X, Y, r); x.arcTo(X, Y, X + W, Y, r); x.closePath(); }
+function fitFont(x, t, max, weight, fam, size) { let s = size; x.font = `${weight} ${s}px ${fam}`; while (x.measureText(t).width > max && s > 24) { s -= 2; x.font = `${weight} ${s}px ${fam}`; } return s; }
+function wrapLines(x, t, max) { const out = []; let line = ""; t.split(" ").forEach(w => { const tr = line ? line + " " + w : w; if (x.measureText(tr).width > max && line) { out.push(line); line = w; } else line = tr; }); if (line) out.push(line); return out; }
+const longDate = d => { try { return new Date(d + "T12:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return d; } };
+async function drawCard(spec) {
+  try { await Promise.all([document.fonts.load("700 80px Fredoka"), document.fonts.load("800 40px Nunito")]); } catch (e) {}
+  const W = 1080, Hh = 1350, c = document.createElement("canvas"); c.width = W; c.height = Hh;
+  const x = c.getContext("2d"), nm = (S.name || "").trim(), li = spec.li || 0, FD = "Fredoka, 'Trebuchet MS', sans-serif", FB = "Nunito, 'Segoe UI', sans-serif";
+  x.fillStyle = "#eef4ff"; x.fillRect(0, 0, W, Hh);
+  x.fillStyle = LVC[li]; x.beginPath(); x.arc(960, 150, 300, 0, 7); x.fill();
+  x.fillStyle = "#fff2cc"; x.beginPath(); x.arc(90, 1270, 240, 0, 7); x.fill();
+  x.fillStyle = "#dbe4f7"; rr(x, 70, 168, 940, 1040, 60); x.fill();
+  x.fillStyle = "#fff"; rr(x, 70, 156, 940, 1040, 60); x.fill();
+  x.fillStyle = "#ffc845"; rr(x, 70, 44, 84, 84, 24); x.fill();
+  x.drawImage(await svgImg(BUBU(56)), 84, 56, 56, 60);
+  x.fillStyle = "#24264a"; x.textBaseline = "middle"; x.font = `700 44px ${FD}`; x.fillText("English Path", 176, 88);
+  x.textAlign = "center";
+  const mood = spec.kind === "cert" || spec.pct !== 100 ? "happy" : "wow";
+  x.drawImage(await svgImg(BUBU(230, "", "", mood)), W / 2 - 115, 200, 230, 246);
+  const pill = (t, y, bg, fg, size) => { x.font = `800 ${size}px ${FB}`; const w = x.measureText(t).width + size * 1.4; x.fillStyle = bg; rr(x, W / 2 - w / 2, y - size * .9, w, size * 1.8, size * .9); x.fill(); x.fillStyle = fg; x.fillText(t, W / 2, y + 2); };
+  if (spec.kind === "cert") {
+    x.strokeStyle = LVD[li]; x.lineWidth = 6; x.setLineDash([2, 14]); x.lineCap = "round"; rr(x, 100, 186, 880, 980, 44); x.stroke(); x.setLineDash([]);
+    pill("SERTIFIKAT KELULUSAN", 500, LVC[li], "#24264a", 30);
+    x.fillStyle = "#55587a"; x.font = `700 36px ${FB}`; x.fillText("Diberikan kepada", W / 2, 590);
+    x.fillStyle = "#24264a"; fitFont(x, nm || "Pelajar English Path", 800, 700, FD, 104); x.fillText(nm || "Pelajar English Path", W / 2, 690);
+    x.fillStyle = LVD[li]; x.fillRect(W / 2 - 160, 762, 320, 6);
+    x.fillStyle = "#24264a"; x.font = `700 40px ${FB}`; x.fillText("telah lulus Tes Level", W / 2, 840);
+    x.font = `700 76px ${FD}`; x.fillStyle = LVD[li]; x.fillText(LEVELS[li].cefr + " · " + LEVELS[li].name, W / 2, 925);
+    if (spec.pct != null) pill("Skor " + spec.pct + "%", 1025, "#d9f5ea", "#127a55", 38);
+    x.fillStyle = "#55587a"; x.font = `700 32px ${FB}`; x.fillText(longDate(spec.d || dkey()), W / 2, 1115);
+  } else {
+    pill(spec.sub || "English Path", 500, LVC[li], "#24264a", 30);
+    x.fillStyle = "#55587a"; x.font = `700 38px ${FB}`; x.fillText((nm || "Aku") + " berhasil menyelesaikan", W / 2, 590);
+    x.fillStyle = "#24264a"; x.font = `700 72px ${FD}`;
+    const lines = wrapLines(x, spec.title || "", 820).slice(0, 2); lines.forEach((l, k) => x.fillText(l, W / 2, 680 + k * 84));
+    const y = 680 + lines.length * 84 + 110;
+    x.font = `700 170px ${FD}`; x.fillStyle = LVD[li]; x.fillText(spec.pct + "%", W / 2, y);
+    x.fillStyle = "#55587a"; x.font = `700 34px ${FB}`; x.fillText(spec.pct === 100 ? "Sempurna, tanpa salah!" : "jawaban benar", W / 2, y + 110);
+  }
+  x.fillStyle = "#24264a"; x.font = `700 34px ${FB}`; x.fillText("Belajar bahasa Inggris gratis di", W / 2, 1258);
+  x.fillStyle = "#3d3dc4"; x.font = `700 40px ${FD}`; x.fillText(SITE, W / 2, 1306);
+  return c;
+}
+function shareCard(spec) {
+  const isCert = spec.kind === "cert", fname = isCert ? "sertifikat-english-path-" + LEVELS[spec.li || 0].cefr + ".png" : "hasil-english-path.png";
+  const text = isCert ? "Aku lulus Tes Level " + LEVELS[spec.li || 0].cefr + " di English Path! Belajar gratis di https://" + SITE : "Skor " + spec.pct + "% di \"" + (spec.title || "") + "\" — belajar bahasa Inggris gratis di https://" + SITE;
+  const m = document.createElement("div");
+  m.className = "modal"; m.setAttribute("role", "dialog"); m.setAttribute("aria-modal", "true"); m.setAttribute("aria-labelledby", "mh");
+  m.innerHTML = `<div class="sheet"><div class="sheet-h"><h2 id="mh">${isCert ? "Sertifikat kamu" : "Kartu hasil"}</h2><button class="iconbtn" data-x aria-label="Tutup">${I("x")}</button></div>
+    <div class="cardimg"><img id="cimg" alt=""><span class="spin" aria-hidden="true"></span></div>
+    <div class="cname"><label for="cname">Nama di ${isCert ? "sertifikat" : "kartu"}</label><input class="namefield" id="cname" type="text" maxlength="24" autocomplete="given-name" value="${esc(S.name)}" placeholder="Nama kamu"></div>
+    <div class="pair"><button class="btn lv" data-sh>${I("share")} Bagikan</button><a class="btn ghost" data-dl download="${fname}" href="#">${I("download")} Simpan</a></div>
+    <p class="muted" id="cmsg" aria-live="polite">Tombol tidak berfungsi? Tekan lama gambar, lalu pilih Simpan.</p></div>`;
+  document.body.appendChild(m); document.body.classList.add("modal-open");
+  const prev = document.activeElement, img = m.querySelector("#cimg"), dl = m.querySelector("[data-dl]");
+  let blob = null, tmr = null, gen = 0;
+  const render = async () => {
+    const my = ++gen; m.classList.add("busy");
+    try {
+      const c = await drawCard(spec); if (my !== gen) return;
+      const url = c.toDataURL("image/png"); img.src = url; dl.href = url;
+      img.alt = isCert ? "Sertifikat English Path level " + LEVELS[spec.li || 0].cefr + " untuk " + (S.name || "pelajar") : "Kartu hasil: " + spec.pct + "% di " + (spec.title || "");
+      blob = await new Promise(r => c.toBlob(r, "image/png"));
+    } catch (e) { m.querySelector("#cmsg").textContent = "Gambar gagal dibuat di perangkat ini."; }
+    if (my === gen) m.classList.remove("busy");
+  };
+  const close = () => { clearTimeout(tmr); const pn = document.getElementById("pname"); if (pn) pn.value = S.name; m.remove(); document.body.classList.remove("modal-open"); document.removeEventListener("keydown", onKey, true); try { prev && prev.focus({ preventScroll: true }); } catch (e) {} };
+  const onKey = e => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+  document.addEventListener("keydown", onKey, true);
+  m.addEventListener("click", async e => {
+    if (e.target === m || e.target.closest("[data-x]")) return close();
+    if (e.target.closest("[data-sh]")) {
+      const msg = m.querySelector("#cmsg");
+      try {
+        const file = blob && new File([blob], fname, { type: "image/png" });
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text });
+        else if (navigator.share) await navigator.share({ title: "English Path", text, url: "https://" + SITE });
+        else { dl.click(); msg.textContent = "Gambar disimpan. Unggah ke media sosial favoritmu."; }
+      } catch (err) { if (!err || err.name !== "AbortError") msg.textContent = "Berbagi tidak tersedia di sini. Pakai tombol Simpan atau tekan lama gambar."; }
+    }
+  });
+  m.querySelector("#cname").addEventListener("input", e => { clearTimeout(tmr); tmr = setTimeout(() => { S.name = (e.target.value || "").trim().slice(0, 24); save(); render(); }, 350); });
+  try { m.querySelector("[data-x]").focus({ preventScroll: true }); } catch (e) {}
+  render();
+}
+function showCert(li) { const L = LEVELS[li], c = S.cert[L.id]; shareCard({ kind: "cert", li, pct: c ? c.p : null, d: c ? c.d : dkey() }); }
+
+/* ================= percakapan ================= */
+let TALKFROM = "talk";
+const talkLine = t => String(t).replace(/\{n\}/g, (S.name || "").trim() || "Dewi");
+VIEWS.talk = function (li) {
+  if (li == null || !LEVELS[li] || !TALK[LEVELS[li].id]) {
+    app.innerHTML = `<div class="narrow stack">
+      <div><p class="eyebrow">Percakapan</p><h1 style="margin-top:8px">Latihan ngobrol dalam situasi nyata.</h1><p class="muted" style="margin-top:6px">Pilih balasan yang paling tepat. Partner bicara akan membacakan kalimatnya.</p></div>
+      <div class="tools">${LEVELS.map(L => { const T = TALK[L.id]; if (!T) return ""; const b = S.talk[L.id]; return `<button class="tool" data-a="go" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="tic txt">${L.cefr}</span><span><b>${esc(T.title)}</b><small>${esc(T.place)} · bersama ${esc(T.who)}</small></span><span class="meta">${b != null ? b + "%" : "Baru"}</span></button>`; }).join("")}</div></div>`;
+    H = { go(el) { TALKFROM = "talk"; nav("talk", +el.dataset.l); } };
+    return;
+  }
+  const L = LEVELS[li], T = TALK[L.id], turns = T.turns, nU = turns.filter(t => t[0] === "u").length;
+  document.body.classList.add("sub");
+  let k = 0, score = 0, asked = 0, sel = null, opts = [], locked = false;
+  const log = [];
+  app.innerHTML = `<div class="talkv" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
+    <div class="lv-top"><button class="iconbtn" data-a="exit" aria-label="Kembali">${I("left")}</button><span class="roundel sm">${L.cefr}</span>
+      <div class="lv-tt"><p class="eyebrow">${esc(T.place)}</p><h1>${esc(T.title)}</h1></div><span class="qcount" id="tc">0/${nU}</span></div>
+    <div class="chat" id="chat" aria-live="polite"></div>
+    <div class="reply" id="reply"></div></div>`;
+  const chat = $("#chat"), reply = $("#reply"), initial = T.who.replace(/^(Mr|Ms|Mrs)\. /, "").charAt(0);
+  const bubble = m => m.who === "p"
+    ? `<div class="msg p"><span class="av" aria-hidden="true">${initial}</span><div class="bub"><span class="who">${esc(T.who)}</span><span lang="en">${esc(m.t)}</span><small>${esc(m.tr)}</small></div>${spk(m.t)}</div>`
+    : `<div class="msg u${m.ok ? "" : " fixed"}"><div class="bub"><span lang="en">${esc(m.t)}</span>${m.ok ? "" : "<small>Balasan yang tepat</small>"}</div></div>`;
+  const drawChat = () => { chat.innerHTML = log.map(bubble).join("") + (k < turns.length && turns[k][0] === "p" ? '<div class="msg p typing"><span class="av">' + initial + '</span><div class="bub"><i></i><i></i><i></i></div></div>' : ""); try { chat.scrollTo({ top: chat.scrollHeight, behavior: "smooth" }); } catch (e) { chat.scrollTop = chat.scrollHeight; } };
+  const reduced = (() => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } })();
+  function step() {
+    if (ROUTE.v !== "talk") return;
+    if (k >= turns.length) return done();
+    const t = turns[k];
+    if (t[0] === "p") {
+      drawChat(); reply.innerHTML = "";
+      setTimeout(() => { if (ROUTE.v !== "talk") return; log.push({ who: "p", t: talkLine(t[1]), tr: t[2] }); k++; drawChat(); speak(talkLine(t[1])); step(); }, reduced ? 0 : 650);
+      return;
+    }
+    sel = null; locked = false; opts = shuffle(t[1].map((x, n) => ({ x: talkLine(x), ok: n === 0 })));
+    reply.innerHTML = `<p class="eyebrow">Pilih balasanmu</p><div class="opts">${opts.map((o, n) => `<button class="opt" data-a="pick" data-k="${n}" lang="en"><span>${esc(o.x)}</span></button>`).join("")}</div><button class="btn lv" data-a="send" id="chk" disabled>${I("chat")} Kirim</button>`;
+  }
+  function done() {
+    const pct = Math.round(score / nU * 100), first = S.talk[L.id] == null;
+    const bonus = first ? 20 : 5; addXp(bonus);
+    S.talk[L.id] = Math.max(S.talk[L.id] || 0, pct); const nb = newBadges(); save(); chrome();
+    const [mood, line] = resultMood(pct, pct >= 60);
+    reply.innerHTML = `<div class="talkend"><div class="greet">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><b>${score} dari ${nU} tepat</b><span>${line} +${bonus} XP</span></div></div>
+      ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
+      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn lv" data-a="exit">Selesai</button></div></div>`;
+    if (pct >= 60) { sfx.win(); confetti(); }
+  }
+  H = {
+    exit() { const f = TALKFROM; TALKFROM = "talk"; nav(f); },
+    again() { rerender(); },
+    share() { shareCard({ kind: "result", li, pct: Math.round(score / nU * 100), title: T.title, sub: "Percakapan " + L.cefr + " · " + L.name }); },
+    pick(el) { if (locked) return; sel = +el.dataset.k; $$("#reply .opt").forEach(b => { const on = b === el; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on); }); $("#chk").disabled = false; },
+    send() {
+      if (locked || sel == null) return; locked = true;
+      const t = turns[k], ok = opts[sel].ok; asked++;
+      if (ok) { score++; addXp(5); sfx.ok(); } else sfx.no();
+      $("#tc").textContent = asked + "/" + nU;
+      $$("#reply .opt").forEach((b, n) => { b.disabled = true; b.classList.remove("sel"); if (opts[n].ok) b.classList.add("right"); else if (n === sel) b.classList.add("wrong"); });
+      $("#chk").remove(); save(); chrome();
+      const mood = ok ? "happy" : "oops";
+      reply.insertAdjacentHTML("beforeend", `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(44, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Kurang pas"}</span>${ok ? '<span class="plus">+5 XP</span>' : ""}</p><p class="bline">${esc(t[2])}</p></div></div><button class="btn ${ok ? "good" : "bad"}" data-a="cont" id="nx">Lanjut</button></div>`);
+      try { $("#nx").focus({ preventScroll: true }); } catch (e) {}
+      H.cont = () => { log.push({ who: "u", t: talkLine(t[1][0]), ok }); k++; step(); };
+    }
+  };
+  step();
 };
 
 /* ================= install (PWA) ================= */
@@ -1091,7 +1324,7 @@ function installHint() {
 
 /* ================= boot ================= */
 function boot(d) {
-  loadLocal();
+  loadLocal(); applyTheme();
   if (!S.onb && (S.xp > 0 || doneCount() > 0)) S.onb = 1;
   newBadges(); saveLocal();
   const r = d && d.route;

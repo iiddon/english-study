@@ -3,7 +3,7 @@
 import pathlib
 root = pathlib.Path(__file__).parent
 r = lambda f: (root / "src" / f).read_text(encoding="utf-8")
-js = "\n".join([r("levels.js"), r("extra.js"), r("lessons2.js"), r("app.js")])
+js = "\n".join([r("levels.js"), r("extra.js"), r("lessons2.js"), r("talk.js"), r("app.js")])
 assert "</script" not in js
 html = f"""<!DOCTYPE html>
 <html lang="id">
@@ -11,8 +11,10 @@ html = f"""<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>English Path — Belajar Bahasa Inggris Gratis</title>
-<meta name="description" content="Belajar bahasa Inggris gratis dari A1 sampai C2: 36 pelajaran, 750 soal, bacaan, latihan dengar dan berbicara, dijelaskan dalam bahasa Indonesia.">
+<meta name="description" content="Belajar bahasa Inggris gratis dari A1 sampai C2: 36 pelajaran, 750 soal, bacaan, percakapan, latihan dengar dan berbicara, dijelaskan dalam bahasa Indonesia.">
 <meta name="theme-color" content="#eef4ff">
+<meta name="color-scheme" content="light dark">
+<script>try{{var t=(JSON.parse(localStorage.getItem("englishpath_v1")||"{{}}").theme)||"auto";if(t==="dark"||(t==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.theme="dark"}}catch(e){{}}</script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
