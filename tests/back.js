@@ -1,0 +1,33 @@
+// Uji: posisi gulir rute tetap saat kembali, dan tombol pelajaran berikutnya setelah 3 babak.
+const { chromium } = require("playwright");
+const url = "file://" + require("path").join(__dirname, "..", "index.html");
+const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; } else console.log("ok  ", m); };
+(async () => {
+  const b = await chromium.launch({ executablePath: "/usr/bin/google-chrome", args: ["--no-sandbox"] });
+  const p = await (await b.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 })).newPage();
+  const errs = []; p.on("pageerror", e => errs.push(e.message));
+  await p.goto(url);
+  await p.evaluate(() => localStorage.setItem("englishpath_v1", JSON.stringify({ onb: 1, name: "Dewi", done: { b1: 1 }, scores: { b1: 100 }, rounds: { "b1:2": 95, "b1:3": 80 } })));
+  await p.reload(); await p.waitForTimeout(300);
+  await p.evaluate(() => document.querySelectorAll("details.lvcard").forEach(d => d.open = true));
+  const row = p.locator('.lrow[data-l="5"][data-j="3"]'); await row.scrollIntoViewIfNeeded();
+  const y0 = await p.evaluate(() => scrollY);
+  await row.click(); await p.waitForTimeout(200);
+  ok(await p.evaluate(() => ROUTE.v) === "lesson", "buka pelajaran C2");
+  await p.click(".lv-top .iconbtn"); await p.waitForTimeout(300);
+  const y1 = await p.evaluate(() => scrollY);
+  ok(Math.abs(y1 - y0) < 4 && y0 > 1000, `tombol kembali: posisi gulir tetap (${y0} → ${y1})`);
+  await row.click(); await p.waitForTimeout(200);
+  await p.goBack(); await p.waitForTimeout(400);
+  const y2 = await p.evaluate(() => scrollY);
+  ok(Math.abs(y2 - y0) < 4, `tombol kembali HP: posisi gulir tetap (${y2})`);
+  await p.click('#nav [data-g="practice"]'); await p.click('#nav [data-g="home"]'); await p.waitForTimeout(200);
+  ok(await p.evaluate(() => scrollY) === 0, "pindah tab bawah tetap mulai dari atas");
+  await p.evaluate(() => nav("lesson", 0, 0, "q")); await p.waitForTimeout(200);
+  ok(await p.locator('[data-a="nextles"]').count() === 1 && await p.evaluate(() => document.querySelector('[data-a="nextles"]').offsetHeight < 80), "3 bintang: tombol " + (await p.locator(".pgfoot .btn.lv").textContent()).trim());
+  await p.screenshot({ path: "/tmp/alldone.png" });
+  await p.click('[data-a="nextles"]');
+  ok(await p.evaluate(() => ROUTE.v === "lesson" && ROUTE.a[0] === 0 && ROUTE.a[1] === 1), "masuk ke pelajaran berikutnya");
+  ok(errs.length === 0, "tanpa error " + errs.join("|"));
+  await b.close();
+})();

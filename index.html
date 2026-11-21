@@ -4470,13 +4470,19 @@ window.addEventListener("hashchange", () => {
   if (r) nav(r.v, ...r.a); else nav("home");
 });
 
+// Posisi gulir halaman utama diingat, supaya kembali dari pelajaran tidak loncat ke atas.
+const TOPLEVEL = ["home", "practice", "profile"], SCROLLS = {};
 function nav(v, ...a) {
+  const from = ROUTE && ROUTE.v;
+  if (TOPLEVEL.includes(from) && !QUIZ) SCROLLS[from] = window.scrollY;
   clearInterval(TICK); TICK = null; clearInterval(QT); QT = null; QUIZ = null; stopSpeak(); stopRec();
   document.body.classList.remove("focus", "sub"); REPAGE = null;
   if (!VIEWS[v]) { v = "home"; a = []; }
   if (v === "welcome" && S.onb) { v = "home"; a = []; }
   ROUTE = { v, a }; H = {};
-  VIEWS[v](...a); chrome(); toTop();
+  VIEWS[v](...a); chrome();
+  const restore = TOPLEVEL.includes(v) && from && from !== v && !TOPLEVEL.includes(from) && SCROLLS[v] != null;
+  if (restore) { const y = SCROLLS[v]; window.scrollTo(0, y); requestAnimationFrame(() => window.scrollTo(0, y)); } else toTop();
   setHash(hashOf(v, a));
 }
 const rerender = () => nav(ROUTE.v, ...ROUTE.a);
@@ -4629,12 +4635,13 @@ VIEWS.lesson = function (li, j, tab = "m") {
   }
   let panel, foot;
   if (tab === "q") {
-    const cur = [1, 2, 3].find(r => roundOpen(x, r) && !roundPassed(x, r)) || 1;
+    const cur = [1, 2, 3].find(r => roundOpen(x, r) && !roundPassed(x, r)) || 0, nx = nextOf(li, j);
     panel = `<div class="panel card qinfo">
-      <div class="qhead"><div><b>3 babak · ${x.qs.length} soal</b><span class="muted">Lulus 75% membuka babak berikutnya</span></div>${starHTML(x)}</div>
+      <div class="qhead"><div><b>3 babak · ${x.qs.length} soal</b><span class="muted">${cur ? "Lulus 75% membuka babak berikutnya" : "Tuntas! Semua babak sudah lulus"}</span></div>${starHTML(x)}</div>
       <div class="rounds">${[1, 2, 3].map(r => { const open = roundOpen(x, r), ok = roundPassed(x, r), sc = roundScore(x, r);
         return `<button class="round${ok ? " ok" : ""}${r === cur ? " cur" : ""}" data-a="round" data-r="${r}"${open ? "" : " disabled"}><span class="rn">${ok ? I("check") : open ? r : I("lock")}</span><span class="grow"><b>Babak ${r} · ${RN[r - 1]}</b><small>${open ? "20 soal" + (sc != null ? " · terbaik " + sc + "%" : "") : "Lulus Babak " + (r - 1) + " untuk membuka"}</small></span>${open ? I("right") : ""}</button>`; }).join("")}</div></div>`;
-    foot = `<div class="pgfoot col"><button class="btn lv" data-a="round" data-r="${cur}">Mulai Babak ${cur} · 20 soal</button><button class="btn ghost" data-a="quick">Latihan singkat · 5 soal acak</button></div>`;
+    foot = cur ? `<div class="pgfoot col"><button class="btn lv" data-a="round" data-r="${cur}">Mulai Babak ${cur} · 20 soal</button><button class="btn ghost" data-a="quick">Latihan singkat · 5 soal acak</button></div>`
+      : `<div class="pgfoot col">${nx ? `<button class="btn lv" data-a="nextles">Lanjut ke pelajaran berikutnya ${I("right")}</button>` : `<button class="btn lv" data-g="home">Semua pelajaran tuntas! Kembali ke rute</button>`}<button class="btn ghost" data-a="quick">Latihan singkat · 5 soal acak</button></div>`;
   } else {
     panel = `<div class="panel card ${kind}" id="panel"><div class="spread" id="spread"></div></div>`;
     foot = `<div class="pgfoot"><button class="btn ghost sq" data-a="prev" id="pprev" aria-label="Halaman sebelumnya">${I("left")}</button><span class="pgc" id="pgc" aria-live="polite"></span><button class="btn lv" data-a="next" id="pnext"></button></div>`;
@@ -4696,6 +4703,7 @@ VIEWS.lesson = function (li, j, tab = "m") {
     next() { if (!go(1)) nav("lesson", li, j, NEXT[tab][0]); },
     quiz() { lessonQuiz(li, j); },
     round(el) { lessonQuiz(li, j, +el.dataset.r); },
+    nextles() { const n = nextOf(li, j); if (n) nav("lesson", n.li, n.j); },
     quick() { const run = () => runQuiz(shuffle(x.qs).slice(0, 5), { title: x.title + " · latihan singkat", li, back, again: run, msg: "Latihan singkat tidak mengubah skor pelajaran." }); run(); },
     listen() { const run = () => runQuiz(shuffle(x.examples).map(([s2, tr]) => ({ t: "l", s: s2, tr })), { title: x.title + " · latihan dengar", li, back, again: run, msg: "Dengarkan lagi contoh-contohnya kapan saja di tab Contoh." }); run(); },
     lmatch() { const run = () => matchGame(x.vocab, { li, back, again: run }); run(); }
@@ -4713,14 +4721,16 @@ VIEWS.lesson = function (li, j, tab = "m") {
     });
   }
 };
+// Pelajaran sesudah (li, j): lanjut di level yang sama, atau pelajaran pertama level berikutnya.
+function nextOf(li, j) { const L = LEVELS[li]; if (j + 1 < L.lessons.length) return { li, j: j + 1, title: L.lessons[j + 1].title }; if (li + 1 < LEVELS.length) return { li: li + 1, j: 0, title: LEVELS[li + 1].lessons[0].title }; return null; }
 function lessonQuiz(li, j, r = 1) {
   const L = LEVELS[li], x = L.lessons[j];
   if (!roundOpen(x, r)) r = 1;
-  const nextLesson = j + 1 < L.lessons.length ? () => nav("lesson", li, j + 1) : (li + 1 < LEVELS.length ? () => nav("lesson", li + 1, 0) : null);
+  const nx = nextOf(li, j), nextLesson = nx ? () => nav("lesson", nx.li, nx.j) : null;
   const items = roundQs(x, r);
   runQuiz(shuffle(items), {
     title: x.title + " · Babak " + r, li, bonus: true, pass: 75,
-    next: r < 3 ? () => lessonQuiz(li, j, r + 1) : nextLesson, nextLabel: r < 3 ? "Lanjut ke Babak " + (r + 1) : "Pelajaran berikutnya",
+    next: r < 3 ? () => lessonQuiz(li, j, r + 1) : nextLesson, nextLabel: r < 3 ? "Lanjut ke Babak " + (r + 1) : nx ? "Lanjut ke pelajaran berikutnya" : "",
     passMsg: r === 1 ? "Pelajaran ini selesai. Babak 2 terbuka!" : r === 2 ? "Bintang kedua didapat. Babak 3 terbuka!" : "Tiga bintang! Pelajaran ini tuntas.",
     back: () => nav("lesson", li, j, "q"), again: () => lessonQuiz(li, j, r),
     share: { title: x.title + " · Babak " + r, sub: "Pelajaran " + LEVELS[li].cefr + " · " + LEVELS[li].name, li },
@@ -4889,7 +4899,7 @@ function runQuiz(items, o) {
       next() { o.next(); }, again() { o.again(); }, back() { o.back(); },
       share() { shareCard(Object.assign({ kind: "result", pct }, o.share)); },
       cert() { showCert(o.cert); },
-      redo() { runQuiz(shuffle(missed), { title: o.title + " · ulangan", li: o.li, back: o.back, again: o.again, msg: "Ulangan soal yang tadi salah." }); }
+      redo() { runQuiz(shuffle(missed), { title: o.title + " · ulangan", li: o.li, back: o.back, again: o.again, msg: "Ulangan soal yang tadi salah.", next: passed ? o.next : null, nextLabel: o.nextLabel }); }
     };
     if (passed) { sfx.win(); confetti(); }
     toTop();
