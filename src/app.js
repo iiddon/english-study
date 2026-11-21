@@ -34,6 +34,7 @@ const ICONS = {
   calendar: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>',
   target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   play: '<polygon points="7 4 20 12 7 20 7 4"/>',
+  down: '<polyline points="6 9 12 15 18 9"/>',
   book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
   mic: '<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/>',
   copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
@@ -356,6 +357,15 @@ function ring(f, main, sub, cls = "") {
 }
 
 /* ================= home ================= */
+// Level yang dibuka di peta (akordeon). Awalnya hanya level yang sedang dipelajari.
+let OPENLV = null;
+app.addEventListener("toggle", e => {
+  const d = e.target;
+  if (!d.matches || !d.matches("details.lvcard")) return;
+  const li = +d.dataset.li;
+  if (d.open) OPENLV.add(li); else OPENLV.delete(li);
+  const b = $("[data-a='allopen']"); if (b) b.textContent = OPENLV.size === LEVELS.length ? "Tutup semua" : "Buka semua";
+}, true);
 function greetMsg() {
   const dx = S.days[dkey()] || 0, st = streakNow();
   if (!S.xp && !doneCount()) return "Yuk, mulai pelajaran pertamamu hari ini.";
@@ -364,6 +374,7 @@ function greetMsg() {
   return "Tinggal " + (S.goal - dx) + " XP lagi untuk target hari ini.";
 }
 VIEWS.home = function () {
+  if (!OPENLV) { const n0 = nextLesson(); OPENLV = new Set([n0 ? n0.li : LEVELS.length - 1]); }
   const d = doneCount(), next = nextLesson(), t = dkey(), nW = wrongItems().length, now = new Date();
   const ms = missions(), nDone = ms.filter(m => m.v >= m.max).length, allDone = nDone === ms.length, opened = S.chest === t;
   const known = knownCount(), later = wrongLater();
@@ -378,15 +389,18 @@ VIEWS.home = function () {
     : `<div class="chest">${I("box")}<span><b>Peti hadiah</b><br><span class="muted">Selesaikan 3 misi untuk +50 XP</span></span></div>`;
   const lvcard = L => {
     const dn = L.lessons.filter(x => S.done[x.id]).length, n = L.lessons.length;
-    return `<article class="lvcard" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})">
-      <header class="lv-h"><span class="roundel">${L.cefr}</span><div class="lv-t"><h2>${L.name}</h2><p>${L.desc}</p></div><span class="count" aria-label="${dn} dari ${n} selesai">${dn}/${n}</span></header>
+    const isCur = next && next.li === L.i, all = dn === n;
+    const status = all ? "Selesai" : isCur ? "Sedang dipelajari" : dn ? dn + " dari " + n + " selesai" : n + " pelajaran";
+    return `<details class="lvcard${isCur ? " cur" : ""}${all ? " done" : ""}" data-li="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"${OPENLV.has(L.i) ? " open" : ""}>
+      <summary class="lv-h"><span class="roundel">${all ? I("check") : L.cefr}</span><span class="lv-t"><span class="lv-n">${L.cefr} · ${L.name}</span><span class="lv-s">${status}</span><span class="lvbar" aria-hidden="true"><i style="width:${dn / n * 100}%"></i></span></span><span class="chev">${I("down")}</span></summary>
+      <p class="lv-d">${L.desc}</p>
       <ol class="lrows">${L.lessons.map(x => {
         const st = S.done[x.id] ? "done" : (next && next.id === x.id ? "cur" : "todo");
         return `<li><button class="lrow ${st}" data-a="open" data-l="${L.i}" data-j="${x.j}"><span class="n">${st === "done" ? I("check") : x.j + 1}</span><span><b>${esc(x.title)}</b><small>${x.qs.length} soal${S.scores[x.id] != null ? " · terbaik " + S.scores[x.id] + "%" : ""}</small></span>${st === "cur" ? '<span class="go">Mulai</span>' : ""}</button></li>`;
       }).join("")}
       ${L.read ? `<li><button class="lrow${S.read[L.id] != null ? " done" : ""}" data-a="read" data-l="${L.i}"><span class="n">${I("book")}</span><span><b>Bacaan: ${esc(L.read.title)}</b><small>${L.read.qs.length} soal pemahaman${S.read[L.id] != null ? " · terbaik " + S.read[L.id] + "%" : ""}</small></span></button></li>` : ""}
       ${L.speak.length ? `<li><button class="lrow${spokeN(L) >= L.speak.length ? " done" : ""}" data-a="speak" data-l="${L.i}"><span class="n">${I("mic")}</span><span><b>Latihan berbicara</b><small>${spokeN(L)} dari ${L.speak.length} kalimat lancar</small></span></button></li>` : ""}
-      <li><button class="lrow test${dn === n ? " done" : ""}" data-a="test" data-l="${L.i}"><span class="n">${I("flag")}</span><span><b>Tes level ${L.cefr}</b><small>20 soal acak · lulus 75% menandai level selesai</small></span></button></li></ol></article>`;
+      <li><button class="lrow test${dn === n ? " done" : ""}" data-a="test" data-l="${L.i}"><span class="n">${I("flag")}</span><span><b>Tes level ${L.cefr}</b><small>20 soal acak · lulus 75% menandai level selesai</small></span></button></li></ol></details>`;
   };
   app.innerHTML = `<div class="home">
     <div class="side stack">
@@ -405,12 +419,12 @@ VIEWS.home = function () {
       </div>
     </div>
     <section class="stack" aria-label="Peta level">
-      <div class="secthead"><div><p class="eyebrow">Peta level · ${LESSONS.length} pelajaran · ${NQ} soal</p><h2 style="font-size:30px;margin-top:4px">Dari A1 sampai C2</h2></div><span class="count">${d}/${LESSONS.length}</span></div>
-      <div class="allbar" aria-hidden="true">${LEVELS.map(L => `<span style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><i style="width:${L.lessons.filter(x => S.done[x.id]).length / L.lessons.length * 100}%"></i></span>`).join("")}</div>
+      <div class="secthead"><div><p class="eyebrow">Peta level · ${LESSONS.length} pelajaran · ${NQ} soal</p><h2 style="font-size:30px;margin-top:4px">Dari A1 sampai C2</h2></div><button class="back" data-a="allopen" style="padding:8px 0">${OPENLV.size === LEVELS.length ? "Tutup semua" : "Buka semua"}</button></div>
       <div class="levels">${LEVELS.map(lvcard).join("")}</div>
     </section></div>`;
   H = {
     open(el) { nav("lesson", +el.dataset.l, +el.dataset.j); },
+    allopen() { const all = OPENLV.size === LEVELS.length; $$("details.lvcard").forEach(dd => { dd.open = !all; }); },
     test(el) { levelTest(+el.dataset.l); },
     read(el) { nav("read", +el.dataset.l); },
     speak(el) { nav("speak", +el.dataset.l); },

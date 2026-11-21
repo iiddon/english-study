@@ -13,7 +13,10 @@ require("fs").mkdirSync(shots, { recursive: true });
   page.on("pageerror", e => errors.push("pageerror: " + e.message));
   page.on("console", m => { if (m.type() === "error" && !/Failed to load resource|net::ERR/.test(m.text())) errors.push("console: " + m.text()); });
   const log = (...a) => console.log(...a);
-  const click = async sel => { await page.locator(sel).first().click(); };
+  const click = async sel => {
+    if (sel.includes(".lrow")) await page.evaluate(() => document.querySelectorAll("details.lvcard").forEach(d => { d.open = true; }));
+    await page.locator(sel).first().click();
+  };
   const state = () => page.evaluate(() => JSON.parse(JSON.stringify(S)));
 
   // Menjawab satu soal yang sedang tampil; wrong=true sengaja menjawab salah.
@@ -73,6 +76,11 @@ require("fs").mkdirSync(shots, { recursive: true });
   await click('#nav [data-g="home"]');
   await page.waitForSelector(".lvcard");
   log("greeting:", await page.locator(".greet .say").innerText());
+  log("accordion open by default:", JSON.stringify(await page.evaluate(() => [...document.querySelectorAll("details.lvcard")].map(d => d.open ? 1 : 0))));
+  await page.screenshot({ path: path.join(shots, "15-accordion.png"), fullPage: true });
+  await page.locator('details.lvcard[data-li="2"] summary').click();
+  await click('[data-a="allopen"]'); log("after buka semua:", await page.evaluate(() => document.querySelectorAll("details.lvcard[open]").length));
+  await click('[data-a="allopen"]'); log("after tutup semua:", await page.evaluate(() => document.querySelectorAll("details.lvcard[open]").length));
   log("unit checks:", JSON.stringify(await page.evaluate(() => ({
     contr1: accepts(["had not met"], "hadn't met"), contr2: accepts(["will pass/'ll pass".split("/")[1]], "will pass"),
     contr3: accepts(["can't"], "cannot"), wrongNo: accepts(["has visited"], "visited"),
