@@ -41,7 +41,8 @@ const ICONS = {
   box: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 11v4"/><path d="M5 9a7 5 0 0 1 14 0"/>'
 };
 const I = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
-const LOGO = (size, label) => `<svg width="${size}" height="${size}" viewBox="0 0 512 512" ${label ? 'role="img" aria-label="' + label + '"' : 'aria-hidden="true"'} style="border-radius:22%;border:2.5px solid #111;flex:none"><rect width="512" height="512" fill="#ffd84d"/><path transform="translate(14 14)" d="M172 136H340A56 56 0 0 1 396 192V280A56 56 0 0 1 340 336H236L158 398L176 336H172A56 56 0 0 1 116 280V192A56 56 0 0 1 172 136Z" fill="#111"/><path d="M172 136H340A56 56 0 0 1 396 192V280A56 56 0 0 1 340 336H236L158 398L176 336H172A56 56 0 0 1 116 280V192A56 56 0 0 1 172 136Z" fill="#3d5afe" stroke="#111" stroke-width="16" stroke-linejoin="round"/><text x="256" y="284" text-anchor="middle" font-family="Bricolage Grotesque, Inter Display, Arial Black, sans-serif" font-weight="800" font-size="132" fill="#fff">Hi!</text></svg>`;
+const BUBU = (size, cls = "", label = "") => `<svg class="bubu ${cls}" width="${size}" height="${Math.round(size * 92 / 86)}" viewBox="0 0 86 92" ${label ? 'role="img" aria-label="' + label + '"' : 'aria-hidden="true"'}><ellipse cx="43" cy="89" rx="24" ry="3" fill="rgba(36,38,74,.12)"/><path d="M10 14a10 10 0 0 1 10-10h46a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H38l-14 14 2-14h-6a10 10 0 0 1-10-10z" fill="#5b5bf0"/><circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="54" cy="32" r="7" fill="#fff"/><circle cx="34" cy="33" r="3.4" fill="#24264a"/><circle cx="56" cy="33" r="3.4" fill="#24264a"/><circle cx="24" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><circle cx="62" cy="44" r="4" fill="#ff9bb3" opacity=".8"/><path d="M33 46q10 8 20 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>`;
+const LOGO = (size, label) => `<span style="display:grid;place-items:center;width:${size}px;height:${size}px;border-radius:26%;background:#ffc845;box-shadow:0 4px 0 #d9a21f;flex:none" ${label ? 'role="img" aria-label="' + label + '"' : ""}>${BUBU(Math.round(size * .62))}</span>`;
 const REPO = "https://github.com/iiddon/english-study";
 
 /* ================= content ================= */
@@ -78,7 +79,7 @@ const KIND = { m: "Pilihan ganda", t: "Isian", f: "Benar/salah", o: "Susun kalim
 
 /* ================= state ================= */
 const KEY = "englishpath_v1";
-const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0 });
+const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "" });
 let S = fresh();
 function hydrate(o) {
   const s = Object.assign(fresh(), o || {});
@@ -88,6 +89,7 @@ function hydrate(o) {
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
   Object.keys(s.known).forEach(k => { if (!s.known[k] || typeof s.known[k] !== "object") s.known[k] = { b: 1, d: td }; });
   if (![30, 50, 100].includes(s.goal)) s.goal = 50;
+  s.name = typeof s.name === "string" ? s.name.slice(0, 24) : "";
   return s;
 }
 function loadLocal() { try { const r = localStorage.getItem(KEY); if (r) S = hydrate(JSON.parse(r)); } catch (e) {} }
@@ -242,7 +244,7 @@ function confetti() {
   try {
     if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const c = $("#fx"), x = c.getContext("2d"), W = c.width = window.innerWidth, Hh = c.height = window.innerHeight;
-    const cols = ["#ffcb05", "#0e8f51", "#1a67d6", "#7a45d6", "#d9650b", "#cf2f45"];
+    const cols = ["#ffc845", "#34c79a", "#5b5bf0", "#ff7a59", "#ff9bb3", "#8fb3ff"];
     const P = Array.from({ length: 110 }, () => ({ x: W / 2 + (Math.random() - .5) * Math.min(W, 520) * .5, y: Math.min(Hh * .4, 360), vx: (Math.random() - .5) * 13, vy: -Math.random() * 12 - 4, r: 4 + Math.random() * 5, c: pick(cols), a: Math.random() * 6, va: (Math.random() - .5) * .5 }));
     const t0 = performance.now(); c.style.display = "block";
     (function f(t) {
@@ -280,7 +282,7 @@ function parseHash(h) {
     case "latihan": return { v: "practice", a: [] };
     case "profil": return { v: "profile", a: [] };
     case "flashcard": return { v: "flash", a: [LEVELS.some(L => L.id === p[1]) ? p[1] : "all"] };
-    case "mulai": return { v: "welcome", a: [Math.min(2, n(p[1]) || 0)] };
+    case "mulai": return { v: "welcome", a: [Math.min(3, n(p[1]) || 0)] };
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
     case "bacaan": { const li = n(p[1]); return LEVELS[li] && LEVELS[li].read ? { v: "read", a: [li] } : null; }
     case "bicara": { const li = n(p[1]); return LEVELS[li] ? { v: "speak", a: [li] } : null; }
@@ -326,7 +328,7 @@ function nav(v, ...a) {
 const rerender = () => nav(ROUTE.v, ...ROUTE.a);
 const here = () => { const r = ROUTE; return () => nav(r.v, ...r.a); };
 function chrome() {
-  $("#top").innerHTML = `<button class="brand" data-g="home" aria-label="English Path, buka rute"><span class="mark">EP</span><span class="wm">English Path</span></button>
+  $("#top").innerHTML = `<button class="brand" data-g="home" aria-label="English Path, buka rute"><span class="mark">${BUBU(26)}</span><span class="wm">English Path</span></button>
     <div class="chips"><span class="chip" title="Hari beruntun">${I("flame")}${streakNow()}</span><span class="chip xp" title="Total XP">${I("star")}${S.xp}</span></div>`;
   const cur = SECTION[ROUTE.v] || "home";
   $("#nav").innerHTML = [["home", "Rute", "map"], ["practice", "Latihan", "zap"], ["profile", "Profil", "user"]]
@@ -354,6 +356,13 @@ function ring(f, main, sub, cls = "") {
 }
 
 /* ================= home ================= */
+function greetMsg() {
+  const dx = S.days[dkey()] || 0, st = streakNow();
+  if (!S.xp && !doneCount()) return "Yuk, mulai pelajaran pertamamu hari ini.";
+  if (dx >= S.goal) return "Target hari ini tercapai. Keren banget!";
+  if (dx === 0 && st > 0) return "Jaga streak " + st + " harimu, yuk belajar sebentar.";
+  return "Tinggal " + (S.goal - dx) + " XP lagi untuk target hari ini.";
+}
 VIEWS.home = function () {
   const d = doneCount(), next = nextLesson(), t = dkey(), nW = wrongItems().length, now = new Date();
   const ms = missions(), nDone = ms.filter(m => m.v >= m.max).length, allDone = nDone === ms.length, opened = S.chest === t;
@@ -361,7 +370,7 @@ VIEWS.home = function () {
   let cont;
   if (next) {
     const L = LEVELS[next.li], dn = L.lessons.filter(x => S.done[x.id]).length;
-    cont = `<button class="cont" data-a="cont" style="--lv:var(--l${L.i + 1})"><span class="tag">Lanjutkan · ${L.cefr} ${L.name}</span><span class="t">${esc(next.title)}</span>
+    cont = `<button class="cont" data-a="cont" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="tag">Lanjutkan · ${L.cefr} ${L.name}</span><span class="t">${esc(next.title)}</span>
       <span class="go"><span style="flex:1;display:grid;gap:7px"><span class="row" style="flex-wrap:nowrap"><span class="pbar"><i style="width:${dn / L.lessons.length * 100}%"></i></span><b>${dn}/${L.lessons.length}</b></span><small>Pelajaran ${next.j + 1} dari ${L.lessons.length} · ${next.qs.length} soal</small></span><span class="play">${I("play")}</span></span></button>`;
   } else cont = `<div class="card stack"><h2>Semua ${LESSONS.length} pelajaran selesai</h2><p class="muted">Jaga kemampuan Anda lewat misi harian dan tantangan.</p></div>`;
   const chest = opened ? `<div class="chest">${I("box")}<span><b>Peti hari ini sudah dibuka</b><br><span class="muted">Misi baru muncul besok.</span></span></div>`
@@ -369,7 +378,7 @@ VIEWS.home = function () {
     : `<div class="chest">${I("box")}<span><b>Peti hadiah</b><br><span class="muted">Selesaikan 3 misi untuk +50 XP</span></span></div>`;
   const lvcard = L => {
     const dn = L.lessons.filter(x => S.done[x.id]).length, n = L.lessons.length;
-    return `<article class="lvcard" style="--lv:var(--l${L.i + 1})">
+    return `<article class="lvcard" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})">
       <header class="lv-h"><span class="roundel">${L.cefr}</span><div class="lv-t"><h2>${L.name}</h2><p>${L.desc}</p></div><span class="count" aria-label="${dn} dari ${n} selesai">${dn}/${n}</span></header>
       <ol class="lrows">${L.lessons.map(x => {
         const st = S.done[x.id] ? "done" : (next && next.id === x.id ? "cur" : "todo");
@@ -381,7 +390,7 @@ VIEWS.home = function () {
   };
   app.innerHTML = `<div class="home">
     <div class="side stack">
-      <div class="hello"><p class="eyebrow">${DAYL[now.getDay()]}, ${now.getDate()} ${MON[now.getMonth()]}</p><h1>${next ? "Siap naik level?" : "Kerja hebat!"}</h1></div>
+      <div class="greet">${BUBU(64, "wave", "Bubu, maskot English Path")}<div class="say"><b>Halo${S.name ? ", " + esc(S.name) : ""}!</b><span>${greetMsg()}</span></div></div>
       ${cont}
       <section class="card mission" aria-label="Misi hari ini">
         <div class="mission-h"><h2>Misi hari ini</h2><span class="muted">${nDone} dari 3 selesai</span></div>
@@ -389,15 +398,15 @@ VIEWS.home = function () {
         ${chest}
       </section>
       <div class="tiles">
-        <button class="tile" style="--tc:var(--yellow)" data-a="daily">${I("calendar")}<b>Tantangan harian</b><small>${S.daily === t ? "Selesai hari ini" : "10 soal · +30 XP"}</small></button>
-        <button class="tile" style="--tc:var(--pink)" data-a="mist"${nW ? "" : " disabled"}>${I("retry")}<b>Ulangan hari ini</b><small>${nW ? nW + " soal jatuh tempo" : later ? later + " soal terjadwal nanti" : "Belum ada"}</small></button>
-        <button class="tile" style="--tc:var(--lilac)" data-a="matchg">${I("grid")}<b>Cocokkan kata</b><small>${S.matchBest ? "Rekor " + S.matchBest + " dtk" : "6 pasang kata"}</small></button>
-        <button class="tile" style="--tc:var(--mint)" data-a="flash">${I("layers")}<b>Flashcard</b><small>${known} dari ${VOCAB.length} hafal</small></button>
+        <button class="tile" style="--tc:var(--sun-l);--ts:#f3dc94;--ti:#e0a400" data-a="daily">${I("calendar")}<b>Tantangan harian</b><small>${S.daily === t ? "Selesai hari ini" : "10 soal · +30 XP"}</small></button>
+        <button class="tile" style="--tc:var(--coral-l);--ts:#f6c6b3;--ti:var(--coral)" data-a="mist"${nW ? "" : " disabled"}>${I("retry")}<b>Ulangan hari ini</b><small>${nW ? nW + " soal jatuh tempo" : later ? later + " soal terjadwal nanti" : "Belum ada"}</small></button>
+        <button class="tile" style="--tc:var(--lilac-l);--ts:#d6ccfa;--ti:#7a5cf0" data-a="matchg">${I("grid")}<b>Cocokkan kata</b><small>${S.matchBest ? "Rekor " + S.matchBest + " dtk" : "6 pasang kata"}</small></button>
+        <button class="tile" style="--tc:var(--mint-l);--ts:#b4e6d2;--ti:var(--mint)" data-a="flash">${I("layers")}<b>Flashcard</b><small>${known} dari ${VOCAB.length} hafal</small></button>
       </div>
     </div>
     <section class="stack" aria-label="Peta level">
       <div class="secthead"><div><p class="eyebrow">Peta level · ${LESSONS.length} pelajaran · ${NQ} soal</p><h2 style="font-size:30px;margin-top:4px">Dari A1 sampai C2</h2></div><span class="count">${d}/${LESSONS.length}</span></div>
-      <div class="allbar" aria-hidden="true">${LEVELS.map(L => `<span style="--lv:var(--l${L.i + 1})"><i style="width:${L.lessons.filter(x => S.done[x.id]).length / L.lessons.length * 100}%"></i></span>`).join("")}</div>
+      <div class="allbar" aria-hidden="true">${LEVELS.map(L => `<span style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><i style="width:${L.lessons.filter(x => S.done[x.id]).length / L.lessons.length * 100}%"></i></span>`).join("")}</div>
       <div class="levels">${LEVELS.map(lvcard).join("")}</div>
     </section></div>`;
   H = {
@@ -434,7 +443,7 @@ VIEWS.lesson = function (li, j, tab = "m") {
       <p class="muted">Skor 75% atau lebih menandai pelajaran ini selesai.${S.scores[x.id] != null ? " Skor terbaik Anda: " + S.scores[x.id] + "%." : ""}</p>
       <button class="btn lv" data-a="quiz">Mulai kuis</button><button class="btn ghost" data-a="quick">Latihan singkat · 5 soal</button></div>`;
   }
-  app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1})">
+  app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
     <div><button class="back" data-g="home">${I("left")} Rute</button>
     <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">${L.name} · Pelajaran ${j + 1} dari ${L.lessons.length}</p><h1>${esc(x.title)}</h1></div></div>
     <div class="seg" role="tablist">${tabs.map(([k, n]) => `<button role="tab" aria-selected="${k === tab}" data-a="tab" data-t="${k}">${n}</button>`).join("")}</div></div>
@@ -502,7 +511,7 @@ function runQuiz(items, o) {
   enterSession();
   clearInterval(TICK); TICK = null; stopSpeak();
   document.body.classList.add("focus");
-  const N = items.length, lv = o.li != null ? ` style="--lv:var(--l${o.li + 1})"` : "";
+  const N = items.length, lv = o.li != null ? ` style="--lv:var(--l${o.li + 1});--ldk:var(--ld${o.li + 1})"` : "";
   let i = 0, right = 0, combo = 0, maxCombo = 0, gained = 0, answered = false, st = {};
   const missed = [], res = [];
   const comboHTML = () => combo >= 3 ? `<span class="combo">${combo}× combo</span>` : "";
@@ -661,7 +670,7 @@ function runQuiz(items, o) {
 function matchGame(pool, o) {
   clearInterval(TICK); stopSpeak(); enterSession();
   document.body.classList.add("focus");
-  const lv = o.li != null ? ` style="--lv:var(--l${o.li + 1})"` : "";
+  const lv = o.li != null ? ` style="--lv:var(--l${o.li + 1});--ldk:var(--ld${o.li + 1})"` : "";
   const en = new Set(), id = new Set(), pairs = [];
   for (const p of shuffle(pool)) { if (pairs.length >= 6) break; if (en.has(p[0]) || id.has(p[1])) continue; en.add(p[0]); id.add(p[1]); pairs.push(p); }
   const A = shuffle(pairs.map((_, k) => k)), B = shuffle(pairs.map((_, k) => k));
@@ -712,7 +721,7 @@ function matchGame(pool, o) {
 /* ================= practice hub ================= */
 VIEWS.practice = function () {
   const t = dkey(), nW = wrongItems().length, known = knownCount(), later = wrongLater();
-  const tool = (a, ic, lv, title, desc, meta, dis) => `<button class="tool" data-a="${a}" style="--lv:var(--l${lv})"${dis ? " disabled" : ""}><span class="tic">${I(ic)}</span><span><b>${title}</b><small>${desc}</small></span><span class="meta">${meta}</span></button>`;
+  const tool = (a, ic, lv, title, desc, meta, dis) => `<button class="tool" data-a="${a}" style="--lv:var(--l${lv});--ldk:var(--ld${lv})"${dis ? " disabled" : ""}><span class="tic">${I(ic)}</span><span><b>${title}</b><small>${desc}</small></span><span class="meta">${meta}</span></button>`;
   app.innerHTML = `<div class="narrow stack">
     <div><p class="eyebrow">Latihan bebas</p><h1 style="margin-top:8px">Asah lagi yang sudah dipelajari.</h1></div>
     <div class="tools">
@@ -735,10 +744,10 @@ function startPlacement() {
       const sc = LEVELS.map((_, i) => res.slice(i * 3, i * 3 + 3).filter(Boolean).length);
       let rec = 0; while (rec < LEVELS.length && sc[rec] >= 2) rec++;
       const tgt = Math.min(rec, LEVELS.length - 1), L = LEVELS[tgt];
-      app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${tgt + 1})">
+      app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${tgt + 1});--ldk:var(--ld${tgt + 1})">
         <p class="eyebrow">Hasil tes penempatan</p>
         <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><h1>Mulai dari ${L.name}</h1><p class="muted">${rec === LEVELS.length ? "Anda menjawab benar di semua level. Pakai jalur Expert untuk mengasah." : "Level dihitung lulus jika 2 dari 3 soalnya benar."}</p></div></div>
-        <div class="card">${LEVELS.map((l, i) => `<div class="setting"><span class="row"><span class="roundel sm" style="--lv:var(--l${i + 1})">${l.cefr}</span><b>${l.name}</b></span><span class="count">${sc[i]}/3</span></div>`).join("")}</div>
+        <div class="card">${LEVELS.map((l, i) => `<div class="setting"><span class="row"><span class="roundel sm" style="--lv:var(--l${i + 1});--ldk:var(--ld${i + 1})">${l.cefr}</span><b>${l.name}</b></span><span class="count">${sc[i]}/3</span></div>`).join("")}</div>
         <button class="btn lv" data-a="go">Buka jalur ${L.cefr} ${I("right")}</button>
         ${tgt > 0 ? `<button class="btn ghost" data-a="mark">Tandai ${tgt} jalur sebelumnya selesai</button>` : ""}
         <button class="btn ghost" data-g="home">Kembali ke rute</button></div>`;
@@ -760,9 +769,9 @@ VIEWS.flash = function (f = "all") {
     const known = pool.filter(v => isKnown(v.w)).length, c = deck[0];
     app.innerHTML = `<div class="narrow stack">
       <div><button class="back" data-g="practice">${I("left")} Latihan</button><h1>Flashcard</h1></div>
-      <div class="seg" role="group" aria-label="Pilih level"><button aria-pressed="${f === "all"}" data-a="filt" data-f="all">Semua</button>${LEVELS.map(L => `<button aria-pressed="${f === L.id}" data-a="filt" data-f="${L.id}">${L.cefr}</button>`).join("")}</div>
+      <div class="seg scroll" role="group" aria-label="Pilih level"><button aria-pressed="${f === "all"}" data-a="filt" data-f="all">Semua</button>${LEVELS.map(L => `<button aria-pressed="${f === L.id}" data-a="filt" data-f="${L.id}">${L.cefr}</button>`).join("")}</div>
       <div><div class="bar"><i style="width:${pool.length ? known / pool.length * 100 : 0}%"></i></div><p class="muted" style="margin-top:6px">${known} dari ${pool.length} kata hafal · ${deck.length} kartu untuk hari ini</p></div>
-      ${c ? `<div class="flip" style="--lv:var(--l${c.li + 1})"><button class="flip-in" data-a="flip" aria-label="Balik kartu">
+      ${c ? `<div class="flip" style="--lv:var(--l${c.li + 1});--ldk:var(--ld${c.li + 1})"><button class="flip-in" data-a="flip" aria-label="Balik kartu">
           <span class="face a"><span class="eyebrow">${LEVELS[c.li].cefr} · ${S.known[c.w] ? "Ulangan" : "Kata baru"}</span><span class="w">${esc(c.w)}</span><span class="hint">Ketuk untuk melihat arti</span></span>
           <span class="face b"><span class="eyebrow" style="color:inherit">Arti</span><span class="w">${esc(c.m)}</span><span class="hint">${esc(c.w)}</span></span></button></div>
         ${canSpeak() ? `<button class="btn ghost" data-say="${esc(c.w)}">${I("speaker")} Dengarkan</button>` : ""}
@@ -789,7 +798,7 @@ VIEWS.read = function (li) {
   const L = LEVELS[li];
   if (!L || !L.read) return nav("home");
   const R = L.read, full = R.text.join(" ").replace(/<br>/g, ". ");
-  app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1})">
+  app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
     <div><button class="back" data-g="home">${I("left")} Rute</button>
     <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Bacaan · ${L.name}</p><h1>${esc(R.title)}</h1></div></div></div>
     ${canSpeak() ? `<div class="pair"><button class="btn ghost" data-a="listen">${I("headphones")} Dengarkan</button><button class="btn ghost" data-a="slow">Lambat</button></div>` : ""}
@@ -829,7 +838,7 @@ VIEWS.speak = function (li) {
     const [en, tr] = L.speak[k], ok = done()[k];
     const fb = st === "ok" || st === "no" ? `<div class="fb ${st}"><p class="fb-h"><span>${st === "ok" ? "Lancar!" : "Coba lagi"}</span><span class="plus">${pct}% cocok</span></p><p>Terdengar: <b>${esc(heard || "(tidak ada suara)")}</b></p>${st === "no" ? "<p>Ucapkan pelan dan jelas. Targetnya 80% kata cocok.</p>" : ""}</div>`
       : st === "err" ? `<div class="fb no"><p>${esc(heard)}</p></div>` : "";
-    app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1})">
+    app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
       <div><button class="back" data-g="home">${I("left")} Rute</button>
       <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Latihan berbicara · ${spokeN(L)}/${L.speak.length} lancar</p><h1>Ucapkan kalimat ini</h1></div></div></div>
       <div class="dots" role="group" aria-label="Pilih kalimat">${L.speak.map((_, n) => `<button class="${n === k ? "cur" : ""}${done()[n] ? " ok" : ""}" data-a="jump" data-k="${n}" aria-label="Kalimat ${n + 1}${done()[n] ? ", lancar" : ""}"></button>`).join("")}</div>
@@ -879,7 +888,7 @@ VIEWS.welcome = function (step = 0) {
   const done = () => { S.onb = 1; save(); };
   if (step === 0) {
     app.innerHTML = `<div class="narrow stack welcome">
-      <div class="row">${LOGO(72, "Logo English Path")}<p class="eyebrow">English Path</p></div>
+      <div class="greet">${BUBU(78, "wave", "Bubu, maskot English Path")}<div class="say"><b>Hai, aku Bubu!</b><span>Aku akan menemanimu belajar bahasa Inggris.</span></div></div>
       <h1>Belajar bahasa Inggris dari nol sampai mahir.</h1>
       <ul class="perks">
         <li>${I("map")}<span><b>${LESSONS.length} pelajaran, ${NQ} soal</b><br>Dari A1 Basic sampai C2 Expert, dijelaskan dalam bahasa Indonesia.</span></li>
@@ -890,19 +899,29 @@ VIEWS.welcome = function (step = 0) {
       <button class="btn ghost" data-a="skip">Lewati, langsung ke peta level</button></div>`;
   } else if (step === 1) {
     app.innerHTML = `<div class="narrow stack welcome">
-      <p class="eyebrow">Langkah 1 dari 2</p><h1>Berapa lama mau belajar tiap hari?</h1>
+      <p class="eyebrow">Langkah 1 dari 3</p><h1>Mau dipanggil siapa?</h1>
+      <form class="stack" id="nameform" novalidate><label class="sr" for="nm">Nama panggilan</label>
+      <input class="namefield" id="nm" name="nm" type="text" maxlength="24" autocomplete="given-name" placeholder="Nama panggilan" value="${esc(S.name)}">
+      <button class="btn" type="submit">Lanjut ${I("right")}</button></form>
+      <button class="btn ghost" data-a="noname">Lewati</button>
+      <p class="muted">Nama hanya tersimpan di perangkat ini, dipakai Bubu untuk menyapamu.</p></div>`;
+  } else if (step === 2) {
+    app.innerHTML = `<div class="narrow stack welcome">
+      <p class="eyebrow">Langkah 2 dari 3</p><h1>Berapa lama mau belajar tiap hari?</h1>
       <div class="goals">${[[30, "Santai", "± 10 menit"], [50, "Normal", "± 20 menit"], [100, "Serius", "± 40 menit"]].map(([g, n, m]) => `<button class="goal pop${S.goal === g ? " on" : ""}" data-a="goal" data-v="${g}"><b>${n}</b><span>${m} · ${g} XP</span></button>`).join("")}</div>
       <p class="muted">Bisa diubah kapan saja di Profil.</p></div>`;
   } else {
     app.innerHTML = `<div class="narrow stack welcome">
-      <p class="eyebrow">Langkah 2 dari 2</p><h1>Sudah bisa bahasa Inggris?</h1>
+      <p class="eyebrow">Langkah 3 dari 3</p><h1>Sudah bisa bahasa Inggris?</h1>
       <button class="goal pop" data-a="a1"><b>Saya pemula</b><span>Mulai dari pelajaran pertama A1</span></button>
       <button class="goal pop" data-a="test"><b>Sudah bisa sedikit</b><span>Tes penempatan 18 soal, ± 3 menit</span></button></div>`;
   }
   H = {
     s1() { nav("welcome", 1); },
     skip() { done(); nav("home"); },
-    goal(el) { S.goal = +el.dataset.v; save(); nav("welcome", 2); },
+    goal(el) { S.goal = +el.dataset.v; save(); nav("welcome", 3); },
+    submit(f) { S.name = (f.querySelector("#nm").value || "").trim().slice(0, 24); save(); nav("welcome", 2); },
+    noname() { nav("welcome", 2); },
     a1() { done(); nav("lesson", 0, 0); },
     test() { done(); startPlacement(); }
   };
@@ -920,6 +939,7 @@ VIEWS.profile = function () {
     <div class="badges">${BADGES.map(b => `<div class="badge${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><small>${b.d}</small></span></div>`).join("")}</div>
     <h2 style="margin-top:10px">Pengaturan</h2>
     <div class="card" style="padding-top:4px;padding-bottom:4px">
+      <div class="setting"><label for="pname"><b>Nama panggilan</b><p class="muted">Dipakai Bubu untuk menyapamu</p></label><input id="pname" type="text" maxlength="24" autocomplete="given-name" data-c="nm" value="${esc(S.name)}" placeholder="Nama"></div>
       <div class="setting"><div><b>Target harian</b><p class="muted">XP yang ingin Anda kumpulkan per hari</p></div><div class="seg" role="group" aria-label="Target harian">${[30, 50, 100].map(g => `<button aria-pressed="${S.goal === g}" data-a="goal" data-v="${g}">${g} XP</button>`).join("")}</div></div>
       <div class="setting"><label class="switch" for="snd"><input type="checkbox" id="snd" data-c="sound"${S.sound ? " checked" : ""}> Efek suara</label></div>
       <div class="setting"><div><b>Penyimpanan</b><p class="muted">${SYNC === "on" ? "Progres tersimpan di akun Claude Anda, jadi sama di HP dan komputer." : SYNC === "err" ? "Belum bisa menyimpan ke akun. Progres tetap tersimpan di browser ini." : "Progres tersimpan di browser ini."}</p></div></div>
@@ -938,6 +958,7 @@ VIEWS.profile = function () {
   let armed = false;
   H = {
     goal(el) { S.goal = +el.dataset.v; save(); rerender(); },
+    nm(el) { S.name = (el.value || "").trim().slice(0, 24); save(); },
     sound(el) { S.sound = el.checked; save(); if (S.sound) sfx.ok(); },
     install() { if (!DEFER) return; DEFER.prompt(); DEFER.userChoice.finally(() => { DEFER = null; rerender(); }); },
     exp() {

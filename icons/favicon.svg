@@ -1,5 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<rect width="512" height="512" rx="112" fill="#ffd84d"/>
-<path d="M150 110H362A70 70 0 0 1 432 180V286A70 70 0 0 1 362 356H250L148 438L170 356H150A70 70 0 0 1 80 286V180A70 70 0 0 1 150 110Z" fill="#3d5afe" stroke="#111111" stroke-width="30" stroke-linejoin="round"/>
-<text x="256" y="292" text-anchor="middle" font-family="Bricolage Grotesque, Inter Display, Inter, Arial Black, sans-serif" font-weight="900" font-size="170" fill="#ffffff">Hi</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="120" fill="#ffc845"/><g transform="translate(56 50) scale(4.65)"><path d="M10 14a10 10 0 0 1 10-10h46a10 10 0 0 1 10 10v40a10 10 0 0 1-10 10H38l-14 14 2-14h-6a10 10 0 0 1-10-10z" fill="#5b5bf0"/><circle cx="32" cy="32" r="7" fill="#fff"/><circle cx="54" cy="32" r="7" fill="#fff"/><circle cx="34" cy="33" r="3.4" fill="#24264a"/><circle cx="56" cy="33" r="3.4" fill="#24264a"/><circle cx="24" cy="44" r="4" fill="#ff9bb3" opacity=".85"/><circle cx="62" cy="44" r="4" fill="#ff9bb3" opacity=".85"/><path d="M33 46q10 8 20 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></g></svg>

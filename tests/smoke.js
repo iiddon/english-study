@@ -65,12 +65,14 @@ require("fs").mkdirSync(shots, { recursive: true });
   // onboarding
   await page.waitForSelector(".welcome");
   await page.screenshot({ path: path.join(shots, "0-welcome.png") });
-  await click('[data-a="s1"]'); await click('[data-a="goal"][data-v="50"]');
+  await click('[data-a="s1"]'); await page.fill("#nm", "Dewi"); await page.screenshot({ path: path.join(shots, "0a-name.png") }); await page.keyboard.press("Enter");
+  await click('[data-a="goal"][data-v="50"]');
   await page.screenshot({ path: path.join(shots, "0b-welcome2.png") });
   await click('[data-a="a1"]');
   log("onboarding ->", await page.locator("h1").first().textContent(), "| onb", (await state()).onb);
   await click('#nav [data-g="home"]');
   await page.waitForSelector(".lvcard");
+  log("greeting:", await page.locator(".greet .say").innerText());
   log("unit checks:", JSON.stringify(await page.evaluate(() => ({
     contr1: accepts(["had not met"], "hadn't met"), contr2: accepts(["will pass/'ll pass".split("/")[1]], "will pass"),
     contr3: accepts(["can't"], "cannot"), wrongNo: accepts(["has visited"], "visited"),
