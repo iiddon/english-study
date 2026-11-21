@@ -163,6 +163,19 @@ const BADGES = [
   { id: "xp1000", n: "1.000 XP", d: "Kumpulkan 1.000 XP", ic: "star", t: () => S.xp >= 1000 },
   ...LEVELS.map(L => ({ id: "lv_" + L.id, n: "Jalur " + L.cefr, d: "Selesaikan semua pelajaran " + L.name, ic: "award", t: () => L.lessons.every(x => S.done[x.id]) }))
 ];
+const BPROG = {
+  first: () => doneCount(), s3: () => S.best / 3, s7: () => S.best / 7, perfect: () => Math.max(0, ...Object.values(S.scores)) / 100, combo10: () => S.combo / 10,
+  c100: () => S.cor / 100, c500: () => S.cor / 500, w30: () => knownCount() / 30, reader: () => Math.max(0, ...Object.values(S.read)) / 60, speaker: () => spokeTotal() / 10,
+  chest: () => S.chests, xp1000: () => S.xp / 1000, talk3: () => Object.keys(S.talk).length / 3, exam1: () => S.exams.length, mine20: () => Object.keys(S.mine).length / 20
+};
+const badgeProg = b => { const f = BPROG[b.id]; if (f) return Math.min(1, f() || 0); const L = LEVELS.find(l => "lv_" + l.id === b.id); return L ? L.lessons.filter(x => S.done[x.id]).length / L.lessons.length : 0; };
+const badgeHTML = (b, prog) => `<div class="badge${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><small>${b.d}</small>${prog && !S.badges[b.id] ? `<span class="bprog" aria-label="Progres ${Math.round(badgeProg(b) * 100)}%"><i style="width:${badgeProg(b) * 100}%"></i></span>` : ""}</span></div>`;
+function badgeSummary() {
+  const got = BADGES.filter(b => S.badges[b.id]), near = BADGES.filter(b => !S.badges[b.id]).map(b => [b, badgeProg(b)]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]);
+  return `${got.length ? `<div class="badges">${got.map(b => badgeHTML(b)).join("")}</div>` : `<p class="muted">Belum ada lencana. Selesaikan pelajaran pertamamu untuk mendapat yang pertama.</p>`}
+    ${near.length ? `<p class="eyebrow" style="margin-top:4px">Hampir dapat</p><div class="badges">${near.map(b => badgeHTML(b, true)).join("")}</div>` : ""}
+    <details class="more"><summary>Lihat semua ${BADGES.length} lencana ${I("down")}</summary><div class="badges">${BADGES.map(b => badgeHTML(b, true)).join("")}</div></details>`;
+}
 function newBadges() { const out = []; BADGES.forEach(b => { if (!S.badges[b.id] && b.t()) { S.badges[b.id] = dkey(); out.push(b); } }); return out; }
 
 /* ================= account sync (optional) ================= */
@@ -441,12 +454,12 @@ VIEWS.home = function () {
     <div class="side stack">
       <div class="greet">${BUBU(64, "wave", "Bubu, maskot English Path")}<div class="say"><b>Halo${S.name ? ", " + esc(S.name) : ""}!</b><span>${greetMsg()}</span></div></div>
       ${cont}
-      <section class="card mission" aria-label="Misi hari ini">
+      <div class="swipe" id="swipe" aria-label="Kartu harian, geser untuk melihat"><section class="card mission" aria-label="Misi hari ini">
         <div class="mission-h"><h2>Misi hari ini</h2><span class="muted">${nDone} dari 3 selesai</span></div>
         ${ms.map(m => { const ok = m.v >= m.max; return `<div class="mrow${ok ? " done" : ""}"><span class="mbox">${ok ? I("check") : ""}</span><span><span class="mt">${m.n}</span>${ok ? "" : `<span class="pbar" style="display:block"><i style="width:${m.v / m.max * 100}%"></i></span>`}</span><span class="mn">${Math.min(m.v, m.max)}/${m.max}</span></div>`; }).join("")}
         ${chest}
       </section>
-      ${wotdHTML()}
+      ${wotdHTML()}</div><div class="sdots" aria-hidden="true"><i class="on"></i><i></i><span>Geser untuk Kata hari ini</span></div>
       <div class="tiles">
         <button class="tile" style="--tc:var(--sun-l);--ts:var(--sun-s);--ti:var(--sun-d)" data-a="daily">${I("calendar")}<b>Tantangan harian</b><small>${S.daily === t ? "Selesai hari ini" : "10 soal · +30 XP"}</small></button>
         <button class="tile" style="--tc:var(--coral-l);--ts:var(--coral-s);--ti:var(--coral)" data-a="mist"${nW ? "" : " disabled"}>${I("retry")}<b>Ulangan hari ini</b><small>${nW ? nW + " soal jatuh tempo" : later ? later + " soal terjadwal nanti" : "Belum ada"}</small></button>
@@ -458,6 +471,8 @@ VIEWS.home = function () {
       <div class="secthead"><div><p class="eyebrow">Peta level · ${LESSONS.length} pelajaran · ${NQ} soal</p><h2 style="font-size:30px;margin-top:4px">Dari A1 sampai C2</h2></div><button class="back" data-a="allopen" style="padding:8px 0">${OPENLV.size === LEVELS.length ? "Tutup semua" : "Buka semua"}</button></div>
       <div class="levels">${LEVELS.map(lvcard).join("")}</div>
     </section></div>`;
+  { const sw = $("#swipe"), dots = $$(".sdots i"), lab = $(".sdots span");
+    if (sw) sw.addEventListener("scroll", () => { const k = Math.round(sw.scrollLeft / Math.max(1, sw.scrollWidth - sw.clientWidth)); dots.forEach((d, n) => d.classList.toggle("on", n === k)); if (lab) lab.textContent = k ? "Geser untuk Misi hari ini" : "Geser untuk Kata hari ini"; }, { passive: true }); }
   H = {
     open(el) { nav("lesson", +el.dataset.l, +el.dataset.j); },
     allopen() { const all = OPENLV.size === LEVELS.length; $$("details.lvcard").forEach(dd => { dd.open = !all; }); },
@@ -880,17 +895,22 @@ VIEWS.practice = function () {
   const tool = (a, ic, lv, title, desc, meta, dis) => `<button class="tool" data-a="${a}" style="--lv:var(--l${lv});--ldk:var(--ld${lv})"${dis ? " disabled" : ""}><span class="tic">${I(ic)}</span><span><b>${title}</b><small>${desc}</small></span><span class="meta">${meta}</span></button>`;
   app.innerHTML = `<div class="narrow stack">
     <div><p class="eyebrow">Latihan bebas</p><h1 style="margin-top:8px">Asah lagi yang sudah dipelajari.</h1></div>
-    <div class="tools">
+    <section class="tgroup" aria-label="Harian"><div class="tg-h"><h2>Harian</h2><span class="muted">Sebentar tiap hari</span></div><div class="tools">
       ${tool("daily", "calendar", 4, "Tantangan harian", "10 soal acak dari pelajaran yang sudah Anda buka", S.daily === t ? "Selesai" : "+30 XP")}
       ${tool("mist", "retry", 5, "Ulangan hari ini", nW ? "Soal yang pernah salah, dijadwalkan ulang otomatis" : later ? later + " soal dijadwalkan muncul di hari lain" : "Soal yang Anda jawab salah akan dijadwalkan di sini", nW ? nW + " soal" : "Kosong", !nW)}
-      ${tool("exam", "timer", 6, "Simulasi tes", "Tes berwaktu: tata bahasa, membaca, mendengar. Dapat perkiraan level CEFR", S.exams.length ? "Terakhir " + S.exams[S.exams.length - 1].lv : "35 soal")}
-      ${tool("mine", "bookmark", 5, "Kataku", "Kamus pribadimu: kata yang kamu simpan, siap dilatih", Object.keys(S.mine).length + " kata")}
-      ${tool("talk", "chat", 1, "Percakapan", "Ngobrol di kafe, hotel, sampai wawancara kerja", Object.keys(S.talk).length + "/" + Object.keys(TALK).length)}
-      ${tool("matchg", "grid", 3, "Cocokkan kata", "Pasangkan 6 kata dengan artinya secepat mungkin", S.matchBest ? S.matchBest + " dtk" : "Baru")}
+    </div></section>
+    <section class="tgroup" aria-label="Asah skill"><div class="tg-h"><h2>Asah skill</h2><span class="muted">Kosakata, mendengar, ngobrol</span></div><div class="tools">
       ${tool("flash", "layers", 2, "Flashcard", "Balik kartu dan tandai kata yang sudah hafal", known + "/" + VOCAB.length)}
+      ${tool("mine", "bookmark", 5, "Kataku", "Kamus pribadimu: kata yang kamu simpan, siap dilatih", Object.keys(S.mine).length + " kata")}
+      ${tool("matchg", "grid", 3, "Cocokkan kata", "Pasangkan 6 kata dengan artinya secepat mungkin", S.matchBest ? S.matchBest + " dtk" : "Baru")}
       ${canSpeak() ? tool("listen", "headphones", 6, "Dengar & susun", "Dengarkan kalimat, lalu susun kata-katanya", "5 kalimat") : ""}
+      ${tool("talk", "chat", 1, "Percakapan", "Ngobrol di kafe, hotel, sampai wawancara kerja", Object.keys(S.talk).length + "/" + Object.keys(TALK).length)}
+    </div></section>
+    <section class="tgroup" aria-label="Ukur level"><div class="tg-h"><h2>Ukur level</h2><span class="muted">Cek kemajuanmu</span></div><div class="tools">
+      ${tool("exam", "timer", 6, "Simulasi tes", "Tes berwaktu: tata bahasa, membaca, mendengar. Dapat perkiraan level CEFR", S.exams.length ? "Terakhir " + S.exams[S.exams.length - 1].lv : "35 soal")}
       ${tool("place", "compass", 1, "Tes penempatan", "18 soal untuk menemukan level awal Anda", "A1–C2")}
-    </div></div>`;
+    </div></section>
+    </div>`;
   H = { daily: startDaily, mist: startMistakes, matchg: globalMatch, talk() { nav("talk"); }, exam() { nav("exam"); }, mine() { nav("mine"); }, flash() { nav("flash"); }, listen: globalListen, place: startPlacement };
 };
 
@@ -1094,10 +1114,13 @@ VIEWS.profile = function () {
   app.innerHTML = `<div class="narrow stack">
     <div class="rank"><div class="rank-h"><p class="eyebrow">Peringkat ${S.name ? esc(S.name) : "Anda"}</p><button class="iconbtn" data-g="settings" aria-label="Pengaturan">${I("gear")}</button></div><h1>${r.name}</h1>
       ${r.next ? `<div class="bar"><i style="width:${(S.xp - r.at) / (r.next.at - r.at) * 100}%"></i></div><p class="muted">${S.xp} XP. ${r.next.at - S.xp} XP lagi menuju ${r.next.name}.</p>` : `<p class="muted">${S.xp} XP. Ini peringkat tertinggi.</p>`}</div>
+    <section class="card stack statcard" aria-label="Statistik">
+      <dl class="statrow">${stat("Streak", streakNow() + " hr")}${stat("Pelajaran", doneCount() + "/" + LESSONS.length)}${stat("Akurasi", acc + "%")}${stat("Kata hafal", knownCount())}</dl>
+      <details class="more"><summary>Statistik lengkap ${I("down")}</summary><dl class="statlist">${stat("Hari beruntun", streakNow())}${stat("Rekor beruntun", S.best + " hari")}${stat("Pelajaran selesai", doneCount() + " dari " + LESSONS.length)}${stat("Akurasi", acc + "%")}${stat("Soal dijawab", S.ans)}${stat("Jawaban benar", S.cor)}${stat("Combo terbaik", S.combo + "×")}${stat("Kata hafal", knownCount())}${stat("Kata di Kataku", Object.keys(S.mine).length)}${stat("Simulasi tes", S.exams.length + "×")}</dl></details>
+    </section>
     ${progressHTML(7)}
-    <dl class="statgrid">${stat("Hari beruntun", streakNow())}${stat("Rekor beruntun", S.best)}${stat("Pelajaran", doneCount() + "/" + LESSONS.length)}${stat("Akurasi", acc + "%")}${stat("Soal dijawab", S.ans)}${stat("Jawaban benar", S.cor)}${stat("Combo terbaik", S.combo + "×")}${stat("Kata hafal", knownCount())}</dl>
     <h2 style="margin-top:10px">Lencana · ${got} dari ${BADGES.length}</h2>
-    <div class="badges">${BADGES.map(b => `<div class="badge${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><small>${b.d}</small></span></div>`).join("")}</div>
+    ${badgeSummary()}
     <h2 style="margin-top:10px">Sertifikat</h2>
     ${LEVELS.some(L => S.cert[L.id]) ? `<div class="certs">${LEVELS.filter(L => S.cert[L.id]).map(L => `<button class="cert" data-a="cert" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="roundel sm">${L.cefr}</span><span><b>${L.name}</b><small>Skor ${S.cert[L.id].p}% · ${longDate(S.cert[L.id].d)}</small></span>${I("award")}</button>`).join("")}</div>` : `<div class="card"><p class="muted">Lulus tes level (skor 75% ke atas) untuk mendapat sertifikat bernama yang bisa kamu bagikan.</p></div>`}
     <button class="setrow" data-g="settings">${I("gear")}<span class="grow"><b>Pengaturan</b><small>Nama, target harian, tampilan, suara, pindahkan progres</small></span>${I("right")}</button></div>`;

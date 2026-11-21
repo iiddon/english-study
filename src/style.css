@@ -586,6 +586,47 @@ body.sub .toast,body.focus .toast{bottom:calc(20px + env(safe-area-inset-bottom,
 .setrow b{display:block;font:600 19px/1.2 var(--display)}
 .setrow small{color:var(--muted);font-weight:700;font-size:14px}
 
+/* ---------- profil ringkas ---------- */
+.statrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.statrow div{padding:10px 8px;border-radius:16px;text-align:center}
+.statrow div:nth-child(1){background:var(--sun-l)}.statrow div:nth-child(2){background:var(--coral-l)}.statrow div:nth-child(3){background:var(--lilac-l)}.statrow div:nth-child(4){background:var(--mint-l)}
+.statrow dt{font:800 12px/1.2 var(--body);color:var(--muted)}
+.statrow dd{font:700 22px/1.1 var(--display);font-variant-numeric:tabular-nums;margin-top:4px;white-space:nowrap}
+@media (max-width:360px){.statrow dd{font-size:19px}}
+.more>summary{display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;font-weight:800;color:var(--primary-d);cursor:pointer;list-style:none;border-radius:14px}
+.more>summary::-webkit-details-marker{display:none}
+.more>summary .ic{width:18px;height:18px;transition:transform .2s}
+.more[open]>summary .ic{transform:rotate(180deg)}
+:root[data-theme="dark"] .more>summary{color:#a9a9ff}
+.statlist{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;margin-top:4px}
+.statlist div{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:2px solid var(--soft)}
+.statlist dt{color:var(--muted);font-weight:700}
+.statlist dd{font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
+@media (max-width:480px){.statlist{grid-template-columns:1fr}}
+.more .badges{margin-top:8px}
+.bprog{display:block;height:6px;margin-top:6px;border-radius:99px;background:var(--soft);overflow:hidden}
+.bprog i{display:block;height:100%;background:var(--sun-d);border-radius:99px}
+
+/* ---------- latihan berkelompok ---------- */
+.tgroup{display:grid;gap:10px}
+.tg-h{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:6px}
+.tg-h .muted{font-size:14px;font-weight:700}
+@media (min-width:760px){.tgroup .tools{grid-template-columns:1fr 1fr}}
+
+/* ---------- beranda: kartu harian bisa digeser (HP & iPad tegak) ---------- */
+.sdots{display:none}
+@media (max-width:919px){
+  .swipe{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:2px 18px 8px;scroll-padding:0 18px;scrollbar-width:none;overscroll-behavior-x:contain}
+  .swipe::-webkit-scrollbar{display:none}
+  .swipe>*{flex:0 0 calc(100% - 28px);scroll-snap-align:start;min-width:0}
+  .sdots{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:-6px}
+  .sdots i{width:8px;height:8px;border-radius:99px;background:var(--line);transition:width .2s,background .2s}
+  .sdots i.on{width:22px;background:var(--primary)}
+  .sdots span{margin-left:6px;font-size:13px;font-weight:700;color:var(--muted)}
+}
+@media (min-width:600px) and (max-width:919px){.swipe>*{flex-basis:calc(50% - 6px)}.sdots{display:none}}
+@media (min-width:920px){.swipe{display:grid;gap:22px}}
+
 /* ---------- mode gelap: token yang sama, nilai gelap ---------- */
 :root[data-theme="dark"]{
   --bg:#141629; --surface:#1f2238; --soft:#262a45; --line:#32375c;
