@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" fill="#ffd84d"/>
+<path transform="translate(14 14)" d="M172 136H340A56 56 0 0 1 396 192V280A56 56 0 0 1 340 336H236L158 398L176 336H172A56 56 0 0 1 116 280V192A56 56 0 0 1 172 136Z" fill="#111111"/>
+<path d="M172 136H340A56 56 0 0 1 396 192V280A56 56 0 0 1 340 336H236L158 398L176 336H172A56 56 0 0 1 116 280V192A56 56 0 0 1 172 136Z" fill="#3d5afe" stroke="#111111" stroke-width="16" stroke-linejoin="round"/>
+<text x="256" y="284" text-anchor="middle" font-family="Bricolage Grotesque, Inter Display, Inter, Arial Black, sans-serif" font-weight="800" font-size="132" fill="#ffffff">Hi!</text>
+</svg>

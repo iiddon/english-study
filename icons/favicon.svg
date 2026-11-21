@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" rx="112" fill="#ffd84d"/>
+<path d="M150 110H362A70 70 0 0 1 432 180V286A70 70 0 0 1 362 356H250L148 438L170 356H150A70 70 0 0 1 80 286V180A70 70 0 0 1 150 110Z" fill="#3d5afe" stroke="#111111" stroke-width="30" stroke-linejoin="round"/>
+<text x="256" y="292" text-anchor="middle" font-family="Bricolage Grotesque, Inter Display, Inter, Arial Black, sans-serif" font-weight="900" font-size="170" fill="#ffffff">Hi</text>
+</svg>
