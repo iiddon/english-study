@@ -46,8 +46,8 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
 
     // percakapan
     await page.evaluate(() => nav("talk"));
-    ok(await page.locator(".tool").count() === 6, `${name}: daftar 6 percakapan`);
-    await page.locator(".tool").nth(1).click();
+    ok(await page.locator(".tool").count() === 12, `${name}: daftar 12 percakapan`);
+    await page.locator('.tool[data-l="2"]').click();
     await page.waitForTimeout(900);
     for (let n = 0; n < 5; n++) {
       await page.waitForSelector("#reply .opt", { timeout: 4000 });

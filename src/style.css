@@ -627,6 +627,30 @@ body.sub .toast,body.focus .toast{bottom:calc(20px + env(safe-area-inset-bottom,
 @media (min-width:600px) and (max-width:919px){.swipe>*{flex-basis:calc(50% - 6px)}.sdots{display:none}}
 @media (min-width:920px){.swipe{display:grid;gap:22px}}
 
+/* ---------- babak & bintang ---------- */
+.stars{display:inline-flex;gap:1px;flex:none;font-size:16px;line-height:1;letter-spacing:0}
+.stars i{font-style:normal;color:var(--muted)}
+.stars i.on{color:var(--xp-ink)}
+.qinfo{display:flex;flex-direction:column;gap:14px;justify-content:center}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.qhead b{display:block;font:600 22px/1.2 var(--display)}
+.qhead .muted{font-size:14px;font-weight:700}
+.qhead .stars{font-size:26px}
+.rounds{display:grid;gap:10px}
+.round{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:12px 14px;border:2px solid var(--line);border-radius:18px;background:var(--surface);text-align:left;box-shadow:var(--sh);transition:transform .1s}
+.round:active:not(:disabled){transform:translateY(3px);box-shadow:none}
+.round .rn{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:50%;background:var(--soft);font:700 18px/1 var(--display);color:var(--muted)}
+.round .rn .ic{width:20px;height:20px}
+.round b{display:block;font:600 18px/1.2 var(--display)}
+.round small{color:var(--muted);font-weight:700;font-size:13.5px}
+.round>.ic{width:20px;height:20px;color:var(--muted);flex:none}
+.round.cur{border-color:var(--ldk);background:var(--lv)}
+.round.cur .rn{background:var(--ldk);color:#fff}
+.round.ok .rn{background:var(--mint);color:#fff}
+.round:disabled{opacity:.6;box-shadow:none}
+:root[data-theme="dark"] .round.cur .rn,:root[data-theme="dark"] .round.ok .rn{color:#141629}
+@media (max-height:700px){.qhead b{font-size:19px}.round{min-height:54px;padding:8px 12px}.round .rn{width:34px;height:34px}.qinfo{gap:10px}}
+
 /* ---------- mode gelap: token yang sama, nilai gelap ---------- */
 :root[data-theme="dark"]{
   --bg:#141629; --surface:#1f2238; --soft:#262a45; --line:#32375c;

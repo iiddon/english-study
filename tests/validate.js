@@ -4,10 +4,15 @@ const src = f => fs.readFileSync(path.join(__dirname, "..", "src", f), "utf8");
 eval(src("levels.js").replace("const LEVELS", "globalThis.LEVELS"));
 eval(src("extra.js").replace("const EXTRA", "globalThis.EXTRA"));
 eval(src("lessons2.js").replace("const MORE", "globalThis.MORE").replace("const READING", "globalThis.READING").replace("const SPEAK", "globalThis.SPEAK"));
+for (const f of ["r1", "r2", "r3", "r4", "r5", "r6"]) eval(src(f + ".js").replace("const ROUNDS", "globalThis.ROUNDS"));
+for (const k in ROUNDS) { const n = ROUNDS[k].trim().split("\n").length; if (n !== 40) console.log("ERR rounds " + k + " has " + n + " lines"); EXTRA[k] = (EXTRA[k] || "") + "\n" + ROUNDS[k]; }
+eval(src("more2.js").replace("const READING2", "globalThis.READING2").replace("const SPEAK2", "globalThis.SPEAK2").replace("const TALK2", "globalThis.TALK2"));
+const extraReads = [];
+for (const k in READING2) READING2[k].forEach((r, n) => { EXTRA["r_" + k + (n + 2)] = r.qs; extraReads.push({ id: "r_" + k + (n + 2), title: "Bacaan " + r.title, quiz: [], min: 5 }); });
 for (const k in READING) { EXTRA["r_" + k] = READING[k].qs; }
 let bad = 0, total = 0;
 const err = m => { bad++; console.log("ERR", m); };
-for (const L of LEVELS) for (const x of [...L.lessons, { id: "r_" + L.id, title: "Bacaan " + L.name, quiz: [], min: 5 }]) {
+for (const L of LEVELS) for (const x of [...L.lessons, { id: "r_" + L.id, title: "Bacaan " + L.name, quiz: [], min: 5 }, ...extraReads.filter(r => r.id.startsWith("r_" + L.id) && /\d$/.test(r.id))]) {
   const lines = (EXTRA[x.id] || "").trim().split("\n").map(s => s.trim()).filter(Boolean);
   const kinds = { m: x.quiz.length, t: 0, f: 0, o: 0 };
   const seen = new Set(x.quiz.map(q => q.q));
@@ -34,7 +39,8 @@ for (const L of LEVELS) for (const x of [...L.lessons, { id: "r_" + L.id, title:
   }
   const n = Object.values(kinds).reduce((a, b) => a + b, 0);
   total += n;
-  if (n < (x.min || 20)) err(x.id + " only " + n + " questions");
+  if (n < (x.min || 60)) err(x.id + " only " + n + " questions");
+  if (!x.min && n !== 60) err(x.id + " has " + n + " questions, expected 60");
   console.log(x.id.padEnd(3), String(n).padStart(2), JSON.stringify(kinds), x.title);
 }
 console.log("TOTAL", total, bad ? "— " + bad + " problem(s)" : "— all good");

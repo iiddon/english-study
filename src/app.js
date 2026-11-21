@@ -46,6 +46,7 @@ const ICONS = {
   timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>',
   chart: '<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/>',
   gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
+  lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   box: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 11v4"/><path d="M5 9a7 5 0 0 1 14 0"/>'
 };
 const I = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -73,32 +74,37 @@ LEVELS.forEach((L, li) => {
   L.i = li;
   L.lessons.forEach((x, j) => {
     x.li = li; x.j = j;
-    const extra = (EXTRA[x.id] || "").trim().split("\n").map(s => s.trim()).filter(Boolean).map(parseLine);
+    const extra = ((EXTRA[x.id] || "") + "\n" + (ROUNDS[x.id] || "")).trim().split("\n").map(s => s.trim()).filter(Boolean).map(parseLine);
     x.qs = x.quiz.map(q => ({ t: "m", q: q.q, o: q.o, e: q.e })).concat(extra);
     x.qs.forEach((q, n) => { q.key = x.id + ":" + n; q.li = li; QMAP[q.key] = q; });
     LESSONS.push(x);
   });
 });
-{ const seen = new Set(); LESSONS.forEach(x => x.vocab.forEach(([w, m]) => { if (!seen.has(w)) { seen.add(w); VOCAB.push({ w, m, li: x.li }); } })); }
+{ const seen = new Set(); LESSONS.forEach(x => x.vocab.forEach(([w, m]) => { if (!seen.has(w)) { seen.add(w); VOCAB.push({ w, m, li: x.li, t: x.title }); } }));
+  LEVELS.forEach((L, li) => (VOCX[L.id] || "").trim().split("\n").forEach(ln => { const [w, m, t] = ln.split("|").map(x => x && x.trim()); if (w && m && !seen.has(w)) { seen.add(w); VOCAB.push({ w, m, li, t: t || "" }); } })); }
 LEVELS.forEach(L => {
   const R = READING[L.id];
   if (R) {
-    L.read = { title: R.title, text: R.text, qs: R.qs.trim().split("\n").map(x => x.trim()).filter(Boolean).map(parseLine) };
-    L.read.qs.forEach((q, n) => { q.key = "r_" + L.id + ":" + n; q.li = L.i; QMAP[q.key] = q; });
+    L.reads = [R, ...(READING2[L.id] || [])].map((r, k) => {
+      const o = { title: r.title, text: r.text, k, sid: k ? L.id + "_" + k : L.id, qs: r.qs.trim().split("\n").map(x => x.trim()).filter(Boolean).map(parseLine) };
+      o.qs.forEach((q, n) => { q.key = "r_" + L.id + (k ? k + 1 : "") + ":" + n; q.li = L.i; QMAP[q.key] = q; });
+      return o;
+    });
+    L.read = L.reads[0];
   }
-  L.speak = SPEAK[L.id] || [];
+  L.speak = (SPEAK[L.id] || []).concat(SPEAK2[L.id] || []);
 });
-const NQ = LESSONS.reduce((n, x) => n + x.qs.length, 0) + LEVELS.reduce((n, L) => n + (L.read ? L.read.qs.length : 0), 0);
+const NQ = LESSONS.reduce((n, x) => n + x.qs.length, 0) + LEVELS.reduce((n, L) => n + (L.reads || []).reduce((m, r) => m + r.qs.length, 0), 0);
 const RANKS = [[0, "Penumpang baru"], [200, "Komuter"], [600, "Penjelajah"], [1500, "Navigator"], [3000, "Kondektur"], [5000, "Masinis"]];
 const KIND = { m: "Pilihan ganda", t: "Isian", f: "Benar/salah", o: "Susun kalimat" };
 
 /* ================= state ================= */
 const KEY = "englishpath_v1";
-const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {}, mine: {}, sk: {}, exams: [] });
+const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {}, mine: {}, sk: {}, exams: [], rounds: {} });
 let S = fresh();
 function hydrate(o) {
   const s = Object.assign(fresh(), o || {});
-  ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert", "mine", "sk"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
+  ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert", "mine", "sk", "rounds"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
   ["xp", "streak", "best", "ans", "cor", "combo", "matchBest", "ts", "resetAt", "chests", "onb"].forEach(k => { s[k] = Number(s[k]) || 0; });
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
@@ -145,6 +151,14 @@ const missions = () => { const t = dkey(); return [
   { n: "Jawab 15 soal dengan benar", v: S.dc[t] || 0, max: 15 },
   { n: "Raih combo 5× tanpa salah", v: S.dcombo[t] || 0, max: 5 }]; };
 
+// Babak: setiap pelajaran punya 3 babak × 20 soal. Babak 1 menandai pelajaran selesai; babak 2 & 3 memberi bintang.
+const RN = ["Dasar", "Latihan", "Tantangan"];
+const roundQs = (x, r) => x.qs.slice((r - 1) * 20, r * 20);
+const roundScore = (x, r) => r === 1 ? S.scores[x.id] : S.rounds[x.id + ":" + r];
+const roundPassed = (x, r) => r === 1 ? !!S.done[x.id] || (S.scores[x.id] || 0) >= 75 : (S.rounds[x.id + ":" + r] || 0) >= 75;
+const roundOpen = (x, r) => r === 1 || roundPassed(x, r - 1);
+const starsOf = x => [1, 2, 3].filter(r => roundPassed(x, r)).length;
+const starHTML = x => { const n = starsOf(x); return `<span class="stars" role="img" aria-label="${n} dari 3 bintang">${[1, 2, 3].map(k => `<i class="${k <= n ? "on" : ""}">${k <= n ? "★" : "☆"}</i>`).join("")}</span>`; };
 const BADGES = [
   { id: "first", n: "Langkah pertama", d: "Selesaikan 1 pelajaran", ic: "flag", t: () => doneCount() >= 1 },
   { id: "s3", n: "Tiga hari", d: "Belajar 3 hari beruntun", ic: "flame", t: () => S.best >= 3 },
@@ -159,6 +173,7 @@ const BADGES = [
   { id: "talk3", n: "Teman ngobrol", d: "Selesaikan 3 percakapan", ic: "chat", t: () => Object.keys(S.talk).length >= 3 },
   { id: "exam1", n: "Peserta ujian", d: "Selesaikan satu simulasi tes", ic: "timer", t: () => S.exams.length >= 1 },
   { id: "mine20", n: "Kamus pribadi", d: "Simpan 20 kata di Kataku", ic: "bookmark", t: () => Object.keys(S.mine).length >= 20 },
+  { id: "star5", n: "Tuntas", d: "Raih 3 bintang di 5 pelajaran", ic: "star", t: () => LESSONS.filter(x => starsOf(x) === 3).length >= 5 },
   { id: "chest", n: "Pemburu peti", d: "Buka peti misi harian", ic: "box", t: () => S.chests >= 1 },
   { id: "xp1000", n: "1.000 XP", d: "Kumpulkan 1.000 XP", ic: "star", t: () => S.xp >= 1000 },
   ...LEVELS.map(L => ({ id: "lv_" + L.id, n: "Jalur " + L.cefr, d: "Selesaikan semua pelajaran " + L.name, ic: "award", t: () => L.lessons.every(x => S.done[x.id]) }))
@@ -166,7 +181,7 @@ const BADGES = [
 const BPROG = {
   first: () => doneCount(), s3: () => S.best / 3, s7: () => S.best / 7, perfect: () => Math.max(0, ...Object.values(S.scores)) / 100, combo10: () => S.combo / 10,
   c100: () => S.cor / 100, c500: () => S.cor / 500, w30: () => knownCount() / 30, reader: () => Math.max(0, ...Object.values(S.read)) / 60, speaker: () => spokeTotal() / 10,
-  chest: () => S.chests, xp1000: () => S.xp / 1000, talk3: () => Object.keys(S.talk).length / 3, exam1: () => S.exams.length, mine20: () => Object.keys(S.mine).length / 20
+  chest: () => S.chests, star5: () => LESSONS.filter(x => starsOf(x) === 3).length / 5, xp1000: () => S.xp / 1000, talk3: () => Object.keys(S.talk).length / 3, exam1: () => S.exams.length, mine20: () => Object.keys(S.mine).length / 20
 };
 const badgeProg = b => { const f = BPROG[b.id]; if (f) return Math.min(1, f() || 0); const L = LEVELS.find(l => "lv_" + l.id === b.id); return L ? L.lessons.filter(x => S.done[x.id]).length / L.lessons.length : 0; };
 const badgeHTML = (b, prog) => `<div class="badge${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><small>${b.d}</small>${prog && !S.badges[b.id] ? `<span class="bprog" aria-label="Progres ${Math.round(badgeProg(b) * 100)}%"><i style="width:${badgeProg(b) * 100}%"></i></span>` : ""}</span></div>`;
@@ -190,7 +205,7 @@ function merge(a, b) {
   out.known = Object.assign({}, a.known, b.known);
   out.scores = maxMap("scores"); out.days = maxMap("days"); out.dc = maxMap("dc"); out.dcombo = maxMap("dcombo");
   out.chest = (a.chest || "") > (b.chest || "") ? a.chest : (b.chest || "");
-  out.read = maxMap("read"); out.talk = maxMap("talk");
+  out.read = maxMap("read"); out.talk = maxMap("talk"); out.rounds = maxMap("rounds");
   out.mine = Object.assign({}, a.mine, b.mine);
   { const k = {}; [a.sk || {}, b.sk || {}].forEach(o => Object.keys(o).forEach(c => { const v = o[c]; if (Array.isArray(v) && (!k[c] || v[0] > k[c][0])) k[c] = v; })); out.sk = k; }
   { const seen = {}; [...(a.exams || []), ...(b.exams || [])].forEach(e => { if (e && e.at) seen[e.at] = e; }); out.exams = Object.values(seen).sort((x, y) => x.at - y.at).slice(-12); }
@@ -303,7 +318,7 @@ let SKIPHASH = 0, QPREV = null, QBACKED = false;
 function hashOf(v, a) {
   switch (v) {
     case "lesson": return "#pelajaran-" + a[0] + "-" + a[1];
-    case "read": return "#bacaan-" + a[0];
+    case "read": return "#bacaan-" + a[0] + (a[1] ? "-" + a[1] : "");
     case "speak": return "#bicara-" + a[0];
     case "talk": return a[0] != null ? "#ngobrol-" + a[0] : "#ngobrol";
     case "flash": return "#flashcard-" + (a[0] || "all");
@@ -328,8 +343,8 @@ function parseHash(h) {
     case "flashcard": return { v: "flash", a: [LEVELS.some(L => L.id === p[1]) || p[1] === "mine" ? p[1] : "all"] };
     case "mulai": return { v: "welcome", a: [Math.min(3, n(p[1]) || 0)] };
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
-    case "bacaan": { const li = n(p[1]); return LEVELS[li] && LEVELS[li].read ? { v: "read", a: [li] } : null; }
-    case "ngobrol": { const li = n(p[1]); return { v: "talk", a: LEVELS[li] ? [li] : [] }; }
+    case "bacaan": { const li = n(p[1]), k = n(p[2]) || 0; return LEVELS[li] && LEVELS[li].reads && LEVELS[li].reads[k] ? { v: "read", a: [li, k] } : null; }
+    case "ngobrol": { const k = n(p[1]); return { v: "talk", a: isNaN(k) ? [] : [k] }; }
     case "bicara": { const li = n(p[1]); return LEVELS[li] ? { v: "speak", a: [li] } : null; }
     default: return null;
   }
@@ -429,7 +444,7 @@ VIEWS.home = function () {
   if (next) {
     const L = LEVELS[next.li], dn = L.lessons.filter(x => S.done[x.id]).length;
     cont = `<button class="cont" data-a="cont" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="tag">Lanjutkan · ${L.cefr} ${L.name}</span><span class="t">${esc(next.title)}</span>
-      <span class="go"><span style="flex:1;display:grid;gap:7px"><span class="row" style="flex-wrap:nowrap"><span class="pbar"><i style="width:${dn / L.lessons.length * 100}%"></i></span><b>${dn}/${L.lessons.length}</b></span><small>Pelajaran ${next.j + 1} dari ${L.lessons.length} · ${next.qs.length} soal</small></span><span class="play">${I("play")}</span></span></button>`;
+      <span class="go"><span style="flex:1;display:grid;gap:7px"><span class="row" style="flex-wrap:nowrap"><span class="pbar"><i style="width:${dn / L.lessons.length * 100}%"></i></span><b>${dn}/${L.lessons.length}</b></span><small>Pelajaran ${next.j + 1} dari ${L.lessons.length} · 3 babak</small></span><span class="play">${I("play")}</span></span></button>`;
   } else cont = `<div class="card stack"><h2>Semua ${LESSONS.length} pelajaran selesai</h2><p class="muted">Jaga kemampuan Anda lewat misi harian dan tantangan.</p></div>`;
   const chest = opened ? `<div class="chest">${I("box")}<span><b>Peti hari ini sudah dibuka</b><br><span class="muted">Misi baru muncul besok.</span></span></div>`
     : allDone ? `<button class="chest ready pop" data-a="chest">${I("box")}<span><b>Buka peti hadiah</b><br>+50 XP menunggu Anda</span></button>`
@@ -443,11 +458,11 @@ VIEWS.home = function () {
       <p class="lv-d">${L.desc}</p>
       <ol class="lrows">${L.lessons.map(x => {
         const st = S.done[x.id] ? "done" : (next && next.id === x.id ? "cur" : "todo");
-        return `<li><button class="lrow ${st}" data-a="open" data-l="${L.i}" data-j="${x.j}"><span class="n">${st === "done" ? I("check") : x.j + 1}</span><span><b>${esc(x.title)}</b><small>${x.qs.length} soal${S.scores[x.id] != null ? " · terbaik " + S.scores[x.id] + "%" : ""}</small></span>${st === "cur" ? '<span class="go">Mulai</span>' : ""}</button></li>`;
+        return `<li><button class="lrow ${st}" data-a="open" data-l="${L.i}" data-j="${x.j}"><span class="n">${st === "done" ? I("check") : x.j + 1}</span><span class="grow"><b>${esc(x.title)}</b><small>3 babak · ${x.qs.length} soal</small></span>${st === "cur" ? "" : starHTML(x)}${st === "cur" ? '<span class="go">Mulai</span>' : ""}</button></li>`;
       }).join("")}
-      ${L.read ? `<li><button class="lrow${S.read[L.id] != null ? " done" : ""}" data-a="read" data-l="${L.i}"><span class="n">${I("book")}</span><span><b>Bacaan: ${esc(L.read.title)}</b><small>${L.read.qs.length} soal pemahaman${S.read[L.id] != null ? " · terbaik " + S.read[L.id] + "%" : ""}</small></span></button></li>` : ""}
+      ${(L.reads || []).map(r => `<li><button class="lrow${S.read[r.sid] != null ? " done" : ""}" data-a="read" data-l="${L.i}" data-k="${r.k}"><span class="n">${I("book")}</span><span><b>Bacaan: ${esc(r.title)}</b><small>${r.qs.length} soal pemahaman${S.read[r.sid] != null ? " · terbaik " + S.read[r.sid] + "%" : ""}</small></span></button></li>`).join("")}
       ${L.speak.length ? `<li><button class="lrow${spokeN(L) >= L.speak.length ? " done" : ""}" data-a="speak" data-l="${L.i}"><span class="n">${I("mic")}</span><span><b>Latihan berbicara</b><small>${spokeN(L)} dari ${L.speak.length} kalimat lancar</small></span></button></li>` : ""}
-      ${TALK[L.id] ? `<li><button class="lrow${S.talk[L.id] != null ? " done" : ""}" data-a="talk" data-l="${L.i}"><span class="n">${I("chat")}</span><span><b>Percakapan: ${esc(TALK[L.id].title)}</b><small>Ngobrol bersama ${esc(TALK[L.id].who)}${S.talk[L.id] != null ? " · terbaik " + S.talk[L.id] + "%" : ""}</small></span></button></li>` : ""}
+      ${TALKS.map((T, n) => T.li !== L.i ? "" : `<li><button class="lrow${S.talk[T.id] != null ? " done" : ""}" data-a="talk" data-l="${n}"><span class="n">${I("chat")}</span><span><b>Percakapan: ${esc(T.title)}</b><small>Ngobrol bersama ${esc(T.who)}${S.talk[T.id] != null ? " · terbaik " + S.talk[T.id] + "%" : ""}</small></span></button></li>`).join("")}
       <li><button class="lrow test${dn === n ? " done" : ""}" data-a="test" data-l="${L.i}"><span class="n">${I("flag")}</span><span><b>Tes level ${L.cefr}</b><small>20 soal acak · lulus 75% menandai level selesai</small></span></button></li></ol></details>`;
   };
   app.innerHTML = `<div class="home">
@@ -477,7 +492,7 @@ VIEWS.home = function () {
     open(el) { nav("lesson", +el.dataset.l, +el.dataset.j); },
     allopen() { const all = OPENLV.size === LEVELS.length; $$("details.lvcard").forEach(dd => { dd.open = !all; }); },
     test(el) { levelTest(+el.dataset.l); },
-    read(el) { nav("read", +el.dataset.l); },
+    read(el) { nav("read", +el.dataset.l, +el.dataset.k || 0); },
     speak(el) { nav("speak", +el.dataset.l); },
     talk(el) { TALKFROM = "home"; nav("talk", +el.dataset.l); },
     wknow(el) { const w = el.dataset.w; if (!isKnown(w)) S.known[w] = { b: 1, d: addDays(INT[1]) }; newBadges(); save(); const y = window.scrollY; rerender(); try { window.scrollTo(0, y); } catch (e) {} sfx.ok(); },
@@ -520,12 +535,12 @@ VIEWS.lesson = function (li, j, tab = "m") {
   }
   let panel, foot;
   if (tab === "q") {
-    const cnt = {}; x.qs.forEach(q => { cnt[q.t] = (cnt[q.t] || 0) + 1; });
+    const cur = [1, 2, 3].find(r => roundOpen(x, r) && !roundPassed(x, r)) || 1;
     panel = `<div class="panel card qinfo">
-      <div class="greet">${BUBU(72, "wave")}<div class="say"><b>${x.qs.length} soal, ${Object.keys(cnt).length} jenis</b><span>Siap uji pemahamanmu?</span></div></div>
-      <ul class="types">${Object.keys(cnt).map(k => `<li>${KIND[k]} × ${cnt[k]}</li>`).join("")}</ul>
-      <p class="muted">Skor 75% atau lebih menandai pelajaran ini selesai.${S.scores[x.id] != null ? " Skor terbaik Anda: <b>" + S.scores[x.id] + "%</b>." : ""}</p></div>`;
-    foot = `<div class="pgfoot col"><button class="btn lv" data-a="quiz">Mulai kuis · ${x.qs.length} soal</button><button class="btn ghost" data-a="quick">Latihan singkat · 5 soal</button></div>`;
+      <div class="qhead"><div><b>3 babak · ${x.qs.length} soal</b><span class="muted">Lulus 75% membuka babak berikutnya</span></div>${starHTML(x)}</div>
+      <div class="rounds">${[1, 2, 3].map(r => { const open = roundOpen(x, r), ok = roundPassed(x, r), sc = roundScore(x, r);
+        return `<button class="round${ok ? " ok" : ""}${r === cur ? " cur" : ""}" data-a="round" data-r="${r}"${open ? "" : " disabled"}><span class="rn">${ok ? I("check") : open ? r : I("lock")}</span><span class="grow"><b>Babak ${r} · ${RN[r - 1]}</b><small>${open ? "20 soal" + (sc != null ? " · terbaik " + sc + "%" : "") : "Lulus Babak " + (r - 1) + " untuk membuka"}</small></span>${open ? I("right") : ""}</button>`; }).join("")}</div></div>`;
+    foot = `<div class="pgfoot col"><button class="btn lv" data-a="round" data-r="${cur}">Mulai Babak ${cur} · 20 soal</button><button class="btn ghost" data-a="quick">Latihan singkat · 5 soal acak</button></div>`;
   } else {
     panel = `<div class="panel card ${kind}" id="panel"><div class="spread" id="spread"></div></div>`;
     foot = `<div class="pgfoot"><button class="btn ghost sq" data-a="prev" id="pprev" aria-label="Halaman sebelumnya">${I("left")}</button><span class="pgc" id="pgc" aria-live="polite"></span><button class="btn lv" data-a="next" id="pnext"></button></div>`;
@@ -586,6 +601,7 @@ VIEWS.lesson = function (li, j, tab = "m") {
     prev() { go(-1); },
     next() { if (!go(1)) nav("lesson", li, j, NEXT[tab][0]); },
     quiz() { lessonQuiz(li, j); },
+    round(el) { lessonQuiz(li, j, +el.dataset.r); },
     quick() { const run = () => runQuiz(shuffle(x.qs).slice(0, 5), { title: x.title + " · latihan singkat", li, back, again: run, msg: "Latihan singkat tidak mengubah skor pelajaran." }); run(); },
     listen() { const run = () => runQuiz(shuffle(x.examples).map(([s2, tr]) => ({ t: "l", s: s2, tr })), { title: x.title + " · latihan dengar", li, back, again: run, msg: "Dengarkan lagi contoh-contohnya kapan saja di tab Contoh." }); run(); },
     lmatch() { const run = () => matchGame(x.vocab, { li, back, again: run }); run(); }
@@ -603,13 +619,21 @@ VIEWS.lesson = function (li, j, tab = "m") {
     });
   }
 };
-function lessonQuiz(li, j) {
+function lessonQuiz(li, j, r = 1) {
   const L = LEVELS[li], x = L.lessons[j];
-  const next = j + 1 < L.lessons.length ? () => nav("lesson", li, j + 1) : (li + 1 < LEVELS.length ? () => nav("lesson", li + 1, 0) : null);
-  runQuiz(shuffle(x.qs), {
-    title: x.title, li, bonus: true, pass: 75, next, back: () => nav("lesson", li, j, "q"), again: () => lessonQuiz(li, j),
-    share: { title: x.title, sub: "Pelajaran " + LEVELS[li].cefr + " · " + LEVELS[li].name, li },
-    onEnd(p) { S.scores[x.id] = Math.max(S.scores[x.id] || 0, p); if (p >= 75) S.done[x.id] = 1; }
+  if (!roundOpen(x, r)) r = 1;
+  const nextLesson = j + 1 < L.lessons.length ? () => nav("lesson", li, j + 1) : (li + 1 < LEVELS.length ? () => nav("lesson", li + 1, 0) : null);
+  const items = roundQs(x, r);
+  runQuiz(shuffle(items), {
+    title: x.title + " · Babak " + r, li, bonus: true, pass: 75,
+    next: r < 3 ? () => lessonQuiz(li, j, r + 1) : nextLesson, nextLabel: r < 3 ? "Lanjut ke Babak " + (r + 1) : "Pelajaran berikutnya",
+    passMsg: r === 1 ? "Pelajaran ini selesai. Babak 2 terbuka!" : r === 2 ? "Bintang kedua didapat. Babak 3 terbuka!" : "Tiga bintang! Pelajaran ini tuntas.",
+    back: () => nav("lesson", li, j, "q"), again: () => lessonQuiz(li, j, r),
+    share: { title: x.title + " · Babak " + r, sub: "Pelajaran " + LEVELS[li].cefr + " · " + LEVELS[li].name, li },
+    onEnd(p) {
+      if (r === 1) { S.scores[x.id] = Math.max(S.scores[x.id] || 0, p); if (p >= 75) S.done[x.id] = 1; }
+      else { const k = x.id + ":" + r; S.rounds[k] = Math.max(S.rounds[k] || 0, p); }
+    }
   });
 }
 function levelTest(li) {
@@ -763,7 +787,7 @@ function runQuiz(items, o) {
       <div class="greet res-bubu">${BUBU(58, "react " + mood, "Bubu", mood)}<div class="say"><span>${mline}</span></div></div>
       <dl class="stats3"><div><dt>XP didapat</dt><dd>+${gained + bonus}</dd></div><div><dt>Combo terbaik</dt><dd>${maxCombo}×</dd></div><div><dt>Perlu diulang</dt><dd>${missed.length}</dd></div></dl>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
-      ${certBtn}${goNext ? `<button class="btn lv" data-a="next">Pelajaran berikutnya ${I("right")}</button>` : ""}${shareBtn}
+      ${certBtn}${goNext ? `<button class="btn lv" data-a="next">${o.nextLabel || "Pelajaran berikutnya"} ${I("right")}</button>` : ""}${shareBtn}
       ${missed.length ? `<button class="btn ${goNext ? "ghost" : "lv"}" data-a="redo">Ulangi ${missed.length} soal yang salah</button>` : ""}
       <div class="pair"><button class="btn ghost" data-a="again">Dari awal</button><button class="btn ghost" data-a="back">Kembali</button></div>
       ${missed.length ? `<h2 style="margin-top:12px">Yang perlu diulang</h2><ul class="missed">${missed.map(m => `<li>${esc(m.t === "o" || m.t === "l" ? m.tr : m.q)}<br><b>${esc(answerOf(m))}</b>${m.e ? `<small>${esc(m.e)}</small>` : ""}</li>`).join("")}</ul>` : ""}</div>`;
@@ -904,7 +928,7 @@ VIEWS.practice = function () {
       ${tool("mine", "bookmark", 5, "Kataku", "Kamus pribadimu: kata yang kamu simpan, siap dilatih", Object.keys(S.mine).length + " kata")}
       ${tool("matchg", "grid", 3, "Cocokkan kata", "Pasangkan 6 kata dengan artinya secepat mungkin", S.matchBest ? S.matchBest + " dtk" : "Baru")}
       ${canSpeak() ? tool("listen", "headphones", 6, "Dengar & susun", "Dengarkan kalimat, lalu susun kata-katanya", "5 kalimat") : ""}
-      ${tool("talk", "chat", 1, "Percakapan", "Ngobrol di kafe, hotel, sampai wawancara kerja", Object.keys(S.talk).length + "/" + Object.keys(TALK).length)}
+      ${tool("talk", "chat", 1, "Percakapan", "Ngobrol di kafe, hotel, sampai wawancara kerja", TALKS.filter(T => S.talk[T.id] != null).length + "/" + TALKS.length)}
     </div></section>
     <section class="tgroup" aria-label="Ukur level"><div class="tg-h"><h2>Ukur level</h2><span class="muted">Cek kemajuanmu</span></div><div class="tools">
       ${tool("exam", "timer", 6, "Simulasi tes", "Tes berwaktu: tata bahasa, membaca, mendengar. Dapat perkiraan level CEFR", S.exams.length ? "Terakhir " + S.exams[S.exams.length - 1].lv : "35 soal")}
@@ -951,7 +975,7 @@ VIEWS.flash = function (f = "all") {
       <div class="seg scroll" role="group" aria-label="Pilih level"><button aria-pressed="${f === "all"}" data-a="filt" data-f="all">Semua</button><button aria-pressed="${f === "mine"}" data-a="filt" data-f="mine">Kataku</button>${LEVELS.map(L => `<button aria-pressed="${f === L.id}" data-a="filt" data-f="${L.id}">${L.cefr}</button>`).join("")}</div>
       <div><div class="bar"><i style="width:${pool.length ? known / pool.length * 100 : 0}%"></i></div><p class="muted" style="margin-top:6px">${known} dari ${pool.length} kata hafal · ${deck.length} kartu untuk hari ini</p></div>
       ${c ? `<div class="flip" style="--lv:var(--l${c.li + 1});--ldk:var(--ld${c.li + 1})"><button class="flip-in" data-a="flip" aria-label="Balik kartu">
-          <span class="face a"><span class="eyebrow">${LEVELS[c.li].cefr} · ${S.known[c.w] ? "Ulangan" : "Kata baru"}</span><span class="w">${esc(c.w)}</span><span class="hint">Ketuk untuk melihat arti</span></span>
+          <span class="face a"><span class="eyebrow">${LEVELS[c.li].cefr}${c.t ? " · " + esc(c.t) : ""} · ${S.known[c.w] ? "Ulangan" : "Kata baru"}</span><span class="w">${esc(c.w)}</span><span class="hint">Ketuk untuk melihat arti</span></span>
           <span class="face b"><span class="eyebrow" style="color:inherit">Arti</span><span class="w">${esc(c.m)}</span><span class="hint">${esc(c.w)}</span></span></button></div>
         <div class="pair">${canSpeak() ? `<button class="btn ghost" data-say="${esc(c.w)}">${I("speaker")} Dengarkan</button>` : ""}${bmBtn(c.w, true)}</div>
         <div class="pair"><button class="btn bad" data-a="later">Belum hafal</button><button class="btn good" data-a="know">Sudah hafal</button></div>
@@ -974,10 +998,10 @@ VIEWS.flash = function (f = "all") {
 };
 
 /* ================= reading ================= */
-VIEWS.read = function (li) {
+VIEWS.read = function (li, k = 0) {
   const L = LEVELS[li];
-  if (!L || !L.read) return nav("home");
-  const R = L.read, full = R.text.join(" ").replace(/<br>/g, ". ");
+  if (!L || !L.reads || !L.reads[k]) return nav("home");
+  const R = L.reads[k], full = R.text.join(" ").replace(/<br>/g, ". ");
   app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
     <div><button class="back" data-g="home">${I("left")} Rute</button>
     <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Bacaan · ${L.name}</p><h1>${esc(R.title)}</h1></div></div></div>
@@ -985,15 +1009,15 @@ VIEWS.read = function (li) {
     <article class="card reading">${R.text.map(p => `<p>${p}</p>`).join("")}</article>
     <p class="muted">Baca sampai selesai, lalu jawab ${R.qs.length} soal. Teksnya tetap bisa dibuka saat menjawab.</p>
     <button class="btn lv" data-a="go">Jawab soal ${I("right")}</button></div>`;
-  H = { listen() { speak(full); }, slow() { speak(full, true); }, go() { startRead(li); } };
+  H = { listen() { speak(full); }, slow() { speak(full, true); }, go() { startRead(li, k); } };
 };
-function startRead(li) {
-  const L = LEVELS[li], R = L.read;
+function startRead(li, k = 0) {
+  const L = LEVELS[li], R = L.reads[k];
   runQuiz(R.qs.slice(), {
     title: "Bacaan · " + R.title, li, pass: 60, bonus: true, passMsg: "Pemahaman bacaan Anda bagus.",
-    back: () => nav("read", li), again: () => startRead(li),
+    back: () => nav("read", li, k), again: () => startRead(li, k),
     ctx: `<details class="ctx"><summary>Lihat bacaan</summary>${R.text.map(p => `<p>${p}</p>`).join("")}</details>`,
-    onEnd(p) { S.read[L.id] = Math.max(S.read[L.id] || 0, p); }
+    onEnd(p) { S.read[R.sid] = Math.max(S.read[R.sid] || 0, p); }
   });
 }
 
@@ -1322,16 +1346,17 @@ function showCert(li) { const L = LEVELS[li], c = S.cert[L.id]; shareCard({ kind
 
 /* ================= percakapan ================= */
 let TALKFROM = "talk";
+const TALKS = []; LEVELS.forEach((L, li) => [[L.id, TALK[L.id]], [L.id + "2", TALK2[L.id]]].forEach(([id, t]) => { if (t) TALKS.push(Object.assign({ id, li }, t)); }));
 const talkLine = t => String(t).replace(/\{n\}/g, (S.name || "").trim() || "Dewi");
-VIEWS.talk = function (li) {
-  if (li == null || !LEVELS[li] || !TALK[LEVELS[li].id]) {
+VIEWS.talk = function (n) {
+  if (n == null || !TALKS[n]) {
     app.innerHTML = `<div class="narrow stack">
       <div><p class="eyebrow">Percakapan</p><h1 style="margin-top:8px">Latihan ngobrol dalam situasi nyata.</h1><p class="muted" style="margin-top:6px">Pilih balasan yang paling tepat. Partner bicara akan membacakan kalimatnya.</p></div>
-      <div class="tools">${LEVELS.map(L => { const T = TALK[L.id]; if (!T) return ""; const b = S.talk[L.id]; return `<button class="tool" data-a="go" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="tic txt">${L.cefr}</span><span><b>${esc(T.title)}</b><small>${esc(T.place)} · bersama ${esc(T.who)}</small></span><span class="meta">${b != null ? b + "%" : "Baru"}</span></button>`; }).join("")}</div></div>`;
+      <div class="tools">${TALKS.map((T, n) => { const L = LEVELS[T.li], b = S.talk[T.id]; return `<button class="tool" data-a="go" data-l="${n}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="tic txt">${L.cefr}</span><span><b>${esc(T.title)}</b><small>${esc(T.place)} · bersama ${esc(T.who)}</small></span><span class="meta">${b != null ? b + "%" : "Baru"}</span></button>`; }).join("")}</div></div>`;
     H = { go(el) { TALKFROM = "talk"; nav("talk", +el.dataset.l); } };
     return;
   }
-  const L = LEVELS[li], T = TALK[L.id], turns = T.turns, nU = turns.filter(t => t[0] === "u").length;
+  const T = TALKS[n], li = T.li, L = LEVELS[li], turns = T.turns, nU = turns.filter(t => t[0] === "u").length;
   document.body.classList.add("sub");
   let k = 0, score = 0, asked = 0, sel = null, opts = [], locked = false;
   const log = [];
@@ -1359,9 +1384,9 @@ VIEWS.talk = function (li) {
     reply.innerHTML = `<p class="eyebrow">Pilih balasanmu</p><div class="opts">${opts.map((o, n) => `<button class="opt" data-a="pick" data-k="${n}" lang="en"><span>${esc(o.x)}</span></button>`).join("")}</div><button class="btn lv" data-a="send" id="chk" disabled>${I("chat")} Kirim</button>`;
   }
   function done() {
-    const pct = Math.round(score / nU * 100), first = S.talk[L.id] == null;
+    const pct = Math.round(score / nU * 100), first = S.talk[T.id] == null;
     const bonus = first ? 20 : 5; addXp(bonus);
-    S.talk[L.id] = Math.max(S.talk[L.id] || 0, pct); const nb = newBadges(); save(); chrome();
+    S.talk[T.id] = Math.max(S.talk[T.id] || 0, pct); const nb = newBadges(); save(); chrome();
     const [mood, line] = resultMood(pct, pct >= 60);
     reply.innerHTML = `<div class="talkend"><div class="greet">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><b>${score} dari ${nU} tepat</b><span>${line} +${bonus} XP</span></div></div>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>Lencana baru: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
@@ -1447,7 +1472,7 @@ function buildExam() {
   const G = [2, 3, 3, 3, 3, 2], items = [];
   LEVELS.forEach((L, li) => pickN(L.lessons.flatMap(x => x.qs.filter(q => q.t !== "o")), G[li]).forEach(q => items.push(Object.assign({}, q, { sec: "Tata bahasa" }))));
   const rl = shuffle([1, 2, 3, 4]).slice(0, 2).sort();
-  rl.forEach(li => { const L = LEVELS[li]; if (!L.read) return; const ctx = `<details class="ctx" open><summary>${esc(L.read.title)}</summary>${L.read.text.map(p => `<p>${p}</p>`).join("")}</details>`; L.read.qs.forEach(q => items.push(Object.assign({}, q, { sec: "Membaca", ctx }))); });
+  rl.forEach(li => { const L = LEVELS[li]; if (!L.reads) return; const RD = pick(L.reads); const ctx = `<details class="ctx" open><summary>${esc(RD.title)}</summary>${RD.text.map(p => `<p>${p}</p>`).join("")}</details>`; RD.qs.forEach(q => items.push(Object.assign({}, q, { sec: "Membaca", ctx }))); });
   if (canSpeak()) [0, 1, 2, 2, 3, 4, 5].forEach(li => { const ex = pick(LEVELS[li].lessons.flatMap(x => x.examples).filter(e => e[0].split(" ").length <= 9)); items.push({ t: "l", s: ex[0], tr: ex[1], li, sec: "Mendengar" }); });
   return items;
 }
@@ -1526,7 +1551,7 @@ function skills() {
     ["Mendengar", acc("l"), "Ketepatan latihan dengar & susun", "headphones"],
     ["Membaca", avg(S.read) ?? acc("r"), "Rata-rata skor bacaan", "book"],
     ["Berbicara", spokeTotal() ? Math.round(spokeTotal() / nSpk * 100) : null, spokeTotal() + " dari " + nSpk + " kalimat lancar", "mic"],
-    ["Percakapan", avg(S.talk), Object.keys(S.talk).length + " dari " + Object.keys(TALK).length + " percakapan", "chat"]
+    ["Percakapan", avg(S.talk), TALKS.filter(T => S.talk[T.id] != null).length + " dari " + TALKS.length + " percakapan", "chat"]
   ];
 }
 function progressHTML(n) {

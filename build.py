@@ -3,7 +3,7 @@
 import pathlib
 root = pathlib.Path(__file__).parent
 r = lambda f: (root / "src" / f).read_text(encoding="utf-8")
-js = "\n".join([r("levels.js"), r("extra.js"), r("lessons2.js"), r("talk.js"), r("app.js")])
+js = "\n".join([r("levels.js"), r("extra.js"), r("lessons2.js"), r("r1.js"), r("r2.js"), r("r3.js"), r("r4.js"), r("r5.js"), r("r6.js"), r("vocab.js"), r("more2.js"), r("talk.js"), r("app.js")])
 assert "</script" not in js
 html = f"""<!DOCTYPE html>
 <html lang="id">
@@ -11,7 +11,7 @@ html = f"""<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>English Path — Belajar Bahasa Inggris Gratis</title>
-<meta name="description" content="Belajar bahasa Inggris gratis dari A1 sampai C2: 36 pelajaran, 750 soal, bacaan, percakapan, latihan dengar dan berbicara, dijelaskan dalam bahasa Indonesia.">
+<meta name="description" content="Belajar bahasa Inggris gratis dari A1 sampai C2: 36 pelajaran × 3 babak, 2.250 soal, 550+ kosakata, 18 bacaan, 12 percakapan, latihan dengar dan berbicara, dijelaskan dalam bahasa Indonesia.">
 <meta name="theme-color" content="#eef4ff">
 <meta name="color-scheme" content="light dark">
 <script>try{{var t=(JSON.parse(localStorage.getItem("englishpath_v1")||"{{}}").theme)||"auto";if(t==="dark"||(t==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.theme="dark"}}catch(e){{}}</script>
@@ -22,7 +22,7 @@ html = f"""<!DOCTYPE html>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="English Path">
 <meta property="og:title" content="English Path — Belajar Bahasa Inggris Gratis">
-<meta property="og:description" content="Dari A1 sampai C2. 750 soal, bacaan, latihan berbicara, misi harian. Gratis, tanpa daftar.">
+<meta property="og:description" content="Dari A1 sampai C2. 2.250 soal, 550+ kosakata, bacaan, percakapan, latihan berbicara, misi harian. Gratis, tanpa daftar.">
 <meta property="og:image" content="https://iiddon.github.io/english-study/icons/og.png">
 <meta property="og:url" content="https://iiddon.github.io/english-study/">
 <meta name="twitter:card" content="summary_large_image">

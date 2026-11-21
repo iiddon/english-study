@@ -101,7 +101,7 @@ require("fs").mkdirSync(shots, { recursive: true });
   await page.goBack(); await page.waitForTimeout(150);
   log("back -> view:", await page.evaluate(() => ROUTE.v + " " + location.hash));
   await page.goForward(); await page.waitForTimeout(150);
-  await click('.seg [data-t="q"]'); await click('[data-a="quiz"]');
+  await click('.seg [data-t="q"]'); await click('.pgfoot [data-a="round"]');
   log("quiz hash:", await page.evaluate(() => location.hash));
   await page.goBack(); await page.waitForTimeout(150);
   log("back in quiz -> confirm shown:", await page.locator("#confirm .confirm").count(), "still quiz:", await page.locator(".qbar").count());
@@ -132,7 +132,7 @@ require("fs").mkdirSync(shots, { recursive: true });
   await click('.seg [data-t="q"]');
 
   // full lesson quiz with some wrong answers
-  await click('[data-a="quiz"]');
+  await click('.pgfoot [data-a="round"]');
   let r = await playQuiz(6, { o: "3-order-mobile.png" });
   log("lesson quiz:", JSON.stringify(r));
   await page.waitForSelector(".res-top");
@@ -171,7 +171,7 @@ require("fs").mkdirSync(shots, { recursive: true });
   await page.screenshot({ path: path.join(shots, "6-flash-mobile.png") });
   await click('[data-a="later"]'); await click('[data-a="know"]'); await click('[data-a="know"]');
   await click('[data-a="filt"][data-f="expert"]');
-  for (let k = 0; k < 80 && await page.locator('[data-a="know"]').count(); k++) await click('[data-a="know"]');
+  for (let k = 0; k < 250 && await page.locator('[data-a="know"]').count(); k++) await click('[data-a="know"]');
   log("flash empty state:", await page.locator('[data-a="resetk"]').count());
   await click('[data-a="resetk"]');
   s = await state(); log("known after reset of expert:", Object.keys(s.known).length);
@@ -240,7 +240,7 @@ require("fs").mkdirSync(shots, { recursive: true });
   await page.emulateMedia({ colorScheme: "dark" });
   await page.screenshot({ path: path.join(shots, "9-home-desktop-dark.png") });
   await page.setViewportSize({ width: 390, height: 844 });
-  await click('.lrow[data-a="open"][data-l="2"][data-j="1"]'); await click('.seg [data-t="q"]'); await click('[data-a="quiz"]');
+  await click('.lrow[data-a="open"][data-l="2"][data-j="1"]'); await click('.seg [data-t="q"]'); await click('.pgfoot [data-a="round"]');
   for (let k = 0; k < 3; k++) { await answer(k === 1); if (k < 2) await click("#nx"); }
   await page.screenshot({ path: path.join(shots, "10-quiz-dark.png") });
   await click('[data-a="quit"]'); await click('[data-a="leave"]');
@@ -259,7 +259,7 @@ require("fs").mkdirSync(shots, { recursive: true });
     if (over > 0) errors.push(`overflow-x ${over}px on ${v}`);
   }
   await click('#nav [data-g="home"]');
-  for (const step of [() => click('.lrow[data-a="open"][data-l="4"][data-j="1"]'), () => click('.seg [data-t="c"]'), () => click('.seg [data-t="k"]'), () => click('.seg [data-t="q"]'), () => click('[data-a="quiz"]')]) {
+  for (const step of [() => click('.lrow[data-a="open"][data-l="4"][data-j="1"]'), () => click('.seg [data-t="c"]'), () => click('.seg [data-t="k"]'), () => click('.seg [data-t="q"]'), () => click('.pgfoot [data-a="round"]')]) {
     await step();
     const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (over > 0) errors.push(`overflow-x ${over}px in lesson flow: ${await page.locator("h1,.eyebrow").first().textContent()}`);
