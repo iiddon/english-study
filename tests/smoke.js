@@ -15,6 +15,11 @@ require("fs").mkdirSync(shots, { recursive: true });
   const log = (...a) => console.log(...a);
   const click = async sel => {
     if (sel.includes(".lrow")) await page.evaluate(() => document.querySelectorAll("details.lvcard").forEach(d => { d.open = true; }));
+    // Di halaman pelajaran menu bawah disembunyikan; kembali lewat tombol ← di kiri atas.
+    if ((sel.startsWith("#nav") || sel === '.back[data-g="home"]') && await page.evaluate(() => document.body.classList.contains("sub"))) {
+      await page.locator(".lv-top .iconbtn").click();
+      if (sel.includes('"home"')) return;
+    }
     await page.locator(sel).first().click();
   };
   const state = () => page.evaluate(() => JSON.parse(JSON.stringify(S)));

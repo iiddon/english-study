@@ -319,7 +319,7 @@ window.addEventListener("hashchange", () => {
 
 function nav(v, ...a) {
   clearInterval(TICK); TICK = null; QUIZ = null; stopSpeak(); stopRec();
-  document.body.classList.remove("focus");
+  document.body.classList.remove("focus", "sub"); REPAGE = null;
   if (!VIEWS[v]) { v = "home"; a = []; }
   if (v === "welcome" && S.onb) { v = "home"; a = []; }
   ROUTE = { v, a }; H = {};
@@ -441,35 +441,114 @@ VIEWS.home = function () {
 };
 
 /* ================= lesson ================= */
+/* Halaman pelajaran: selalu pas satu layar. Isi yang panjang dibagi menjadi halaman
+   (geser atau tekan Lanjut), bukan di-scroll. Di layar lebar, dua halaman tampil berdampingan. */
+let REPAGE = null;
+window.addEventListener("resize", () => { clearTimeout(window.__rp); window.__rp = setTimeout(() => { if (REPAGE) REPAGE(); }, 120); });
 VIEWS.lesson = function (li, j, tab = "m") {
   const L = LEVELS[li], x = L && L.lessons[j];
   if (!x) return nav("home");
+  document.body.classList.add("sub");
   const tabs = [["m", "Materi"], ["c", "Contoh"], ["k", "Kosakata"], ["q", "Latihan"]];
-  const rows = list => `<div class="card">${list.map(([en, tr]) => `<div class="ex">${spk(en)}<div><b>${esc(en)}</b><span>${esc(tr)}</span></div></div>`).join("")}</div>`;
-  let body = "";
-  if (tab === "m") body = `<div class="card theory">${x.theory}</div><button class="btn lv" data-a="tab" data-t="c">Lihat contoh ${I("right")}</button>`;
-  if (tab === "c") body = rows(x.examples) + (canSpeak() ? `<button class="btn ghost" data-a="listen">${I("headphones")} Latihan dengar</button>` : "") + `<button class="btn lv" data-a="tab" data-t="k">Lanjut ke kosakata ${I("right")}</button>`;
-  if (tab === "k") body = rows(x.vocab) + `<button class="btn ghost" data-a="lmatch">${I("grid")} Main cocokkan kata</button><button class="btn lv" data-a="tab" data-t="q">Lanjut ke latihan ${I("right")}</button>`;
+  const NEXT = { m: ["c", "Lihat contoh"], c: ["k", "Lanjut ke kosakata"], k: ["q", "Lanjut ke latihan"] };
+  const row = ([en, tr]) => `<div class="ex">${spk(en)}<div><b>${esc(en)}</b><span>${esc(tr)}</span></div></div>`;
+  let items = [], kind = "";
+  if (tab === "m") {
+    const tmp = document.createElement("div"); tmp.innerHTML = x.theory;
+    const kids = [...tmp.children];
+    for (let i = 0; i < kids.length; i++) { let h = kids[i].outerHTML; if (kids[i].tagName === "H3" && kids[i + 1]) h += kids[++i].outerHTML; items.push(h); }
+    kind = "theory";
+  } else if (tab === "c") {
+    items = x.examples.map(row);
+    if (canSpeak()) items.push(`<div class="pg-extra"><button class="btn ghost" data-a="listen">${I("headphones")} Latihan dengar</button></div>`);
+  } else if (tab === "k") {
+    items = x.vocab.map(row);
+    items.push(`<div class="pg-extra"><button class="btn ghost" data-a="lmatch">${I("grid")} Main cocokkan kata</button></div>`);
+  }
+  let panel, foot;
   if (tab === "q") {
     const cnt = {}; x.qs.forEach(q => { cnt[q.t] = (cnt[q.t] || 0) + 1; });
-    body = `<div class="card stack"><p class="eyebrow">Kuis pelajaran</p><h2>${x.qs.length} soal, ${Object.keys(cnt).length} jenis</h2>
+    panel = `<div class="panel card qinfo">
+      <div class="greet">${BUBU(72, "wave")}<div class="say"><b>${x.qs.length} soal, ${Object.keys(cnt).length} jenis</b><span>Siap uji pemahamanmu?</span></div></div>
       <ul class="types">${Object.keys(cnt).map(k => `<li>${KIND[k]} × ${cnt[k]}</li>`).join("")}</ul>
-      <p class="muted">Skor 75% atau lebih menandai pelajaran ini selesai.${S.scores[x.id] != null ? " Skor terbaik Anda: " + S.scores[x.id] + "%." : ""}</p>
-      <button class="btn lv" data-a="quiz">Mulai kuis</button><button class="btn ghost" data-a="quick">Latihan singkat · 5 soal</button></div>`;
+      <p class="muted">Skor 75% atau lebih menandai pelajaran ini selesai.${S.scores[x.id] != null ? " Skor terbaik Anda: <b>" + S.scores[x.id] + "%</b>." : ""}</p></div>`;
+    foot = `<div class="pgfoot col"><button class="btn lv" data-a="quiz">Mulai kuis · ${x.qs.length} soal</button><button class="btn ghost" data-a="quick">Latihan singkat · 5 soal</button></div>`;
+  } else {
+    panel = `<div class="panel card ${kind}" id="panel"><div class="spread" id="spread"></div></div>`;
+    foot = `<div class="pgfoot"><button class="btn ghost sq" data-a="prev" id="pprev" aria-label="Halaman sebelumnya">${I("left")}</button><span class="pgc" id="pgc" aria-live="polite"></span><button class="btn lv" data-a="next" id="pnext"></button></div>`;
   }
-  app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
-    <div><button class="back" data-g="home">${I("left")} Rute</button>
-    <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">${L.name} · Pelajaran ${j + 1} dari ${L.lessons.length}</p><h1>${esc(x.title)}</h1></div></div>
-    <div class="seg" role="tablist">${tabs.map(([k, n]) => `<button role="tab" aria-selected="${k === tab}" data-a="tab" data-t="${k}">${n}</button>`).join("")}</div></div>
-    ${body}</div>`;
+  app.innerHTML = `<div class="lessonv" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
+    <div class="lv-top"><button class="iconbtn" data-g="home" aria-label="Kembali ke peta level">${I("left")}</button><span class="roundel sm">${L.cefr}</span>
+      <div class="lv-tt"><p class="eyebrow">${L.name} · Pelajaran ${j + 1} dari ${L.lessons.length}</p><h1>${esc(x.title)}</h1></div></div>
+    <div class="seg" role="tablist">${tabs.map(([k, n]) => `<button role="tab" aria-selected="${k === tab}" data-a="tab" data-t="${k}">${n}</button>`).join("")}</div>
+    ${panel}${foot}</div>`;
+
+  let pages = [], cur = 0, cols = 1;
+  const draw = () => {
+    const sp = $("#spread"); if (!sp) return;
+    const shown = pages.slice(cur, cur + cols);
+    sp.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+    sp.innerHTML = shown.map(pg => `<div class="pg">${pg.map(i => items[i]).join("")}</div>`).join("");
+    const total = Math.ceil(pages.length / cols), at = Math.floor(cur / cols) + 1, more = cur + cols < pages.length;
+    $("#panel").classList.toggle("over", shown.length === 1 && shown[0].length === 1 && $("#spread .pg").scrollHeight > $("#panel").clientHeight);
+    $("#pgc").textContent = total > 1 ? at + " / " + total : "";
+    $("#pprev").disabled = cur === 0; $("#pprev").hidden = total <= 1; $("#pgc").hidden = total <= 1;
+    $("#pnext").innerHTML = more ? `Lanjut ${I("right")}` : `${NEXT[tab][1]} ${I("right")}`;
+  };
+  const paginate = () => {
+    const pn = $("#panel"); if (!pn) return;
+    const keep = pages.length ? (pages[cur] || [0])[0] : 0;
+    const cs = getComputedStyle(pn);
+    const W = pn.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const Hh = pn.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const split = colW => {
+      const m = document.createElement("div");
+      m.className = "pg " + kind; m.style.cssText = `position:absolute;left:-9999px;top:0;visibility:hidden;width:${colW}px`;
+      pn.appendChild(m);
+      const out = []; let pg = [];
+      items.forEach((h, idx) => {
+        const n0 = m.children.length;
+        m.insertAdjacentHTML("beforeend", h);
+        if (m.scrollHeight > Hh + 1 && pg.length) {
+          while (m.children.length > n0) m.lastElementChild.remove();
+          out.push(pg); pg = []; m.innerHTML = h;
+        }
+        pg.push(idx);
+      });
+      if (pg.length) out.push(pg);
+      m.remove();
+      return out;
+    };
+    // Satu kolom kalau isinya muat satu halaman; dua halaman berdampingan di layar lebar kalau tidak.
+    cols = 1; pages = split(W);
+    if (pages.length > 1 && W >= 760) { cols = 2; pages = split((W - 32) / 2); }
+    const pi = Math.max(0, pages.findIndex(p => p.includes(keep)));
+    cur = pi - (pi % cols);
+    draw();
+  };
+  const go = d => { const n = cur + d * cols; if (n < 0 || n >= pages.length) return false; cur = n; draw(); return true; };
   const back = () => nav("lesson", li, j, tab);
   H = {
     tab(el) { nav("lesson", li, j, el.dataset.t); },
+    prev() { go(-1); },
+    next() { if (!go(1)) nav("lesson", li, j, NEXT[tab][0]); },
     quiz() { lessonQuiz(li, j); },
     quick() { const run = () => runQuiz(shuffle(x.qs).slice(0, 5), { title: x.title + " · latihan singkat", li, back, again: run, msg: "Latihan singkat tidak mengubah skor pelajaran." }); run(); },
-    listen() { const run = () => runQuiz(shuffle(x.examples).map(([s, tr]) => ({ t: "l", s, tr })), { title: x.title + " · latihan dengar", li, back, again: run, msg: "Dengarkan lagi contoh-contohnya kapan saja di tab Contoh." }); run(); },
+    listen() { const run = () => runQuiz(shuffle(x.examples).map(([s2, tr]) => ({ t: "l", s: s2, tr })), { title: x.title + " · latihan dengar", li, back, again: run, msg: "Dengarkan lagi contoh-contohnya kapan saja di tab Contoh." }); run(); },
     lmatch() { const run = () => matchGame(x.vocab, { li, back, again: run }); run(); }
   };
+  if (tab !== "q") {
+    REPAGE = paginate;
+    paginate();
+    try { document.fonts.ready.then(() => { if (REPAGE === paginate) paginate(); }); } catch (e) {}
+    // geser kiri/kanan untuk berpindah halaman
+    const pn = $("#panel"); let sx = null, sy = 0;
+    pn.addEventListener("pointerdown", e => { sx = e.clientX; sy = e.clientY; });
+    pn.addEventListener("pointerup", e => {
+      if (sx === null) return; const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    });
+  }
 };
 function lessonQuiz(li, j) {
   const L = LEVELS[li], x = L.lessons[j];

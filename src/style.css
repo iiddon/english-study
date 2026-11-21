@@ -388,6 +388,34 @@ li:last-child .lrow{border-bottom:0}
 textarea{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:500 14px/1.4 ui-monospace,Menlo,Consolas,monospace;resize:vertical;word-break:break-all}
 textarea:focus{outline:none;border-color:var(--primary)}
 
+
+/* ---------- lesson: one screen, paged ---------- */
+body.sub .top,body.sub .nav{display:none}
+body.sub .shell{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-top:calc(14px + env(safe-area-inset-top,0px))}
+.lessonv{display:flex;flex-direction:column;gap:12px;max-width:1100px;margin:0 auto;height:calc(100vh - 28px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));height:calc(100dvh - 28px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))}
+.lessonv>*{flex:none;min-width:0}
+.lv-top{display:flex;align-items:center;gap:12px}
+.lv-top .roundel{background:var(--lv)}
+.lv-tt{min-width:0}
+.lv-tt .eyebrow{font-size:13px}
+.lv-tt h1{font-size:24px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panel{flex:1 1 auto;min-height:0;position:relative;overflow:hidden;padding:18px 20px;touch-action:pan-y}
+.panel.over{overflow-y:auto}
+.spread{display:grid;gap:32px;align-content:start}
+.pg{display:flow-root;min-width:0}
+.pg>:last-child{margin-bottom:0}
+.pg .ex:last-of-type{border-bottom:0}
+.pg-extra{padding-top:14px}
+.pgfoot{display:flex;align-items:center;gap:10px}
+.pgfoot.col{flex-direction:column;align-items:stretch}
+.pgfoot .sq{width:56px;flex:none;padding:0}
+.pgfoot .btn.lv{flex:1}
+.pgc{min-width:54px;text-align:center;font:800 15px/1 var(--body);color:var(--muted);font-variant-numeric:tabular-nums}
+.qinfo{display:flex;flex-direction:column;gap:16px;justify-content:center}
+.qinfo .types li{background:var(--lv)}
+@media (min-width:760px){.lv-tt h1{font-size:30px}.panel{padding:24px 28px}}
+@media (max-height:700px){.lessonv{gap:8px}.lv-tt h1{font-size:21px}.lv-tt .eyebrow{display:none}.panel{padding:14px 16px}.seg button{min-height:44px;padding:8px 6px}}
+
 @keyframes wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,200,69,.7)}100%{box-shadow:0 0 0 12px rgba(255,200,69,0)}}
 @keyframes wiggle{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-2deg)}90%{transform:rotate(2deg)}95%{transform:rotate(-1deg)}}
@@ -395,3 +423,4 @@ textarea:focus{outline:none;border-color:var(--primary)}
 @keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
 @keyframes rise{from{transform:translateY(12px)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
