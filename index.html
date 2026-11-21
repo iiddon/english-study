@@ -600,6 +600,17 @@ body.sub .toast,body.focus .toast{bottom:calc(20px + env(safe-area-inset-bottom,
 .skh span{font-weight:800;font-variant-numeric:tabular-nums}
 .skrow2 small{display:block;margin-top:5px;color:var(--muted);font-weight:700;font-size:13px}
 
+/* ---------- profil → pengaturan ---------- */
+.rank-h{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.rank-h .iconbtn .ic{width:22px;height:22px}
+.setrow{display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:14px 16px;border-radius:22px;background:var(--surface);box-shadow:var(--sh);text-align:left;transition:transform .1s ease-out,box-shadow .1s ease-out}
+.setrow:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+.setrow>.ic{width:26px;height:26px;color:var(--primary);flex:none}
+:root[data-theme="dark"] .setrow>.ic{color:#c9c9ff}
+.setrow>.ic:last-child{width:20px;height:20px;color:var(--muted)}
+.setrow b{display:block;font:600 19px/1.2 var(--display)}
+.setrow small{color:var(--muted);font-weight:700;font-size:14px}
+
 /* ---------- mode gelap: token yang sama, nilai gelap ---------- */
 :root[data-theme="dark"]{
   --bg:#141629; --surface:#1f2238; --soft:#262a45; --line:#32375c;
@@ -1958,6 +1969,7 @@ const ICONS = {
   bookmark: '<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
   timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M9 2h6"/>',
   chart: '<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
   box: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 11v4"/><path d="M5 9a7 5 0 0 1 14 0"/>'
 };
 const I = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -2194,7 +2206,7 @@ function confetti() {
 /* ================= router ================= */
 let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null, QT = null;
 const VIEWS = {};
-const SECTION = { exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
+const SECTION = { settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
 /* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
    Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
@@ -2210,6 +2222,7 @@ function hashOf(v, a) {
     case "exam": return "#ujian";
     case "mine": return "#kataku";
     case "profile": return "#profil";
+    case "settings": return "#pengaturan";
     case "welcome": return "#mulai-" + (a[0] || 0);
     default: return "#rute";
   }
@@ -2222,6 +2235,7 @@ function parseHash(h) {
     case "ujian": return { v: "exam", a: [] };
     case "kataku": return { v: "mine", a: [] };
     case "profil": return { v: "profile", a: [] };
+    case "pengaturan": return { v: "settings", a: [] };
     case "flashcard": return { v: "flash", a: [LEVELS.some(L => L.id === p[1]) || p[1] === "mine" ? p[1] : "all"] };
     case "mulai": return { v: "welcome", a: [Math.min(3, n(p[1]) || 0)] };
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
@@ -3002,7 +3016,7 @@ VIEWS.profile = function () {
   const r = rankOf(S.xp), acc = S.ans ? Math.round(S.cor / S.ans * 100) : 0, got = BADGES.filter(b => S.badges[b.id]).length;
   const stat = (k, v) => `<div><dt>${k}</dt><dd>${v}</dd></div>`;
   app.innerHTML = `<div class="narrow stack">
-    <div class="rank"><p class="eyebrow">Peringkat Anda</p><h1>${r.name}</h1>
+    <div class="rank"><div class="rank-h"><p class="eyebrow">Peringkat ${S.name ? esc(S.name) : "Anda"}</p><button class="iconbtn" data-g="settings" aria-label="Pengaturan">${I("gear")}</button></div><h1>${r.name}</h1>
       ${r.next ? `<div class="bar"><i style="width:${(S.xp - r.at) / (r.next.at - r.at) * 100}%"></i></div><p class="muted">${S.xp} XP. ${r.next.at - S.xp} XP lagi menuju ${r.next.name}.</p>` : `<p class="muted">${S.xp} XP. Ini peringkat tertinggi.</p>`}</div>
     ${progressHTML(7)}
     <dl class="statgrid">${stat("Hari beruntun", streakNow())}${stat("Rekor beruntun", S.best)}${stat("Pelajaran", doneCount() + "/" + LESSONS.length)}${stat("Akurasi", acc + "%")}${stat("Soal dijawab", S.ans)}${stat("Jawaban benar", S.cor)}${stat("Combo terbaik", S.combo + "×")}${stat("Kata hafal", knownCount())}</dl>
@@ -3010,13 +3024,24 @@ VIEWS.profile = function () {
     <div class="badges">${BADGES.map(b => `<div class="badge${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><small>${b.d}</small></span></div>`).join("")}</div>
     <h2 style="margin-top:10px">Sertifikat</h2>
     ${LEVELS.some(L => S.cert[L.id]) ? `<div class="certs">${LEVELS.filter(L => S.cert[L.id]).map(L => `<button class="cert" data-a="cert" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="roundel sm">${L.cefr}</span><span><b>${L.name}</b><small>Skor ${S.cert[L.id].p}% · ${longDate(S.cert[L.id].d)}</small></span>${I("award")}</button>`).join("")}</div>` : `<div class="card"><p class="muted">Lulus tes level (skor 75% ke atas) untuk mendapat sertifikat bernama yang bisa kamu bagikan.</p></div>`}
-    <h2 style="margin-top:10px">Pengaturan</h2>
+    <button class="setrow" data-g="settings">${I("gear")}<span class="grow"><b>Pengaturan</b><small>Nama, target harian, tampilan, suara, pindahkan progres</small></span>${I("right")}</button></div>`;
+  H = {
+    range(el) { const n = +el.dataset.v; $("#xpc").innerHTML = xpChart(n); $$('[data-a="range"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
+    toexam() { nav("exam"); },
+    cert(el) { showCert(+el.dataset.l); },
+  };
+};
+
+/* ================= pengaturan ================= */
+VIEWS.settings = function () {
+  app.innerHTML = `<div class="narrow stack">
+    <div><button class="back" data-g="profile">${I("left")} Profil</button><h1>Pengaturan</h1></div>
+    <h2 style="margin-top:4px">Umum</h2>
     <div class="card" style="padding-top:4px;padding-bottom:4px">
       <div class="setting"><label for="pname"><b>Nama panggilan</b><p class="muted">Dipakai Bubu untuk menyapamu</p></label><input id="pname" type="text" maxlength="24" autocomplete="given-name" data-c="nm" value="${esc(S.name)}" placeholder="Nama"></div>
       <div class="setting"><div><b>Target harian</b><p class="muted">XP yang ingin Anda kumpulkan per hari</p></div><div class="seg" role="group" aria-label="Target harian">${[30, 50, 100].map(g => `<button aria-pressed="${S.goal === g}" data-a="goal" data-v="${g}">${g} XP</button>`).join("")}</div></div>
       <div class="setting"><div><b>Tampilan</b><p class="muted">Ikuti perangkat, terang, atau gelap</p></div><div class="seg" role="group" aria-label="Tampilan">${[["auto", "Otomatis"], ["light", "Terang"], ["dark", "Gelap"]].map(([v, t]) => `<button aria-pressed="${S.theme === v}" data-a="theme" data-v="${v}">${t}</button>`).join("")}</div></div>
       <div class="setting"><label class="switch" for="snd"><input type="checkbox" id="snd" data-c="sound"${S.sound ? " checked" : ""}> Efek suara</label></div>
-      <div class="setting"><div><b>Reset progres</b><p class="muted">Menghapus semua XP, skor, dan lencana.</p></div><button class="btn ghost auto" data-a="reset">Reset</button></div>
     </div>
     <h2 style="margin-top:10px">Pindahkan progres</h2>
     <div class="card stack">
@@ -3026,14 +3051,15 @@ VIEWS.profile = function () {
       <textarea id="impin" rows="3" spellcheck="false" autocomplete="off" placeholder="EP1:…"></textarea>
       <button class="btn blue" data-a="imp">Pulihkan progres</button><div id="impmsg" aria-live="polite"></div>
     </div>
+    <h2 style="margin-top:10px">Hapus data</h2>
+    <div class="card" style="padding-top:4px;padding-bottom:4px">
+      <div class="setting"><div><b>Reset progres</b><p class="muted">Menghapus semua XP, skor, lencana, dan Kataku. Tidak bisa dibatalkan.</p></div><button class="btn ghost auto" data-a="reset">Reset</button></div>
+    </div>
     <p class="muted">English Path gratis dan terbuka. Kode dan laporan soal: <a href="${REPO}" target="_blank" rel="noopener">github.com/iiddon/english-study</a></p></div>`;
   let armed = false;
   H = {
-    goal(el) { S.goal = +el.dataset.v; save(); rerender(); },
-    range(el) { const n = +el.dataset.v; $("#xpc").innerHTML = xpChart(n); $$('[data-a="range"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
-    toexam() { nav("exam"); },
+    goal(el) { S.goal = +el.dataset.v; save(); $$('[data-a="goal"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
     theme(el) { S.theme = el.dataset.v; save(); applyTheme(); $$('[data-a="theme"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
-    cert(el) { showCert(+el.dataset.l); },
     nm(el) { S.name = (el.value || "").trim().slice(0, 24); save(); },
     sound(el) { S.sound = el.checked; save(); if (S.sound) sfx.ok(); },
     install() { if (!DEFER) return; DEFER.prompt(); DEFER.userChoice.finally(() => { DEFER = null; rerender(); }); },
@@ -3058,7 +3084,7 @@ VIEWS.profile = function () {
     },
     reset(el) {
       if (!armed) { armed = true; el.className = "btn bad auto"; el.textContent = "Ketuk lagi untuk menghapus"; return; }
-      const th = S.theme; S = fresh(); S.theme = th; S.resetAt = Date.now(); save(); rerender();
+      const th = S.theme; S = fresh(); S.theme = th; S.onb = 1; S.resetAt = Date.now(); save(); rerender(); toast("Progres sudah direset.");
     }
   };
 };

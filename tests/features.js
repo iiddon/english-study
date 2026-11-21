@@ -94,6 +94,7 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
     await page.click(".modal [data-x]");
 
     // mode gelap manual
+    await page.click('.setrow[data-g="settings"]');
     await page.click('[data-a="theme"][data-v="dark"]');
     ok(await page.evaluate(() => document.documentElement.dataset.theme) === "dark", `${name}: pilih Gelap`);
     await page.screenshot({ path: `${shots}/f-${name}-profile-dark.png`, fullPage: false });

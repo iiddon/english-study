@@ -207,12 +207,12 @@ require("fs").mkdirSync(shots, { recursive: true });
   else { log("speak: mic button present", await page.locator('[data-a="rec"]').count()); await page.evaluate(() => { S.spoke.basic = { 0: 1, 1: 1 }; save(); }); }
   s = await state(); log("spoke", JSON.stringify(s.spoke));
   // export / import roundtrip
-  await click('#nav [data-g="profile"]');
+  await click('#nav [data-g="profile"]'); await click('.setrow[data-g="settings"]');
   await click('[data-a="exp"]');
   const code = await page.locator("#expout textarea").inputValue();
   const before = (await state()).xp;
   await page.evaluate(() => { S = fresh(); S.onb = 1; save(); });
-  await click('#nav [data-g="profile"]');
+  await click('#nav [data-g="profile"]'); await click('.rank-h [data-g="settings"]');
   await page.fill("#impin", code); await click('[data-a="imp"]');
   s = await state(); log("import: code", code.length, "chars, xp restored", s.xp === before, s.xp);
   log("install hint:", await page.evaluate(() => installHint()));
@@ -224,14 +224,14 @@ require("fs").mkdirSync(shots, { recursive: true });
   const xp0 = (await state()).xp; await click('[data-a="chest"]'); s = await state();
   log("chest: +", s.xp - xp0, "xp, chests", s.chests, "badge", !!s.badges.chest, "again-button", await page.locator('[data-a="chest"]').count());
   // profile
-  await click('#nav [data-g="profile"]');
+  await click('#nav [data-g="profile"]'); await click('.setrow[data-g="settings"]');
   await click('[data-a="goal"][data-v="100"]');
   await page.locator("#snd").uncheck();
   await page.screenshot({ path: path.join(shots, "7-profile-mobile.png"), fullPage: true });
   s = await state(); log("goal", s.goal, "sound", s.sound, "xp", s.xp, "ans", s.ans, "cor", s.cor, "combo", s.combo);
 
   // reload keeps progress
-  await page.reload(); await page.waitForSelector(".statgrid"); log("reload keeps screen:", await page.evaluate(() => ROUTE.v)); await click('#nav [data-g="home"]'); await page.waitForSelector(".lvcard");
+  await page.reload(); await page.waitForSelector("#snd"); log("reload keeps screen:", await page.evaluate(() => ROUTE.v)); await click('#nav [data-g="home"]'); await page.waitForSelector(".lvcard");
   s = await state(); log("after reload: xp", s.xp, "done", Object.keys(s.done).length);
 
   // desktop + dark
@@ -247,12 +247,13 @@ require("fs").mkdirSync(shots, { recursive: true });
   await page.emulateMedia({ colorScheme: "light" });
 
   // reset
-  await click('#nav [data-g="profile"]'); await click('[data-a="reset"]'); await click('[data-a="reset"]');
+  await click('#nav [data-g="profile"]'); await click('.setrow[data-g="settings"]'); await click('[data-a="reset"]'); await click('[data-a="reset"]');
   s = await state(); log("after reset: xp", s.xp, "done", Object.keys(s.done).length, "resetAt>0", s.resetAt > 0);
 
   // horizontal overflow check on every main view at 360px
   await page.setViewportSize({ width: 360, height: 780 });
-  for (const v of ["home", "practice", "profile"]) {
+  for (const v of ["home", "practice", "profile", "settings"]) {
+    if (v === "settings") { await click('.setrow[data-g="settings"]'); const o2 = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth); if (o2 > 0) errors.push("overflow-x on settings"); continue; }
     await click(`#nav [data-g="${v}"]`);
     const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (over > 0) errors.push(`overflow-x ${over}px on ${v}`);

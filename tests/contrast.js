@@ -7,7 +7,7 @@ const url = "file://" + require("path").join(__dirname, "..", "index.html");
     const p = await (await b.newContext({ viewport: { width: 390, height: 844 }, colorScheme: scheme })).newPage();
     await p.addInitScript(() => { if (!localStorage.getItem("englishpath_v1")) localStorage.setItem("englishpath_v1", JSON.stringify({ onb: 1, name: "Dewi", xp: 300, talk: { basic: 80 }, cert: { basic: { p: 90, d: "2026-11-20" } }, done: { b1: 1 } })); });
     await p.goto(url); await p.waitForTimeout(300);
-    const screens = [["home", "nav('home');document.querySelectorAll('details.lvcard').forEach(d=>d.open=true)"], ["practice", "nav('practice')"], ["profile", "nav('profile')"], ["talk", "nav('talk')"], ["talk1", "nav('talk',0)"], ["exam", "nav('exam')"], ["mine", "S.mine={student:'2026-11-21'};nav('mine')"], ["lesson", "nav('lesson',0,0)"], ["quiz", "lessonQuiz(0,0);document.querySelector('.opt')&&document.querySelector('.opt').click()"]];
+    const screens = [["home", "nav('home');document.querySelectorAll('details.lvcard').forEach(d=>d.open=true)"], ["practice", "nav('practice')"], ["profile", "nav('profile')"], ["settings", "nav('settings')"], ["talk", "nav('talk')"], ["talk1", "nav('talk',0)"], ["exam", "nav('exam')"], ["mine", "S.mine={student:'2026-11-21'};nav('mine')"], ["lesson", "nav('lesson',0,0)"], ["quiz", "lessonQuiz(0,0);document.querySelector('.opt')&&document.querySelector('.opt').click()"]];
     let bad = [];
     for (const [n, js] of screens) {
       await p.evaluate(js); await p.waitForTimeout(1200);
