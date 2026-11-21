@@ -503,6 +503,78 @@ body.modal-open{overflow:hidden}
 :root[data-theme="dark"] .msg .av{color:var(--ink)}
 :root[data-theme="dark"] .msg.u .bub{background:var(--primary-d)}
 
+/* ---------- Kataku ---------- */
+.grow{flex:1;min-width:0}
+.bm{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;color:var(--muted);transition:transform .1s}
+.bm .ic{width:22px;height:22px}
+.bm[aria-pressed="true"]{color:var(--coral)}
+.bm[aria-pressed="true"] .ic{fill:currentColor}
+.bm.btn{display:inline-flex;width:100%;height:auto;gap:8px;color:var(--ink)}
+.bm.btn[aria-pressed="true"]{color:var(--bad-ink)}
+.bm.pop{animation:pop .3s}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;display:flex;align-items:center;gap:14px;max-width:calc(100% - 32px);padding:12px 16px;border-radius:16px;background:#24264a;color:#fff;font-weight:700;font-size:15px;box-shadow:0 6px 20px rgba(0,0,0,.25);animation:rise .2s}
+.toast button{min-height:44px;padding:0 6px;color:#ffc845;font-weight:800}
+body.sub .toast,body.focus .toast{bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+:root[data-theme="dark"] .toast{background:#eef0ff;color:#141629}
+:root[data-theme="dark"] .toast button{color:#3d3dc4}
+.search input{width:100%;min-height:52px;padding:10px 16px;border:2px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);font:700 16px var(--body)}
+.search input:focus{outline:none;border-color:var(--primary)}
+.wlist{display:grid;gap:8px;list-style:none;padding:0;margin:0}
+.wrow{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 14px;border-radius:18px;background:var(--surface);box-shadow:var(--sh)}
+.wrow .roundel{background:var(--lv)}
+.wrow b{display:block;font:600 19px/1.2 var(--display);overflow-wrap:anywhere}
+.wrow .grow span{color:var(--muted);font-weight:700;font-size:14px}
+.empty{align-items:center;text-align:center}
+.empty .ic{width:18px;height:18px;vertical-align:-3px}
+
+/* ---------- simulasi tes ---------- */
+.exsec{display:flex;gap:14px;align-items:center}
+.exsec .tic{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:14px;background:var(--ldk);color:#fff}
+.exsec .tic .ic{width:22px;height:22px}
+.exsec b{display:block;font:600 18px/1.2 var(--display)}
+.exsec small{color:var(--muted);font-weight:700}
+.exsec.off{opacity:.55}
+.exhist{display:grid;gap:8px;list-style:none;padding:0;margin:0}
+.exhist li{display:flex;gap:12px;align-items:center;padding:10px 14px;border-radius:18px;background:var(--surface);box-shadow:var(--sh)}
+.exhist .roundel{background:var(--lv)}
+.exhist b{display:block}
+.exhist small{color:var(--muted);font-weight:700}
+.qtime{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:99px;background:var(--soft);font:800 14px/1 var(--body);font-variant-numeric:tabular-nums;white-space:nowrap}
+.qtime .ic{width:16px;height:16px}
+.qtime.warn{background:var(--coral-l);color:var(--bad-ink);animation:pulse 1.2s infinite}
+.eyebrow .sec{color:var(--ink)}
+.skrow{display:grid;grid-template-columns:96px 1fr 52px;gap:10px;align-items:center}
+.skn{font-weight:800}
+.skv{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.skbar{display:block;height:12px;border-radius:99px;background:var(--soft);overflow:hidden}
+.skbar i{display:block;height:100%;border-radius:99px;background:var(--ldk,var(--primary))}
+.skbar.none{background:repeating-linear-gradient(135deg,var(--soft) 0 6px,var(--line) 6px 8px)}
+
+/* ---------- grafik progres ---------- */
+.prog-card h2,.prog-card+.card h2{display:flex;align-items:center;gap:8px}
+.prog-card h2 .ic{width:22px;height:22px;color:var(--primary)}
+.seg.sm button{min-height:44px;padding:6px 12px;font-size:14px}
+.xpchart{width:100%;height:auto;display:block;overflow:visible}
+.xpchart .b{fill:var(--primary-l)}
+.xpchart .b.hit{fill:var(--mint)}
+.xpchart .b.zero{fill:var(--line)}
+.xpchart text{font:700 10px var(--body);fill:var(--muted);text-anchor:middle}
+.xpchart text.val{fill:var(--ink);font-size:10px}
+.xpchart .goal{stroke:var(--coral);stroke-width:1.5;stroke-dasharray:4 4}
+:root[data-theme="dark"] .xpchart .b:not(.hit):not(.zero){fill:var(--primary)}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:13px}
+.lg{display:inline-block;width:12px;height:12px;border-radius:4px;background:var(--primary-l)}
+:root[data-theme="dark"] .lg{background:var(--primary)}
+.lg.hit{background:var(--mint)}
+.lg.line{height:0;border-top:2px dashed var(--coral);border-radius:0;background:none}
+.skrow2{display:flex;gap:12px;align-items:flex-start}
+.skic{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:12px;background:var(--primary-l);color:var(--primary-d)}
+:root[data-theme="dark"] .skic{color:#c9c9ff}
+.skic .ic{width:20px;height:20px}
+.skh{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}
+.skh span{font-weight:800;font-variant-numeric:tabular-nums}
+.skrow2 small{display:block;margin-top:5px;color:var(--muted);font-weight:700;font-size:13px}
+
 /* ---------- mode gelap: token yang sama, nilai gelap ---------- */
 :root[data-theme="dark"]{
   --bg:#141629; --surface:#1f2238; --soft:#262a45; --line:#32375c;
