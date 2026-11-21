@@ -24,8 +24,11 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
     // modal: beri koin, buka lemari dari chip
     await p.evaluate(() => { S.coins = 420; save(); nav("home"); });
     if (name === "hp") { await p.evaluate(() => { document.getElementById("swipe").scrollLeft = 9999; }); await p.waitForTimeout(300); await p.screenshot({ path: `${shots}/w-${name}-home.png` }); }
-    await p.click("#top .chip.coin");
-    ok(await p.evaluate(() => ROUTE.v) === "wardrobe", `${name}: chip koin membuka Lemari`);
+    await p.click('#nav [data-g="wardrobe"]');
+    ok(await p.evaluate(() => ROUTE.v) === "wardrobe", `${name}: tab Lemari Bubu membuka Lemari`);
+    ok(await p.evaluate(() => { const w = document.querySelector(".brand .wm"); return w && w.offsetWidth > 0; }), `${name}: tulisan English Path tampil`);
+    ok(await p.evaluate(() => document.querySelector("#nav").scrollWidth <= innerWidth && document.querySelector(".top").scrollWidth <= document.querySelector(".top").clientWidth + 1), `${name}: header & menu tidak meluber`);
+    ok(await p.evaluate(() => document.querySelector("#wact").getBoundingClientRect().bottom <= document.querySelector("#nav").getBoundingClientRect().top), `${name}: tombol aksi di atas menu bawah`);
     ok(await p.locator(".witem").count() === 18, `${name}: 18 barang per kategori`);
     await p.click('.witem[data-id="wizard"]');
     ok((await p.textContent("#wact")).includes("Beli · 400"), `${name}: tombol beli 400`);
@@ -49,7 +52,7 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
     await p.reload(); await p.waitForTimeout(300);
     ok(await p.evaluate(() => S.look.hat === "wizard" && S.look.acc === "medal"), `${name}: kostum tersimpan setelah muat ulang`);
     await p.evaluate(() => nav("home")); ok(await p.evaluate(() => document.querySelector(".greet .bubu").outerHTML.includes("#5b3fb8")), `${name}: Bubu di beranda memakai topi penyihir`);
-    if (name === "hp") { await p.evaluate(() => nav("profile")); await p.screenshot({ path: `${shots}/w-${name}-profile.png` }); }
+    
     // kartu bagikan dengan Bubu berkostum
     if (name === "hp") { await p.evaluate(() => { S.cert.basic = { p: 90, d: dkey() }; showCert(0); }); await p.waitForFunction(() => { const i = document.querySelector("#cimg"); return i && i.src.startsWith("data:image/png") && !document.querySelector(".modal.busy"); }, null, { timeout: 8000 });
       const d = await p.evaluate(() => document.querySelector("#cimg").src); require("fs").writeFileSync(`${shots}/w-cert.png`, Buffer.from(d.split(",")[1], "base64")); }

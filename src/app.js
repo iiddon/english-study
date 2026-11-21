@@ -47,6 +47,7 @@ const ICONS = {
   chart: '<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/>',
   gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  shirt: '<path d="M8 3l4 2.5L16 3l5 3.5-2.5 4-2.5-1.2V21H8V9.3L5.5 10.5 3 6.5z"/>',
   box: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 11v4"/><path d="M5 9a7 5 0 0 1 14 0"/>'
 };
 const I = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -346,7 +347,7 @@ function confetti() {
 /* ================= router ================= */
 let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null, QT = null;
 const VIEWS = {};
-const SECTION = { wardrobe: "profile", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
+const SECTION = { wardrobe: "wardrobe", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
 /* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
    Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
@@ -415,12 +416,12 @@ window.addEventListener("hashchange", () => {
 });
 
 // Posisi gulir halaman utama diingat, supaya kembali dari pelajaran tidak loncat ke atas.
-const TOPLEVEL = ["home", "practice", "profile"], SCROLLS = {};
+const TOPLEVEL = ["home", "practice", "wardrobe", "profile"], SCROLLS = {};
 function nav(v, ...a) {
   const from = ROUTE && ROUTE.v;
   if (TOPLEVEL.includes(from) && !QUIZ) SCROLLS[from] = window.scrollY;
   clearInterval(TICK); TICK = null; clearInterval(QT); QT = null; QUIZ = null; stopSpeak(); stopRec();
-  document.body.classList.remove("focus", "sub"); REPAGE = null;
+  document.body.classList.remove("focus", "sub", "wardpage"); REPAGE = null;
   if (!VIEWS[v]) { v = "home"; a = []; }
   if (v === "welcome" && S.onb) { v = "home"; a = []; }
   ROUTE = { v, a }; H = {};
@@ -434,9 +435,9 @@ const here = () => { const r = ROUTE; return () => nav(r.v, ...r.a); };
 function chrome() {
   applyTheme();
   $("#top").innerHTML = `<button class="brand" data-g="home" aria-label="English Path, buka rute"><span class="mark">${BUBU(26, "", "", "base", false)}</span><span class="wm">English Path</span></button>
-    <div class="chips"><span class="chip" title="Hari beruntun">${I("flame")}${streakNow()}</span><span class="chip xp" title="Total XP">${I("star")}${S.xp}</span><button class="chip coin" data-g="wardrobe" aria-label="${S.coins} koin, buka Lemari Bubu">${COIN}${S.coins}</button></div>`;
+    <div class="chips"><span class="chip" title="Hari beruntun">${I("flame")}${streakNow()}</span><span class="chip xp" title="Total XP">${I("star")}${S.xp}</span><button class="chip coin hdr" data-g="wardrobe" aria-label="${S.coins} koin, buka Lemari Bubu">${COIN}${S.coins}</button></div>`;
   const cur = SECTION[ROUTE.v] || "home";
-  $("#nav").innerHTML = [["home", "Rute", "map"], ["practice", "Latihan", "zap"], ["profile", "Profil", "user"]]
+  $("#nav").innerHTML = [["home", "Rute", "map"], ["practice", "Latihan", "zap"], ["wardrobe", "Lemari Bubu", "shirt"], ["profile", "Profil", "user"]]
     .map(([v, t, ic]) => `<button data-g="${v}"${cur === v ? ' aria-current="page"' : ""} aria-label="${t}">${I(ic)}<span class="t">${t}</span></button>`).join("");
 }
 document.addEventListener("click", e => {
@@ -1202,7 +1203,6 @@ VIEWS.profile = function () {
     ${badgeSummary()}
     <h2 style="margin-top:10px">Sertifikat</h2>
     ${LEVELS.some(L => S.cert[L.id]) ? `<div class="certs">${LEVELS.filter(L => S.cert[L.id]).map(L => `<button class="cert" data-a="cert" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="roundel sm">${L.cefr}</span><span><b>${L.name}</b><small>Skor ${S.cert[L.id].p}% · ${longDate(S.cert[L.id].d)}</small></span>${I("award")}</button>`).join("")}</div>` : `<div class="card"><p class="muted">Lulus tes level (skor 75% ke atas) untuk mendapat sertifikat bernama yang bisa kamu bagikan.</p></div>`}
-    <button class="setrow" data-g="wardrobe"><span class="setbubu">${BUBU(40, "", "", "happy")}</span><span class="grow"><b>Lemari Bubu</b><small>${S.coins} koin · koleksi ${wardCount()[0]} dari ${wardCount()[1]}</small></span>${I("right")}</button>
     <button class="setrow" data-g="settings">${I("gear")}<span class="grow"><b>Pengaturan</b><small>Nama, target harian, tampilan, suara, pindahkan progres</small></span>${I("right")}</button></div>`;
   H = {
     range(el) { const n = +el.dataset.v; $("#xpc").innerHTML = xpChart(n); $$('[data-a="range"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
@@ -1642,10 +1642,10 @@ function wardTeaser() {
   </section>`;
 }
 VIEWS.wardrobe = function () {
-  document.body.classList.add("sub");
+  document.body.classList.add("wardpage");
   let tab = "hat", sel = S.look.hat, confirm = false;
   app.innerHTML = `<div class="wardv">
-    <div class="lv-top"><button class="iconbtn" data-a="exit" aria-label="Kembali">${I("left")}</button><div class="lv-tt"><p class="eyebrow" id="wcol"></p><h1>Lemari Bubu</h1></div><span class="chip coin" id="wcoin"></span></div>
+    <div class="w-top"><div><p class="eyebrow" id="wcol"></p><h1>Lemari Bubu</h1></div><span class="chip coin" id="wcoin"></span></div>
     <div class="wbody">
       <section class="wstage" aria-label="Pratinjau Bubu"><div class="wbig" id="wbig"></div><div class="wtxt"><p class="eyebrow" id="wlab"></p><p class="wname" id="wname"></p><p class="muted" id="whint"></p></div></section>
       <div class="wpick">
@@ -1693,7 +1693,6 @@ VIEWS.wardrobe = function () {
     if (confirm) try { $('#wsheet [data-a="yes"]').focus({ preventScroll: true }); } catch (e) {}
   }
   H = {
-    exit() { nav("profile"); },
     tab(el) { tab = el.dataset.c; sel = S.look[tab]; draw(false); $("#wgrid").scrollTop = 0; },
     pick(el) { sel = el.dataset.id; buzz(8); draw(true); },
     act() {
@@ -1709,6 +1708,9 @@ VIEWS.wardrobe = function () {
       save(); chrome(); sfx.win(); confetti(); buzz([10, 40, 10]); toast(cur.n + " dibeli dan dipakai!"); draw(true);
     }
   };
+  // Tinggi pas di antara bilah atas dan menu bawah, supaya hanya daftar barang yang digulir.
+  const fit = () => { const v = $(".wardv"); if (!v || ROUTE.v !== "wardrobe") return window.removeEventListener("resize", fit); const nv = $("#nav").getBoundingClientRect(); v.style.height = Math.max(380, nv.top - v.getBoundingClientRect().top - 12) + "px"; };
+  window.addEventListener("resize", fit); fit();
   draw(false);
 };
 
