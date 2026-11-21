@@ -213,7 +213,8 @@ function tone(freqs, dur = 0.11, type = "sine") {
     });
   } catch (e) {}
 }
-const sfx = { ok: () => tone([660, 990]), no: () => tone([233, 175], 0.15, "triangle"), win: () => tone([523, 659, 784, 1047], 0.13) };
+const buzz = p => { if (!S.sound) return; try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} };
+const sfx = { ok: () => { tone([660, 990]); buzz(12); }, no: () => { tone([233, 175], 0.15, "triangle"); buzz([25, 50, 25]); }, win: () => tone([523, 659, 784, 1047], 0.13) };
 
 let TTS = null, voice = null;
 const hasNative = (() => { try { return "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined"; } catch (e) { return false; } })();
@@ -257,12 +258,70 @@ let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null;
 const VIEWS = {};
 const SECTION = { home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
+/* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
+   Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
+let SKIPHASH = 0, QPREV = null, QBACKED = false;
+function hashOf(v, a) {
+  switch (v) {
+    case "lesson": return "#pelajaran-" + a[0] + "-" + a[1];
+    case "read": return "#bacaan-" + a[0];
+    case "speak": return "#bicara-" + a[0];
+    case "flash": return "#flashcard-" + (a[0] || "all");
+    case "practice": return "#latihan";
+    case "profile": return "#profil";
+    case "welcome": return "#mulai-" + (a[0] || 0);
+    default: return "#rute";
+  }
+}
+function parseHash(h) {
+  const p = String(h || "").replace(/^#/, "").split("-"), n = x => (/^\d+$/.test(x || "") ? +x : NaN);
+  switch (p[0]) {
+    case "rute": return { v: "home", a: [] };
+    case "latihan": return { v: "practice", a: [] };
+    case "profil": return { v: "profile", a: [] };
+    case "flashcard": return { v: "flash", a: [LEVELS.some(L => L.id === p[1]) ? p[1] : "all"] };
+    case "mulai": return { v: "welcome", a: [Math.min(2, n(p[1]) || 0)] };
+    case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
+    case "bacaan": { const li = n(p[1]); return LEVELS[li] && LEVELS[li].read ? { v: "read", a: [li] } : null; }
+    case "bicara": { const li = n(p[1]); return LEVELS[li] ? { v: "speak", a: [li] } : null; }
+    default: return null;
+  }
+}
+function setHash(h) {
+  try {
+    const cur = location.hash || "";
+    if (cur === h) return;
+    if (!cur) { history.replaceState(null, "", h); return; }
+    if (cur === "#kuis") {
+      if (h === QPREV) { SKIPHASH++; history.back(); } else history.replaceState(null, "", h);
+      return;
+    }
+    SKIPHASH++; location.hash = h;
+  } catch (e) {}
+}
+function enterSession() {
+  QBACKED = false;
+  try { if (location.hash !== "#kuis") { QPREV = location.hash || "#rute"; SKIPHASH++; location.hash = "#kuis"; } } catch (e) {}
+}
+window.addEventListener("hashchange", () => {
+  if (SKIPHASH > 0) { SKIPHASH--; return; }
+  const h = location.hash;
+  if (QUIZ && document.body.classList.contains("focus")) {
+    if (h !== "#kuis") { QBACKED = true; if (H.quit) H.quit(); }
+    return;
+  }
+  const r = parseHash(h);
+  if (r) nav(r.v, ...r.a); else nav("home");
+});
+
 function nav(v, ...a) {
   clearInterval(TICK); TICK = null; QUIZ = null; stopSpeak(); stopRec();
   document.body.classList.remove("focus");
   if (!VIEWS[v]) { v = "home"; a = []; }
+  if (v === "welcome" && S.onb) { v = "home"; a = []; }
   ROUTE = { v, a }; H = {};
   VIEWS[v](...a); chrome(); toTop();
+  setHash(hashOf(v, a));
 }
 const rerender = () => nav(ROUTE.v, ...ROUTE.a);
 const here = () => { const r = ROUTE; return () => nav(r.v, ...r.a); };
@@ -440,6 +499,7 @@ const fmtQ = s => esc(s).replace(/___/g, '<span class="blank"></span>');
 
 function runQuiz(items, o) {
   if (!items.length) return o.back();
+  enterSession();
   clearInterval(TICK); TICK = null; stopSpeak();
   document.body.classList.add("focus");
   const N = items.length, lv = o.li != null ? ` style="--lv:var(--l${o.li + 1})"` : "";
@@ -476,7 +536,7 @@ function runQuiz(items, o) {
         : `<p class="qtext">${esc(c.tr)}</p>`) + `<div id="ord"></div><button class="btn lv" data-a="check" id="chk" disabled>Periksa</button>`;
     }
     app.innerHTML = `<div class="quiz"${lv}>
-      <div class="qbar"><button class="iconbtn" data-a="quit" aria-label="Keluar dari sesi">${I("x")}</button>${N <= 12 ? `<div class="blocks" style="--n:${N}" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${i}">${items.map((_, k) => `<span class="${k < i ? (o.silent ? "cur" : res[k] ? "ok" : "no") : k === i ? "cur" : ""}"></span>`).join("")}</div>` : `<div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${i}"><i style="width:${i / N * 100}%"></i></div>`}<span class="qcount">${i + 1}/${N}</span><span id="combo">${comboHTML()}</span></div>
+      <div class="qbar"><button class="iconbtn" data-a="quit" aria-label="Keluar dari sesi">${I("x")}</button>${N <= 12 ? `<div class="blocks" style="--n:${N}" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${i}" aria-label="Soal ${i + 1} dari ${N}${o.silent ? "" : ", " + right + " benar"}">${items.map((_, k) => `<span class="${k < i ? (o.silent ? "cur" : res[k] ? "ok" : "no") : k === i ? "cur" : ""}" title="${k < i && !o.silent ? (res[k] ? "Benar" : "Salah") : ""}"></span>`).join("")}</div>` : `<div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${i}"><i style="width:${i / N * 100}%"></i></div>`}<span class="qcount">${i + 1}/${N}</span><span id="combo">${comboHTML()}</span></div>
       <div id="confirm"></div>${o.ctx || ""}
       <p class="eyebrow">${QLABEL[c.t]}</p>${body}
       <div id="fb" aria-live="polite"></div>
@@ -539,7 +599,7 @@ function runQuiz(items, o) {
 
   H = {
     quit() { $("#confirm").innerHTML = `<div class="confirm"><span>Keluar dari sesi ini? XP yang sudah didapat tetap tersimpan.</span><span class="row"><button class="btn ghost auto" data-a="stay">Lanjutkan</button><button class="btn bad auto" data-a="leave">Keluar</button></span></div>`; },
-    stay() { $("#confirm").innerHTML = ""; },
+    stay() { $("#confirm").innerHTML = ""; if (QBACKED) { QBACKED = false; try { SKIPHASH++; location.hash = "#kuis"; } catch (e) {} } },
     leave() { o.back(); },
     // Ketukan hanya memilih; jawaban dinilai setelah tombol Periksa ditekan.
     pick(el) { if (answered) return; st.sel = el; $$(".opt").forEach(b => { const on = b === el; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on); }); $("#chk").disabled = false; },
@@ -599,7 +659,7 @@ function runQuiz(items, o) {
 
 /* ================= match game ================= */
 function matchGame(pool, o) {
-  clearInterval(TICK); stopSpeak();
+  clearInterval(TICK); stopSpeak(); enterSession();
   document.body.classList.add("focus");
   const lv = o.li != null ? ` style="--lv:var(--l${o.li + 1})"` : "";
   const en = new Set(), id = new Set(), pairs = [];
@@ -923,7 +983,13 @@ function boot(d) {
   if (!S.onb && (S.xp > 0 || doneCount() > 0)) S.onb = 1;
   newBadges(); saveLocal();
   const r = d && d.route;
-  try { if (!S.onb) nav("welcome"); else if (r && VIEWS[r.v]) nav(r.v, ...(r.a || [])); else nav("home"); } catch (e) { nav("home"); }
+  const fromHash = parseHash(location.hash);
+  try {
+    if (!S.onb) nav("welcome", fromHash && fromHash.v === "welcome" ? fromHash.a[0] : 0);
+    else if (r && VIEWS[r.v]) nav(r.v, ...(r.a || []));
+    else if (fromHash) nav(fromHash.v, ...fromHash.a);
+    else nav("home");
+  } catch (e) { nav("home"); }
   try { if ("serviceWorker" in navigator && location.protocol === "https:" && window.top === window.self) navigator.serviceWorker.register("sw.js").catch(() => {}); } catch (e) {}
   initTts(); initSync();
 }

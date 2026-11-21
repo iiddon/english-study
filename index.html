@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>English Path — Belajar Bahasa Inggris Gratis</title>
 <meta name="description" content="Belajar bahasa Inggris gratis dari A1 sampai C2: 36 pelajaran, 750 soal, bacaan, latihan dengar dan berbicara, dijelaskan dalam bahasa Indonesia.">
 <meta name="theme-color" content="#c9f2e3">
@@ -48,9 +48,9 @@ a{color:var(--cobalt)}
 .pop:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
 
 /* ---------- shell ---------- */
-.shell{max-width:1040px;margin:0 auto;padding:16px 16px 110px}
+.shell{max-width:1040px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(110px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
-.brand{display:flex;align-items:center;gap:10px;min-width:0;white-space:nowrap;font:800 22px/1 var(--display);letter-spacing:-.01em}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;min-height:44px;white-space:nowrap;font:800 22px/1 var(--display);letter-spacing:-.01em}
 .brand .wm{overflow:hidden;text-overflow:ellipsis}
 .mark{display:grid;place-items:center;width:40px;height:40px;border:var(--b);border-radius:11px;background:var(--yellow);box-shadow:3px 3px 0 var(--ink);font:800 17px/1 var(--display)}
 .chips{display:flex;gap:8px;flex:none}
@@ -58,7 +58,7 @@ a{color:var(--cobalt)}
 .chip .ic{fill:#ff6b2c;stroke:var(--ink);stroke-width:1.8}
 .chip.xp{background:var(--yellow)}
 .chip.xp .ic{fill:#fff;stroke:var(--ink)}
-.nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;display:flex;gap:4px;padding:6px;border-radius:99px;background:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.22)}
+.nav{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:5;display:flex;gap:4px;padding:6px;border-radius:99px;background:var(--ink);box-shadow:0 6px 18px rgba(0,0,0,.22)}
 .nav button{display:flex;align-items:center;gap:7px;height:46px;padding:0 16px;border-radius:99px;color:#fff;font:700 15px/1 var(--body);white-space:nowrap}
 .nav button .ic{width:22px;height:22px}
 .nav button[aria-current="page"]{background:var(--yellow);color:var(--ink)}
@@ -83,7 +83,7 @@ h3{font:700 16px/1.3 var(--body);margin:18px 0 6px}
 /* ---------- controls ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;padding:10px 20px;border:var(--b);border-radius:16px;background:var(--yellow);box-shadow:var(--sh);color:var(--ink);font:800 19px/1.1 var(--display);text-align:center;transition:transform .08s,box-shadow .08s}
 .btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
-.btn:disabled{opacity:.45;box-shadow:none}
+.btn:disabled{opacity:1;background:var(--soft);color:#55605c;border-style:dashed;box-shadow:none}
 .btn.lv{background:var(--lv,var(--yellow));color:var(--ink)}
 .btn.blue{background:var(--cobalt);color:#fff}
 .btn.good{background:var(--mint)}
@@ -91,10 +91,10 @@ h3{font:700 16px/1.3 var(--body);margin:18px 0 6px}
 .btn.ghost{background:var(--surface)}
 .btn.auto{width:auto}
 .iconbtn{display:grid;place-items:center;width:46px;height:46px;border:var(--b);border-radius:13px;background:var(--surface);flex:none;font-size:20px}
-.back{display:inline-flex;align-items:center;gap:8px;padding:8px 10px 8px 0;font:700 15px/1 var(--body)}
+.back{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 10px 8px 0;font:700 15px/1 var(--body)}
 .card{background:var(--surface);border:var(--b);border-radius:20px;padding:18px;box-shadow:var(--sh-lg)}
 .seg{display:flex;gap:4px;padding:4px;border:var(--b);border-radius:14px;background:var(--surface)}
-.seg button{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;padding:10px 6px;border-radius:9px;font:700 15px/1 var(--body);text-align:center;white-space:nowrap}
+.seg button{flex:1 1 auto;min-width:44px;min-height:44px;overflow:hidden;text-overflow:ellipsis;padding:10px 6px;border-radius:9px;font:700 15px/1 var(--body);text-align:center;white-space:nowrap}
 .seg button[aria-selected="true"],.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
 .spk{display:grid;place-items:center;width:42px;height:42px;border:2px solid var(--ink);border-radius:50%;background:var(--yellow);font-size:17px;flex:none}
 .spk:active{background:var(--pink)}
@@ -130,7 +130,7 @@ h3{font:700 16px/1.3 var(--body);margin:18px 0 6px}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .tile{display:flex;flex-direction:column;gap:6px;padding:14px;border:var(--b);border-radius:18px;background:var(--tc,var(--surface));box-shadow:var(--sh);text-align:left;transition:transform .08s,box-shadow .08s}
 .tile:active:not(:disabled){transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
-.tile:disabled{opacity:.55;box-shadow:none}
+.tile:disabled{background:var(--soft);color:#55605c;border-style:dashed;box-shadow:none}
 .tile .ic{width:28px;height:28px}
 .tile b{font:800 18px/1.1 var(--display)}
 .tile small{font-size:13.5px;font-weight:600}
@@ -185,7 +185,8 @@ li:last-child .lrow{border-bottom:0}
 .tool b{display:block;font:800 18px/1.15 var(--display)}
 .tool small{color:var(--muted);font-size:14px;font-weight:600}
 .tool .meta{font:800 14px/1 var(--display);padding:6px 10px;border:2px solid var(--ink);border-radius:99px;background:var(--soft);white-space:nowrap}
-.tool:disabled{opacity:.55;box-shadow:none}
+.tool:disabled{background:var(--soft);border-style:dashed;box-shadow:none}
+.tool:disabled .tic{background:var(--soft);color:#55605c}
 
 /* ---------- lesson ---------- */
 .lesson-h{display:flex;gap:14px;align-items:center;margin:6px 0 18px}
@@ -211,7 +212,7 @@ li:last-child .lrow{border-bottom:0}
 .blocks{flex:1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:3px}
 .blocks span{height:14px;border:2px solid var(--ink);border-radius:4px;background:var(--surface);transition:background .2s}
 .blocks span.ok{background:var(--mint)}
-.blocks span.no{background:var(--red)}
+.blocks span.no{background:repeating-linear-gradient(135deg,var(--red) 0 4px,#fff 4px 7px)}
 .blocks span.cur{background:var(--yellow)}
 .prog{flex:1;height:16px;border:2px solid var(--ink);border-radius:99px;background:var(--surface);overflow:hidden}
 .prog i{display:block;height:100%;background:var(--lv,var(--cobalt));transition:width .35s}
@@ -242,6 +243,10 @@ li:last-child .lrow{border-bottom:0}
 .opts+.btn,.tf+.btn{margin-top:18px}
 .pickhint{margin-top:10px}
 .opt.right{background:var(--mint)}
+.opt.right::after,.opt.wrong::after{margin-left:auto;font:800 20px/1 var(--display)}
+.opt.right::after{content:"✓"}
+.opt.wrong::after{content:"✗"}
+.tf .opt.right::after,.tf .opt.wrong::after,.match .opt::after{content:none}
 .opt.wrong{background:var(--red);animation:shake .35s}
 .opt:disabled:not(.right):not(.wrong){opacity:.5;box-shadow:none}
 @media (hover:none){.opt kbd{display:none}}
@@ -328,7 +333,7 @@ li:last-child .lrow{border-bottom:0}
 .setting{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 0;border-bottom:2px dashed #cfd6d3}
 .setting:last-child{border-bottom:0}
 .setting .seg{min-width:210px}
-.switch{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-weight:700}
+.switch{display:inline-flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-weight:700}
 .switch input{appearance:none;-webkit-appearance:none;width:52px;height:30px;border:var(--b);border-radius:99px;background:var(--surface);position:relative;cursor:pointer}
 .switch input::after{content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;border:2px solid var(--ink);border-radius:50%;background:var(--surface);box-sizing:border-box;transition:transform .15s}
 .switch input:checked{background:var(--mint)}
@@ -336,16 +341,19 @@ li:last-child .lrow{border-bottom:0}
 
 
 /* ---------- reading / speaking / welcome / transfer ---------- */
-.report{justify-self:start;font-size:14px;font-weight:600;color:var(--ink)}
+.report{justify-self:start;display:inline-flex;align-items:center;min-height:44px;font-size:14px;font-weight:600;color:var(--ink)}
 .reading p{margin-bottom:14px;font-size:17.5px;line-height:1.7}
 .reading p:last-child{margin-bottom:0}
 .ctx{margin-bottom:16px;padding:10px 14px;border:var(--b);border-radius:14px;background:var(--surface)}
 .ctx summary{font-weight:700;cursor:pointer;min-height:28px}
 .ctx p{margin-top:8px;font-size:15px;line-height:1.6}
 .dots{display:flex;gap:8px;flex-wrap:wrap}
-.dots button{width:44px;height:16px;border:2px solid var(--ink);border-radius:99px;background:var(--surface)}
-.dots button.ok{background:var(--mint)}
-.dots button.cur{background:var(--yellow);box-shadow:2px 2px 0 var(--ink)}
+.dots{gap:4px}
+.dots button{position:relative;width:48px;height:44px}
+.dots button::before{content:"";position:absolute;left:2px;right:2px;top:12px;height:20px;border:2px solid var(--ink);border-radius:99px;background:var(--surface)}
+.dots button.ok::before{background:var(--mint)}
+.dots button.ok::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;font:800 13px/1 var(--body)}
+.dots button.cur::before{background:var(--yellow);box-shadow:2px 2px 0 var(--ink)}
 .tcard.say{min-height:200px;background:var(--surface)}
 .tcard.say.ok{background:var(--mint)}
 .tcard.say.no{background:#ffd3dc}
@@ -1778,7 +1786,8 @@ function tone(freqs, dur = 0.11, type = "sine") {
     });
   } catch (e) {}
 }
-const sfx = { ok: () => tone([660, 990]), no: () => tone([233, 175], 0.15, "triangle"), win: () => tone([523, 659, 784, 1047], 0.13) };
+const buzz = p => { if (!S.sound) return; try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} };
+const sfx = { ok: () => { tone([660, 990]); buzz(12); }, no: () => { tone([233, 175], 0.15, "triangle"); buzz([25, 50, 25]); }, win: () => tone([523, 659, 784, 1047], 0.13) };
 
 let TTS = null, voice = null;
 const hasNative = (() => { try { return "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined"; } catch (e) { return false; } })();
@@ -1822,12 +1831,70 @@ let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null;
 const VIEWS = {};
 const SECTION = { home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
+/* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
+   Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
+let SKIPHASH = 0, QPREV = null, QBACKED = false;
+function hashOf(v, a) {
+  switch (v) {
+    case "lesson": return "#pelajaran-" + a[0] + "-" + a[1];
+    case "read": return "#bacaan-" + a[0];
+    case "speak": return "#bicara-" + a[0];
+    case "flash": return "#flashcard-" + (a[0] || "all");
+    case "practice": return "#latihan";
+    case "profile": return "#profil";
+    case "welcome": return "#mulai-" + (a[0] || 0);
+    default: return "#rute";
+  }
+}
+function parseHash(h) {
+  const p = String(h || "").replace(/^#/, "").split("-"), n = x => (/^\d+$/.test(x || "") ? +x : NaN);
+  switch (p[0]) {
+    case "rute": return { v: "home", a: [] };
+    case "latihan": return { v: "practice", a: [] };
+    case "profil": return { v: "profile", a: [] };
+    case "flashcard": return { v: "flash", a: [LEVELS.some(L => L.id === p[1]) ? p[1] : "all"] };
+    case "mulai": return { v: "welcome", a: [Math.min(2, n(p[1]) || 0)] };
+    case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
+    case "bacaan": { const li = n(p[1]); return LEVELS[li] && LEVELS[li].read ? { v: "read", a: [li] } : null; }
+    case "bicara": { const li = n(p[1]); return LEVELS[li] ? { v: "speak", a: [li] } : null; }
+    default: return null;
+  }
+}
+function setHash(h) {
+  try {
+    const cur = location.hash || "";
+    if (cur === h) return;
+    if (!cur) { history.replaceState(null, "", h); return; }
+    if (cur === "#kuis") {
+      if (h === QPREV) { SKIPHASH++; history.back(); } else history.replaceState(null, "", h);
+      return;
+    }
+    SKIPHASH++; location.hash = h;
+  } catch (e) {}
+}
+function enterSession() {
+  QBACKED = false;
+  try { if (location.hash !== "#kuis") { QPREV = location.hash || "#rute"; SKIPHASH++; location.hash = "#kuis"; } } catch (e) {}
+}
+window.addEventListener("hashchange", () => {
+  if (SKIPHASH > 0) { SKIPHASH--; return; }
+  const h = location.hash;
+  if (QUIZ && document.body.classList.contains("focus")) {
+    if (h !== "#kuis") { QBACKED = true; if (H.quit) H.quit(); }
+    return;
+  }
+  const r = parseHash(h);
+  if (r) nav(r.v, ...r.a); else nav("home");
+});
+
 function nav(v, ...a) {
   clearInterval(TICK); TICK = null; QUIZ = null; stopSpeak(); stopRec();
   document.body.classList.remove("focus");
   if (!VIEWS[v]) { v = "home"; a = []; }
+  if (v === "welcome" && S.onb) { v = "home"; a = []; }
   ROUTE = { v, a }; H = {};
   VIEWS[v](...a); chrome(); toTop();
+  setHash(hashOf(v, a));
 }
 const rerender = () => nav(ROUTE.v, ...ROUTE.a);
 const here = () => { const r = ROUTE; return () => nav(r.v, ...r.a); };
@@ -2005,6 +2072,7 @@ const fmtQ = s => esc(s).replace(/___/g, '<span class="blank"></span>');
 
 function runQuiz(items, o) {
   if (!items.length) return o.back();
+  enterSession();
   clearInterval(TICK); TICK = null; stopSpeak();
   document.body.classList.add("focus");
   const N = items.length, lv = o.li != null ? ` style="--lv:var(--l${o.li + 1})"` : "";
@@ -2041,7 +2109,7 @@ function runQuiz(items, o) {
         : `<p class="qtext">${esc(c.tr)}</p>`) + `<div id="ord"></div><button class="btn lv" data-a="check" id="chk" disabled>Periksa</button>`;
     }
     app.innerHTML = `<div class="quiz"${lv}>
-      <div class="qbar"><button class="iconbtn" data-a="quit" aria-label="Keluar dari sesi">${I("x")}</button>${N <= 12 ? `<div class="blocks" style="--n:${N}" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${i}">${items.map((_, k) => `<span class="${k < i ? (o.silent ? "cur" : res[k] ? "ok" : "no") : k === i ? "cur" : ""}"></span>`).join("")}</div>` : `<div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${i}"><i style="width:${i / N * 100}%"></i></div>`}<span class="qcount">${i + 1}/${N}</span><span id="combo">${comboHTML()}</span></div>
+      <div class="qbar"><button class="iconbtn" data-a="quit" aria-label="Keluar dari sesi">${I("x")}</button>${N <= 12 ? `<div class="blocks" style="--n:${N}" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${i}" aria-label="Soal ${i + 1} dari ${N}${o.silent ? "" : ", " + right + " benar"}">${items.map((_, k) => `<span class="${k < i ? (o.silent ? "cur" : res[k] ? "ok" : "no") : k === i ? "cur" : ""}" title="${k < i && !o.silent ? (res[k] ? "Benar" : "Salah") : ""}"></span>`).join("")}</div>` : `<div class="prog" role="progressbar" aria-valuemin="0" aria-valuemax="${N}" aria-valuenow="${i}"><i style="width:${i / N * 100}%"></i></div>`}<span class="qcount">${i + 1}/${N}</span><span id="combo">${comboHTML()}</span></div>
       <div id="confirm"></div>${o.ctx || ""}
       <p class="eyebrow">${QLABEL[c.t]}</p>${body}
       <div id="fb" aria-live="polite"></div>
@@ -2104,7 +2172,7 @@ function runQuiz(items, o) {
 
   H = {
     quit() { $("#confirm").innerHTML = `<div class="confirm"><span>Keluar dari sesi ini? XP yang sudah didapat tetap tersimpan.</span><span class="row"><button class="btn ghost auto" data-a="stay">Lanjutkan</button><button class="btn bad auto" data-a="leave">Keluar</button></span></div>`; },
-    stay() { $("#confirm").innerHTML = ""; },
+    stay() { $("#confirm").innerHTML = ""; if (QBACKED) { QBACKED = false; try { SKIPHASH++; location.hash = "#kuis"; } catch (e) {} } },
     leave() { o.back(); },
     // Ketukan hanya memilih; jawaban dinilai setelah tombol Periksa ditekan.
     pick(el) { if (answered) return; st.sel = el; $$(".opt").forEach(b => { const on = b === el; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on); }); $("#chk").disabled = false; },
@@ -2164,7 +2232,7 @@ function runQuiz(items, o) {
 
 /* ================= match game ================= */
 function matchGame(pool, o) {
-  clearInterval(TICK); stopSpeak();
+  clearInterval(TICK); stopSpeak(); enterSession();
   document.body.classList.add("focus");
   const lv = o.li != null ? ` style="--lv:var(--l${o.li + 1})"` : "";
   const en = new Set(), id = new Set(), pairs = [];
@@ -2488,7 +2556,13 @@ function boot(d) {
   if (!S.onb && (S.xp > 0 || doneCount() > 0)) S.onb = 1;
   newBadges(); saveLocal();
   const r = d && d.route;
-  try { if (!S.onb) nav("welcome"); else if (r && VIEWS[r.v]) nav(r.v, ...(r.a || [])); else nav("home"); } catch (e) { nav("home"); }
+  const fromHash = parseHash(location.hash);
+  try {
+    if (!S.onb) nav("welcome", fromHash && fromHash.v === "welcome" ? fromHash.a[0] : 0);
+    else if (r && VIEWS[r.v]) nav(r.v, ...(r.a || []));
+    else if (fromHash) nav(fromHash.v, ...fromHash.a);
+    else nav("home");
+  } catch (e) { nav("home"); }
   try { if ("serviceWorker" in navigator && location.protocol === "https:" && window.top === window.self) navigator.serviceWorker.register("sw.js").catch(() => {}); } catch (e) {}
   initTts(); initSync();
 }

@@ -80,6 +80,26 @@ require("fs").mkdirSync(shots, { recursive: true });
   await page.screenshot({ path: path.join(shots, "1-home-mobile.png"), fullPage: false });
   log("stations:", await page.locator(".lrow").count(), "| levels:", await page.locator(".lvcard").count());
 
+  // back button (hash history)
+  await click('.lrow[data-a="open"][data-l="0"][data-j="1"]');
+  log("hash on lesson:", await page.evaluate(() => location.hash));
+  await page.goBack(); await page.waitForTimeout(150);
+  log("back -> view:", await page.evaluate(() => ROUTE.v + " " + location.hash));
+  await page.goForward(); await page.waitForTimeout(150);
+  await click('.seg [data-t="q"]'); await click('[data-a="quiz"]');
+  log("quiz hash:", await page.evaluate(() => location.hash));
+  await page.goBack(); await page.waitForTimeout(150);
+  log("back in quiz -> confirm shown:", await page.locator("#confirm .confirm").count(), "still quiz:", await page.locator(".qbar").count());
+  await click('[data-a="stay"]'); await page.waitForTimeout(100);
+  log("stay -> hash:", await page.evaluate(() => location.hash));
+  await click('[data-a="quit"]'); await click('[data-a="leave"]'); await page.waitForTimeout(200);
+  log("leave -> view:", await page.evaluate(() => ROUTE.v + " " + location.hash));
+  await page.goBack(); await page.waitForTimeout(150);
+  log("back again -> view:", await page.evaluate(() => ROUTE.v + " " + location.hash));
+  // deep link
+  await page.evaluate(() => { location.hash = "#bicara-2"; }); await page.waitForTimeout(150);
+  log("deep link -> view:", await page.evaluate(() => ROUTE.v + " " + JSON.stringify(ROUTE.a)));
+  await click('#nav [data-g="home"]');
   // tapping an answer must only select it
   await page.evaluate(() => runQuiz([LESSONS[0].qs[0], LESSONS[0].qs.find(q => q.t === "f")], { title: "t", back: () => nav("home"), again: () => {} }));
   const xpA = (await state()).xp;
@@ -196,7 +216,7 @@ require("fs").mkdirSync(shots, { recursive: true });
   s = await state(); log("goal", s.goal, "sound", s.sound, "xp", s.xp, "ans", s.ans, "cor", s.cor, "combo", s.combo);
 
   // reload keeps progress
-  await page.reload(); await page.waitForSelector(".lvcard");
+  await page.reload(); await page.waitForSelector(".statgrid"); log("reload keeps screen:", await page.evaluate(() => ROUTE.v)); await click('#nav [data-g="home"]'); await page.waitForSelector(".lvcard");
   s = await state(); log("after reload: xp", s.xp, "done", Object.keys(s.done).length);
 
   // desktop + dark

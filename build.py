@@ -9,7 +9,7 @@ html = f"""<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>English Path — Belajar Bahasa Inggris Gratis</title>
 <meta name="description" content="Belajar bahasa Inggris gratis dari A1 sampai C2: 36 pelajaran, 750 soal, bacaan, latihan dengar dan berbicara, dijelaskan dalam bahasa Indonesia.">
 <meta name="theme-color" content="#c9f2e3">
