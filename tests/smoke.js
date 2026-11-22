@@ -74,7 +74,7 @@ require("fs").mkdirSync(shots, { recursive: true });
   await page.waitForSelector(".welcome");
   await page.screenshot({ path: path.join(shots, "0-welcome.png") });
   await click('[data-a="s1"]'); await page.fill("#nm", "Dewi"); await page.screenshot({ path: path.join(shots, "0a-name.png") }); await page.keyboard.press("Enter");
-  await click('[data-a="goal"][data-v="50"]');
+  await click('[data-a="goal"][data-v="500"]');
   await page.screenshot({ path: path.join(shots, "0b-welcome2.png") });
   await click('[data-a="a1"]');
   log("onboarding ->", await page.locator("h1").first().textContent(), "| onb", (await state()).onb);
@@ -219,13 +219,13 @@ require("fs").mkdirSync(shots, { recursive: true });
   // missions + chest
   await click('#nav [data-g="home"]');
   s = await state(); log("missions:", JSON.stringify(await page.evaluate(() => missions().map(m => m.v + "/" + m.max))));
-  await page.evaluate(() => { const t = dkey(); S.days[t] = Math.max(S.days[t] || 0, S.goal); S.dc[t] = 15; S.dcombo[t] = 5; save(); rerender(); });
+  await page.evaluate(() => { const t = dkey(); S.days[t] = Math.max(S.days[t] || 0, S.goal); S.dc[t] = 30; S.dcombo[t] = 10; save(); rerender(); });
   await page.screenshot({ path: path.join(shots, "11-chest-ready.png") });
   const xp0 = (await state()).xp; await click('[data-a="chest"]'); s = await state();
   log("chest: +", s.xp - xp0, "xp, chests", s.chests, "badge", !!s.badges.chest, "again-button", await page.locator('[data-a="chest"]').count());
   // profile
   await click('#nav [data-g="profile"]'); await click('.setrow[data-g="settings"]');
-  await click('[data-a="goal"][data-v="100"]');
+  await click('[data-a="goal"][data-v="1000"]');
   await page.locator("#snd").uncheck();
   await page.screenshot({ path: path.join(shots, "7-profile-mobile.png"), fullPage: true });
   s = await state(); log("goal", s.goal, "sound", s.sound, "xp", s.xp, "ans", s.ans, "cor", s.cor, "combo", s.combo);

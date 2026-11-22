@@ -116,7 +116,11 @@ const KIND = { m: "Pilihan ganda", t: "Isian", f: "Benar/salah", o: "Susun kalim
 
 /* ================= state ================= */
 const KEY = "englishpath_v1";
-const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 50, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {}, mine: {}, sk: {}, exams: [], rounds: {}, look: Object.assign({}, LOOK0), coins: 0, coinsAll: 0, owned: {}, seenSp: {}, perf: 0 });
+// Target harian (XP). 1 babak ≈ 200–250 XP ≈ 5 menit.
+const GOALN = [[250, "Santai", "± 5–10 menit"], [500, "Normal", "± 15 menit"], [1000, "Serius", "± 30 menit"], [1500, "Pejuang", "± 45 menit"]];
+const GOALS = GOALN.map(g => g[0]);
+const goalInfo = () => { const g = GOALN.find(x => x[0] === S.goal) || GOALN[1]; return g[1] + " · " + g[2] + " sehari"; };
+const fresh = () => ({ done: {}, scores: {}, xp: 0, streak: 0, best: 0, lastDay: "", days: {}, goal: 500, wrong: {}, known: {}, badges: {}, sound: true, ans: 0, cor: 0, combo: 0, daily: "", matchBest: 0, ts: 0, resetAt: 0, dc: {}, dcombo: {}, chest: "", chests: 0, read: {}, spoke: {}, onb: 0, name: "", theme: "auto", talk: {}, cert: {}, mine: {}, sk: {}, exams: [], rounds: {}, look: Object.assign({}, LOOK0), coins: 0, coinsAll: 0, owned: {}, seenSp: {}, perf: 0 });
 let S = fresh();
 function hydrate(o) {
   const s = Object.assign(fresh(), o || {});
@@ -126,7 +130,7 @@ function hydrate(o) {
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
   Object.keys(s.known).forEach(k => { if (!s.known[k] || typeof s.known[k] !== "object") s.known[k] = { b: 1, d: td }; });
-  if (![30, 50, 100].includes(s.goal)) s.goal = 50;
+  { const OLD = { 30: 250, 50: 500, 100: 1000 }; if (OLD[s.goal]) s.goal = OLD[s.goal]; if (!GOALS.includes(s.goal)) s.goal = 500; }
   s.name = typeof s.name === "string" ? s.name.slice(0, 24) : "";
   if (!["auto", "light", "dark"].includes(s.theme)) s.theme = "auto";
   if (!Array.isArray(s.exams)) s.exams = [];
@@ -180,9 +184,9 @@ const spOpen = it => it.p === null && !!(it.u && SPECIAL[it.u[0]] && SPECIAL[it.
 const ownsItem = (cat, it) => it.p === 0 || !!S.owned[cat + ":" + it.id] || spOpen(it);
 const CATN = { color: "Warna", hat: "Topi", face: "Wajah", acc: "Aksesori" };
 const missions = () => { const t = dkey(); return [
-  { n: "Kumpulkan " + S.goal + " XP", v: S.days[t] || 0, max: S.goal },
-  { n: "Jawab 15 soal dengan benar", v: S.dc[t] || 0, max: 15 },
-  { n: "Raih combo 5× tanpa salah", v: S.dcombo[t] || 0, max: 5 }]; };
+  { n: "Kumpulkan " + S.goal.toLocaleString("id-ID") + " XP", v: S.days[t] || 0, max: S.goal },
+  { n: "Jawab 30 soal dengan benar", v: S.dc[t] || 0, max: 30 },
+  { n: "Raih combo 10× tanpa salah", v: S.dcombo[t] || 0, max: 10 }]; };
 
 // Babak: setiap pelajaran punya 3 babak × 20 soal. Babak 1 menandai pelajaran selesai; babak 2 & 3 memberi bintang.
 const RN = ["Dasar", "Latihan", "Tantangan"];
@@ -582,7 +586,7 @@ function greetMsg() {
   if (!S.xp && !doneCount()) return "Yuk, mulai pelajaran pertamamu hari ini.";
   if (dx >= S.goal) return "Target hari ini tercapai. Keren banget!";
   if (dx === 0 && st > 0) return "Jaga streak " + st + " harimu, yuk belajar sebentar.";
-  return "Tinggal " + (S.goal - dx) + " XP lagi untuk target hari ini.";
+  return "Tinggal " + (S.goal - dx).toLocaleString("id-ID") + " XP lagi untuk target hari ini.";
 }
 VIEWS.home = function () {
   if (!OPENLV) { const n0 = nextLesson(); OPENLV = new Set([n0 ? n0.li : LEVELS.length - 1]); }
@@ -1300,7 +1304,7 @@ VIEWS.welcome = function (step = 0) {
   } else if (step === 2) {
     app.innerHTML = `<div class="narrow stack welcome">
       <p class="eyebrow">Langkah 2 dari 3</p><h1>Berapa lama mau belajar tiap hari?</h1>
-      <div class="goals">${[[30, "Santai", "± 10 menit"], [50, "Normal", "± 20 menit"], [100, "Serius", "± 40 menit"]].map(([g, n, m]) => `<button class="goal pop${S.goal === g ? " on" : ""}" data-a="goal" data-v="${g}"><b>${n}</b><span>${m} · ${g} XP</span></button>`).join("")}</div>
+      <div class="goals">${GOALN.map(([g, n, m]) => `<button class="goal pop${S.goal === g ? " on" : ""}" data-a="goal" data-v="${g}"><b>${n}</b><span>${m} · ${g.toLocaleString("id-ID")} XP</span></button>`).join("")}</div>
       <p class="muted">Bisa diubah kapan saja di Profil.</p></div>`;
   } else {
     app.innerHTML = `<div class="narrow stack welcome">
@@ -1350,7 +1354,7 @@ VIEWS.settings = function () {
     <h2 style="margin-top:4px">Umum</h2>
     <div class="card" style="padding-top:4px;padding-bottom:4px">
       <div class="setting"><label for="pname"><b>Nama panggilan</b><p class="muted">Dipakai Bubu untuk menyapamu</p></label><input id="pname" type="text" maxlength="24" autocomplete="given-name" data-c="nm" value="${esc(S.name)}" placeholder="Nama"></div>
-      <div class="setting"><div><b>Target harian</b><p class="muted">XP yang ingin Anda kumpulkan per hari</p></div><div class="seg" role="group" aria-label="Target harian">${[30, 50, 100].map(g => `<button aria-pressed="${S.goal === g}" data-a="goal" data-v="${g}">${g} XP</button>`).join("")}</div></div>
+      <div class="setting"><div><b>Target harian</b><p class="muted" id="goalinfo">${goalInfo()}</p></div><div class="seg" role="group" aria-label="Target harian">${GOALS.map(g => `<button aria-pressed="${S.goal === g}" data-a="goal" data-v="${g}">${g.toLocaleString("id-ID")}</button>`).join("")}</div></div>
       <div class="setting"><div><b>Tampilan</b><p class="muted">Ikuti perangkat, terang, atau gelap</p></div><div class="seg" role="group" aria-label="Tampilan">${[["auto", "Otomatis"], ["light", "Terang"], ["dark", "Gelap"]].map(([v, t]) => `<button aria-pressed="${S.theme === v}" data-a="theme" data-v="${v}">${t}</button>`).join("")}</div></div>
       <div class="setting"><label class="switch" for="snd"><input type="checkbox" id="snd" data-c="sound"${S.sound ? " checked" : ""}> Efek suara</label></div>
     </div>
@@ -1369,7 +1373,7 @@ VIEWS.settings = function () {
     <p class="muted">English Path gratis dan terbuka. Kode dan laporan soal: <a href="${REPO}" target="_blank" rel="noopener">github.com/iiddon/english-study</a></p></div>`;
   let armed = false;
   H = {
-    goal(el) { S.goal = +el.dataset.v; save(); $$('[data-a="goal"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
+    goal(el) { S.goal = +el.dataset.v; save(); $$('[data-a="goal"]').forEach(b => b.setAttribute("aria-pressed", b === el)); const gi = $("#goalinfo"); if (gi) gi.textContent = goalInfo(); },
     theme(el) { S.theme = el.dataset.v; save(); applyTheme(); $$('[data-a="theme"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
     nm(el) { S.name = (el.value || "").trim().slice(0, 24); save(); },
     sound(el) { S.sound = el.checked; save(); if (S.sound) sfx.ok(); },
@@ -1748,7 +1752,7 @@ function progressHTML(n) {
   const best = tried.length ? tried.slice().sort((a, b) => b[1] - a[1])[0] : null, low = tried.length > 1 ? tried.slice().sort((a, b) => a[1] - b[1])[0] : null;
   return `<section class="card stack prog-card" aria-label="Progres">
     <div class="row" style="justify-content:space-between"><h2>${I("chart")} XP harian</h2><div class="seg sm" role="group" aria-label="Rentang">${[7, 30].map(d => `<button aria-pressed="${n === d}" data-a="range" data-v="${d}">${d} hari</button>`).join("")}</div></div>
-    <div id="xpc">${xpChart(n)}</div><p class="muted legend"><i class="lg hit"></i> Target ${S.goal} XP tercapai <i class="lg"></i> Belajar <i class="lg line"></i> Garis target</p></section>
+    <div id="xpc">${xpChart(n)}</div><p class="muted legend"><i class="lg hit"></i> Target ${S.goal.toLocaleString("id-ID")} XP tercapai <i class="lg"></i> Belajar <i class="lg line"></i> Garis target</p></section>
   <section class="card stack" aria-label="Kemampuan">
     <h2>Kemampuan</h2>
     ${sk.map(([n2, v, d, ic]) => `<div class="skrow2"><span class="skic">${I(ic)}</span><div class="grow"><div class="skh"><b>${n2}</b><span>${v == null ? "Belum dicoba" : v + "%"}</span></div><span class="skbar${v == null ? " none" : ""}"><i style="width:${v || 0}%"></i></span><small>${d}</small></div></div>`).join("")}
