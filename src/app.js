@@ -580,13 +580,13 @@ VIEWS.lesson = function (li, j, tab = "m") {
   }
   let panel, foot;
   if (tab === "q") {
-    const cur = [1, 2, 3].find(r => roundOpen(x, r) && !roundPassed(x, r)) || 0, nx = nextOf(li, j);
+    const cur = [1, 2, 3].find(r => roundOpen(x, r) && !roundPassed(x, r)) || 0, nx = stepAfter("lesson", li, j);
     panel = `<div class="panel card qinfo">
       <div class="qhead"><div><b>3 babak · ${x.qs.length} soal</b><span class="muted">${cur ? "Lulus 75% membuka babak berikutnya" : "Tuntas! Semua babak sudah lulus"}</span></div>${starHTML(x)}</div>
       <div class="rounds">${[1, 2, 3].map(r => { const open = roundOpen(x, r), ok = roundPassed(x, r), sc = roundScore(x, r);
         return `<button class="round${ok ? " ok" : ""}${r === cur ? " cur" : ""}" data-a="round" data-r="${r}"${open ? "" : " disabled"}><span class="rn">${ok ? I("check") : open ? r : I("lock")}</span><span class="grow"><b>Babak ${r} · ${RN[r - 1]}</b><small>${open ? "20 soal" + (sc != null ? " · terbaik " + sc + "%" : "") : "Lulus Babak " + (r - 1) + " untuk membuka"}</small></span>${open ? I("right") : ""}</button>`; }).join("")}</div></div>`;
     foot = cur ? `<div class="pgfoot col"><button class="btn lv" data-a="round" data-r="${cur}">Mulai Babak ${cur} · 20 soal</button><button class="btn ghost" data-a="quick">Latihan singkat · 5 soal acak</button></div>`
-      : `<div class="pgfoot col">${nx ? `<button class="btn lv" data-a="nextles">Lanjut ke pelajaran berikutnya ${I("right")}</button>` : `<button class="btn lv" data-g="home">Semua pelajaran tuntas! Kembali ke rute</button>`}<button class="btn ghost" data-a="quick">Latihan singkat · 5 soal acak</button></div>`;
+      : `<div class="pgfoot col">${nx ? `<button class="btn lv" data-a="nextles">${stepLabel(nx)} ${I("right")}</button>` : `<button class="btn lv" data-g="home">Semua pelajaran tuntas! Kembali ke rute</button>`}<button class="btn ghost" data-a="quick">Latihan singkat · 5 soal acak</button></div>`;
   } else {
     panel = `<div class="panel card ${kind}" id="panel"><div class="spread" id="spread"></div></div>`;
     foot = `<div class="pgfoot"><button class="btn ghost sq" data-a="prev" id="pprev" aria-label="Halaman sebelumnya">${I("left")}</button><span class="pgc" id="pgc" aria-live="polite"></span><button class="btn lv" data-a="next" id="pnext"></button></div>`;
@@ -648,7 +648,7 @@ VIEWS.lesson = function (li, j, tab = "m") {
     next() { if (!go(1)) nav("lesson", li, j, NEXT[tab][0]); },
     quiz() { lessonQuiz(li, j); },
     round(el) { lessonQuiz(li, j, +el.dataset.r); },
-    nextles() { const n = nextOf(li, j); if (n) nav("lesson", n.li, n.j); },
+    nextles() { goStep(stepAfter("lesson", li, j)); },
     quick() { const run = () => runQuiz(shuffle(x.qs).slice(0, 5), { title: x.title + " · latihan singkat", li, back, again: run, msg: "Latihan singkat tidak mengubah skor pelajaran." }); run(); },
     listen() { const run = () => runQuiz(shuffle(x.examples).map(([s2, tr]) => ({ t: "l", s: s2, tr })), { title: x.title + " · latihan dengar", li, back, again: run, msg: "Dengarkan lagi contoh-contohnya kapan saja di tab Contoh." }); run(); },
     lmatch() { const run = () => matchGame(x.vocab, { li, back, again: run }); run(); }
@@ -666,16 +666,40 @@ VIEWS.lesson = function (li, j, tab = "m") {
     });
   }
 };
+// Urutan rute satu level, sama dengan urutan di peta: pelajaran, bacaan, berbicara, percakapan, lalu tes level.
+function routeSteps(li) {
+  const L = LEVELS[li], out = L.lessons.map(x => ({ t: "lesson", li, j: x.j, title: x.title }));
+  (L.reads || []).forEach(r => out.push({ t: "read", li, k: r.k, title: "Bacaan: " + r.title }));
+  if (L.speak.length) out.push({ t: "speak", li, title: "Latihan berbicara " + L.cefr });
+  TALKS.forEach((T, n) => { if (T.li === li) out.push({ t: "talk", li, n, title: "Percakapan: " + T.title }); });
+  out.push({ t: "test", li, title: "Tes level " + L.cefr });
+  return out;
+}
+// Langkah sesudah langkah tertentu; sesudah tes level lanjut ke pelajaran pertama level berikutnya.
+function stepAfter(t, li, key) {
+  const st = routeSteps(li), i = st.findIndex(x => x.t === t && (t === "lesson" ? x.j === key : t === "read" ? x.k === key : t === "talk" ? x.n === key : true));
+  if (i >= 0 && i + 1 < st.length) return st[i + 1];
+  return li + 1 < LEVELS.length ? routeSteps(li + 1)[0] : null;
+}
+function goStep(x) {
+  if (!x) return nav("home");
+  if (x.t === "lesson") nav("lesson", x.li, x.j);
+  else if (x.t === "read") nav("read", x.li, x.k);
+  else if (x.t === "speak") nav("speak", x.li);
+  else if (x.t === "talk") { TALKFROM = "home"; nav("talk", x.n); }
+  else levelTest(x.li);
+}
+const stepLabel = x => !x ? "" : x.t === "test" ? "Lanjut ke " + x.title : x.t === "lesson" && x.j === 0 ? "Lanjut ke Level " + LEVELS[x.li].cefr : "Lanjut ke materi berikutnya";
 // Pelajaran sesudah (li, j): lanjut di level yang sama, atau pelajaran pertama level berikutnya.
 function nextOf(li, j) { const L = LEVELS[li]; if (j + 1 < L.lessons.length) return { li, j: j + 1, title: L.lessons[j + 1].title }; if (li + 1 < LEVELS.length) return { li: li + 1, j: 0, title: LEVELS[li + 1].lessons[0].title }; return null; }
 function lessonQuiz(li, j, r = 1) {
   const L = LEVELS[li], x = L.lessons[j];
   if (!roundOpen(x, r)) r = 1;
-  const nx = nextOf(li, j), nextLesson = nx ? () => nav("lesson", nx.li, nx.j) : null;
+  const nx = stepAfter("lesson", li, j), nextLesson = nx ? () => goStep(nx) : null;
   const items = roundQs(x, r);
   runQuiz(shuffle(items), {
     title: x.title + " · Babak " + r, li, bonus: true, pass: 75,
-    next: r < 3 ? () => lessonQuiz(li, j, r + 1) : nextLesson, nextLabel: r < 3 ? "Lanjut ke Babak " + (r + 1) : nx ? "Lanjut ke pelajaran berikutnya" : "",
+    next: r < 3 ? () => lessonQuiz(li, j, r + 1) : nextLesson, nextLabel: r < 3 ? "Lanjut ke Babak " + (r + 1) : stepLabel(nx),
     passMsg: r === 1 ? "Pelajaran ini selesai. Babak 2 terbuka!" : r === 2 ? "Bintang kedua didapat. Babak 3 terbuka!" : "Tiga bintang! Pelajaran ini tuntas.",
     back: () => nav("lesson", li, j, "q"), again: () => lessonQuiz(li, j, r),
     share: { title: x.title + " · Babak " + r, sub: "Pelajaran " + LEVELS[li].cefr + " · " + LEVELS[li].name, li },
@@ -693,7 +717,7 @@ function levelTest(li) {
   runQuiz(shuffle(L.lessons.flatMap(x => shuffle(x.qs).slice(0, 4))).slice(0, 20), {
     title: "Tes level " + L.cefr + " · " + L.name, li, bonus: true, pass: 75, back, again: () => levelTest(li),
     passMsg: "Semua pelajaran di jalur " + L.cefr + " ditandai selesai.",
-    next: li + 1 < LEVELS.length ? () => nav("lesson", li + 1, 0) : null,
+    next: li + 1 < LEVELS.length ? () => nav("lesson", li + 1, 0) : null, nextLabel: li + 1 < LEVELS.length ? "Lanjut ke Level " + LEVELS[li + 1].cefr : "",
     cert: li,
     onEnd(p) { if (p >= 75) { L.lessons.forEach(x => { S.done[x.id] = 1; }); const c = S.cert[L.id]; if (!c || p > c.p) S.cert[L.id] = { p, d: dkey() }; } }
   });
@@ -1072,6 +1096,7 @@ function startRead(li, k = 0) {
   runQuiz(R.qs.slice(), {
     title: "Bacaan · " + R.title, li, pass: 60, bonus: true, passMsg: "Pemahaman bacaan Anda bagus.",
     back: () => nav("read", li, k), again: () => startRead(li, k),
+    next: () => goStep(stepAfter("read", li, k)), nextLabel: stepLabel(stepAfter("read", li, k)),
     ctx: `<details class="ctx"><summary>Lihat bacaan</summary>${R.text.map(p => `<p>${p}</p>`).join("")}</details>`,
     onEnd(p) { S.read[R.sid] = Math.max(S.read[R.sid] || 0, p); }
   });
@@ -1107,13 +1132,13 @@ VIEWS.speak = function (li) {
       ${SR ? `<button class="btn ${st === "rec" ? "bad" : "blue"}" data-a="rec">${I("mic")} ${st === "rec" ? "Mendengarkan… ketuk untuk berhenti" : "Ketuk lalu ucapkan"}</button>`
            : `<div class="card"><p><b>Penilaian suara tidak tersedia di browser ini.</b> Buka English Path di Chrome (Android atau komputer) agar ucapan Anda dinilai otomatis. Untuk sekarang: dengarkan, tirukan dengan suara keras, lalu tandai sendiri.</p></div><button class="btn blue" data-a="self">Saya sudah mengucapkannya</button>`}
       <div aria-live="polite">${fb}</div>
-      <div class="pair"><button class="btn ghost" data-a="prev"${k === 0 ? " disabled" : ""}>Sebelumnya</button><button class="btn lv" data-a="next">${k + 1 < L.speak.length ? "Berikutnya" : "Selesai"}</button></div></div>`;
+      <div class="pair"><button class="btn ghost" data-a="prev"${k === 0 ? " disabled" : ""}>Sebelumnya</button><button class="btn lv" data-a="next">${k + 1 < L.speak.length ? "Berikutnya" : "Lanjut ke materi berikutnya"}</button></div></div>`;
   };
   const pass = () => { if (done()[k]) return; S.spoke[L.id] = Object.assign({}, done(), { [k]: 1 }); addXp(5); addCoins(1); newBadges(); save(); chrome(); };
   H = {
     jump(el) { stopRec(); k = +el.dataset.k; st = "idle"; draw(); },
     prev() { stopRec(); if (k > 0) { k--; st = "idle"; draw(); } },
-    next() { stopRec(); if (k + 1 < L.speak.length) { k++; st = "idle"; draw(); } else nav("home"); },
+    next() { stopRec(); if (k + 1 < L.speak.length) { k++; st = "idle"; draw(); } else goStep(stepAfter("speak", li)); },
     slow() { speak(L.speak[k][0], true); },
     self() { pass(); st = "ok"; pct = 100; heard = "(ditandai sendiri)"; sfx.ok(); draw(); },
     rec() {
@@ -1446,12 +1471,13 @@ VIEWS.talk = function (n) {
     const [mood, line] = resultMood(pct, pct >= 60);
     reply.innerHTML = `<div class="talkend"><div class="greet">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><b>${score} dari ${nU} tepat</b><span>${line} +${bonus} XP</span></div></div>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
-      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn lv" data-a="exit">Selesai</button></div></div>`;
+      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn ${pct >= 60 ? "ghost" : "lv"}" data-a="exit">Selesai</button></div>${pct >= 60 ? `<button class="btn lv" data-a="nextstep">${stepLabel(stepAfter("talk", li, n))} ${I("right")}</button>` : ""}</div>`;
     if (pct >= 60) { sfx.win(); confetti(); }
   }
   H = {
     exit() { const f = TALKFROM; TALKFROM = "talk"; nav(f); },
     again() { rerender(); },
+    nextstep() { TALKFROM = "talk"; goStep(stepAfter("talk", li, n)); },
     share() { shareCard({ kind: "result", li, pct: Math.round(score / nU * 100), title: T.title, sub: "Percakapan " + L.cefr + " · " + L.name }); },
     pick(el) { if (locked) return; sel = +el.dataset.k; $$("#reply .opt").forEach(b => { const on = b === el; b.classList.toggle("sel", on); b.setAttribute("aria-pressed", on); }); $("#chk").disabled = false; },
     send() {
