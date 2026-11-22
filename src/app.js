@@ -192,6 +192,8 @@ const roundPassed = (x, r) => r === 1 ? !!S.done[x.id] || (S.scores[x.id] || 0) 
 const roundOpen = (x, r) => r === 1 || roundPassed(x, r - 1);
 const starsOf = x => [1, 2, 3].filter(r => roundPassed(x, r)).length;
 const starHTML = x => { const n = starsOf(x); return `<span class="stars" role="img" aria-label="${n} dari 3 bintang">${[1, 2, 3].map(k => `<i class="${k <= n ? "on" : ""}">${k <= n ? "★" : "☆"}</i>`).join("")}</span>`; };
+// Daftar percakapan: dua per level.
+const TALKS = []; LEVELS.forEach((L, li) => [[L.id, TALK[L.id]], [L.id + "2", TALK2[L.id]]].forEach(([id, t]) => { if (t) TALKS.push(Object.assign({ id, li }, t)); }));
 // Semua materi di rute: pelajaran, bacaan, latihan berbicara, percakapan, dan tes level.
 function routeProgress() {
   const c = { lesson: [0, 0], read: [0, 0], speak: [0, 0], talk: [0, 0], test: [0, 0] };
@@ -287,11 +289,38 @@ const BPROG = {
 };
 const badgeProg = b => { if (b.p) return Math.min(1, Math.max(0, b.p() || 0)); const f = BPROG[b.id]; if (f) return Math.min(1, f() || 0); const L = LEVELS.find(l => "lv_" + l.id === b.id); return L ? L.lessons.filter(x => S.done[x.id]).length / L.lessons.length : 0; };
 const badgeHTML = (b, prog) => `<div class="badge t${b.r || 1}${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><em class="tier">${TIER[b.r || 1]}</em><small>${b.d}</small>${prog && !S.badges[b.id] ? `<span class="bprog" aria-label="Progres ${Math.round(badgeProg(b) * 100)}%"><i style="width:${badgeProg(b) * 100}%"></i></span>` : ""}</span></div>`;
+// Kategori lencana untuk halaman Koleksi.
+const BCATS = [["streak", "Streak"], ["soal", "Soal & combo"], ["rute", "Rute & materi"], ["kata", "Kosakata"], ["ujian", "Ujian"], ["hadiah", "Peti, koin & Lemari"], ["kejutan", "Kejutan"]];
+const bcat = b => /^s\d/.test(b.id) ? "streak" : /^(c\d|combo|perf|perfect|xp)/.test(b.id) ? "soal" : /^(first|star|route|read|reader|speak|talk|lv_)/.test(b.id) ? "rute"
+  : /^(w\d|wAll|mine)/.test(b.id) ? "kata" : /^(test|exam)/.test(b.id) ? "ujian" : /^(chest|coin|closet|daily)/.test(b.id) ? "hadiah" : "kejutan";
+const badgeIcon = (b, cls = "") => `<span class="bic t${b.r || 1}${S.badges[b.id] ? " on" : ""} ${cls}">${I(S.badges[b.id] ? b.ic : "lock")}</span>`;
 function badgeSummary() {
-  const got = BADGES.filter(b => S.badges[b.id]), near = BADGES.filter(b => !S.badges[b.id]).map(b => [b, badgeProg(b)]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]);
-  return `${got.length ? `<div class="badges">${got.map(b => badgeHTML(b)).join("")}</div>` : `<p class="muted">Belum ada lencana. Selesaikan pelajaran pertamamu untuk mendapat yang pertama.</p>`}
-    ${near.length ? `<p class="eyebrow" style="margin-top:4px">Hampir dapat</p><div class="badges">${near.map(b => badgeHTML(b, true)).join("")}</div>` : ""}
-    <details class="more"><summary>Lihat semua ${BADGES.length} lencana ${I("down")}</summary><div class="badges">${BADGES.map(b => badgeHTML(b, true)).join("")}</div></details>`;
+  const got = BADGES.filter(b => S.badges[b.id]), recent = got.slice().sort((x, y) => (S.badges[y.id] || "").localeCompare(S.badges[x.id] || "")).slice(0, 3);
+  const near = BADGES.filter(b => !S.badges[b.id]).map(b => [b, badgeProg(b)]).sort((x, y) => y[1] - x[1])[0];
+  return `<section class="card stack bsum" aria-label="Lencana">
+    <div class="bsum-h"><h2>Lencana</h2><b>${got.length}<span class="muted"> / ${BADGES.length}</span></b></div>
+    <span class="skbar"><i style="width:${got.length / BADGES.length * 100}%"></i></span>
+    ${recent.length ? `<p class="eyebrow">Terbaru</p><div class="bmini">${recent.map(b => `<button class="bmi" data-a="badge" data-id="${b.id}">${badgeIcon(b)}<span>${esc(b.n)}</span></button>`).join("")}</div>` : `<p class="muted">Belum ada lencana. Selesaikan pelajaran pertamamu untuk mendapat yang pertama.</p>`}
+    ${near ? `<p class="eyebrow">Paling dekat</p><button class="bnear" data-a="badge" data-id="${near[0].id}">${badgeIcon(near[0])}<span class="grow"><b>${esc(near[0].n)}</b><small>${esc(near[0].d)}</small><span class="bprog"><i style="width:${near[1] * 100}%"></i></span></span><em class="tierchip t${near[0].r || 1}">${TIER[near[0].r || 1]}</em></button>` : ""}
+    <button class="btn lv" data-g="badges">${I("award")} Lihat koleksi lencana</button>
+  </section>`;
+}
+// Lembar detail satu lencana (dipakai di Profil dan halaman Koleksi).
+function badgeSheet(id) {
+  const b = BADGES.find(x => x.id === id); if (!b) return;
+  const on = !!S.badges[b.id], pr = Math.round(badgeProg(b) * 100);
+  let m = $("#bsheet"); if (m) m.remove();
+  m = document.createElement("div"); m.id = "bsheet"; m.className = "wsheet-bg";
+  m.innerHTML = `<div class="wsheet bsheet" role="dialog" aria-modal="true" aria-labelledby="bsh">
+    <div class="bsh-top">${badgeIcon(b, "big")}<div><em class="tierchip t${b.r || 1}">${TIER[b.r || 1]}</em><p class="wname" id="bsh">${esc(b.n)}</p><p class="muted">${esc(b.d)}</p></div></div>
+    ${on ? `<p class="bgot">${I("check")} Didapat ${longDate(S.badges[b.id])}</p>` : `<div class="bpr"><span class="skbar"><i style="width:${pr}%"></i></span><b>${pr}%</b></div>`}
+    <button class="btn ghost" data-x>Tutup</button></div>`;
+  document.body.appendChild(m);
+  const close = () => { m.remove(); document.removeEventListener("keydown", key, true); };
+  const key = e => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+  document.addEventListener("keydown", key, true);
+  m.addEventListener("click", e => { if (e.target === m || e.target.closest("[data-x]")) close(); });
+  try { m.querySelector("[data-x]").focus({ preventScroll: true }); } catch (e) {}
 }
 function newBadges() {
   const out = []; BADGES.forEach(b => { if (!S.badges[b.id] && b.t()) { S.badges[b.id] = dkey(); out.push(b); } });
@@ -420,7 +449,7 @@ function confetti() {
 /* ================= router ================= */
 let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null, QT = null;
 const VIEWS = {};
-const SECTION = { wardrobe: "wardrobe", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
+const SECTION = { badges: "profile", wardrobe: "wardrobe", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
 /* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
    Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
@@ -438,6 +467,7 @@ function hashOf(v, a) {
     case "profile": return "#profil";
     case "settings": return "#pengaturan";
     case "wardrobe": return "#lemari";
+    case "badges": return "#lencana";
     case "welcome": return "#mulai-" + (a[0] || 0);
     default: return "#rute";
   }
@@ -452,6 +482,7 @@ function parseHash(h) {
     case "profil": return { v: "profile", a: [] };
     case "pengaturan": return { v: "settings", a: [] };
     case "lemari": return { v: "wardrobe", a: [] };
+    case "lencana": return { v: "badges", a: [] };
     case "flashcard": return { v: "flash", a: [LEVELS.some(L => L.id === p[1]) || p[1] === "mine" ? p[1] : "all"] };
     case "mulai": return { v: "welcome", a: [Math.min(3, n(p[1]) || 0)] };
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
@@ -1300,12 +1331,12 @@ VIEWS.profile = function () {
       <details class="more"><summary>Statistik lengkap ${I("down")}</summary><dl class="statlist">${stat("Hari beruntun", streakNow())}${stat("Rekor beruntun", S.best + " hari")}${stat("Materi selesai", rp.all[0] + " dari " + rp.all[1])}${stat("· Pelajaran", rp.lesson[0] + " dari " + rp.lesson[1])}${stat("· Bacaan", rp.read[0] + " dari " + rp.read[1])}${stat("· Latihan berbicara", rp.speak[0] + " dari " + rp.speak[1])}${stat("· Percakapan", rp.talk[0] + " dari " + rp.talk[1])}${stat("· Tes level", rp.test[0] + " dari " + rp.test[1])}${stat("Lencana", nCount(S.badges) + " dari " + BADGES.length)}${stat("Akurasi", acc + "%")}${stat("Soal dijawab", S.ans)}${stat("Jawaban benar", S.cor)}${stat("Combo terbaik", S.combo + "×")}${stat("Kata hafal", knownCount())}${stat("Kata di Kataku", Object.keys(S.mine).length)}${stat("Simulasi tes", S.exams.length + "×")}</dl></details>
     </section>
     ${progressHTML(7)}
-    <h2 style="margin-top:10px">Lencana · ${got} dari ${BADGES.length}</h2>
     ${badgeSummary()}
     <h2 style="margin-top:10px">Sertifikat</h2>
     ${LEVELS.some(L => S.cert[L.id]) ? `<div class="certs">${LEVELS.filter(L => S.cert[L.id]).map(L => `<button class="cert" data-a="cert" data-l="${L.i}" style="--lv:var(--l${L.i + 1});--ldk:var(--ld${L.i + 1})"><span class="roundel sm">${L.cefr}</span><span><b>${L.name}</b><small>Skor ${S.cert[L.id].p}% · ${longDate(S.cert[L.id].d)}</small></span>${I("award")}</button>`).join("")}</div>` : `<div class="card"><p class="muted">Lulus tes level (skor 75% ke atas) untuk mendapat sertifikat bernama yang bisa kamu bagikan.</p></div>`}
     <button class="setrow" data-g="settings">${I("gear")}<span class="grow"><b>Pengaturan</b><small>Nama, target harian, tampilan, suara, pindahkan progres</small></span>${I("right")}</button></div>`;
   H = {
+    badge(el) { badgeSheet(el.dataset.id); },
     range(el) { const n = +el.dataset.v; $("#xpc").innerHTML = xpChart(n); $$('[data-a="range"]').forEach(b => b.setAttribute("aria-pressed", b === el)); },
     toexam() { nav("exam"); },
     cert(el) { showCert(+el.dataset.l); },
@@ -1503,7 +1534,6 @@ function showCert(li) { const L = LEVELS[li], c = S.cert[L.id]; shareCard({ kind
 
 /* ================= percakapan ================= */
 let TALKFROM = "talk";
-const TALKS = []; LEVELS.forEach((L, li) => [[L.id, TALK[L.id]], [L.id + "2", TALK2[L.id]]].forEach(([id, t]) => { if (t) TALKS.push(Object.assign({ id, li }, t)); }));
 const talkLine = t => String(t).replace(/\{n\}/g, (S.name || "").trim() || "Dewi");
 VIEWS.talk = function (n) {
   if (n == null || !TALKS[n]) {
@@ -1815,6 +1845,33 @@ VIEWS.wardrobe = function () {
   const fit = () => { const v = $(".wardv"); if (!v || ROUTE.v !== "wardrobe") return window.removeEventListener("resize", fit); const nv = $("#nav").getBoundingClientRect(); v.style.height = Math.max(380, nv.top - v.getBoundingClientRect().top - 12) + "px"; };
   window.addEventListener("resize", fit); fit();
   draw(false);
+};
+
+/* ================= koleksi lencana ================= */
+VIEWS.badges = function () {
+  let show = "all", tier = 0;
+  app.innerHTML = `<div class="narrow stack">
+    <div><button class="back" data-g="profile">${I("left")} Profil</button><h1>Koleksi lencana</h1><p class="muted" id="bcount" style="margin-top:4px"></p></div>
+    <div class="seg" role="group" aria-label="Tampilkan">${[["all", "Semua"], ["got", "Didapat"], ["todo", "Belum"]].map(([v, t]) => `<button data-a="show" data-v="${v}">${t}</button>`).join("")}</div>
+    <div class="seg scroll tiers" role="group" aria-label="Tingkat">${["Semua tingkat", ...TIER.slice(1)].map((t, k) => `<button data-a="tier" data-v="${k}">${t}</button>`).join("")}</div>
+    <div id="blist"></div></div>`;
+  const draw = () => {
+    const got = BADGES.filter(b => S.badges[b.id]).length;
+    $("#bcount").textContent = got + " dari " + BADGES.length + " lencana didapat";
+    $$('[data-a="show"]').forEach(b => b.setAttribute("aria-pressed", b.dataset.v === show));
+    $$('[data-a="tier"]').forEach(b => b.setAttribute("aria-pressed", +b.dataset.v === tier));
+    const ok = b => (show === "all" || (show === "got") === !!S.badges[b.id]) && (!tier || (b.r || 1) === tier);
+    const html = BCATS.map(([c, n]) => {
+      const list = BADGES.filter(b => bcat(b) === c && ok(b)); if (!list.length) return "";
+      const all = BADGES.filter(b => bcat(b) === c), g = all.filter(b => S.badges[b.id]).length;
+      return `<section class="bgrp"><div class="bgrp-h"><h2>${n}</h2><span class="muted">${g}/${all.length}</span></div><div class="bgrid">${list.map(b => {
+        const on = !!S.badges[b.id], pr = badgeProg(b);
+        return `<button class="btile${on ? " on" : ""}" data-a="badge" data-id="${b.id}" aria-label="${esc(b.n)}, ${TIER[b.r || 1]}, ${on ? "didapat" : "belum, progres " + Math.round(pr * 100) + "%"}">${badgeIcon(b)}<span class="bt-n">${esc(b.n)}</span>${on ? "" : `<span class="bprog"><i style="width:${pr * 100}%"></i></span>`}</button>`; }).join("")}</div></section>`;
+    }).join("");
+    $("#blist").innerHTML = html || `<div class="card"><p class="muted">Tidak ada lencana untuk filter ini.</p></div>`;
+  };
+  H = { show(el) { show = el.dataset.v; draw(); }, tier(el) { tier = +el.dataset.v; draw(); }, badge(el) { badgeSheet(el.dataset.id); } };
+  draw();
 };
 
 /* ================= install (PWA) ================= */
