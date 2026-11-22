@@ -49,6 +49,7 @@ const ICONS = {
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   shirt: '<path d="M8 3l4 2.5L16 3l5 3.5-2.5 4-2.5-1.2V21H8V9.3L5.5 10.5 3 6.5z"/>',
   moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  spark: '<path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
   box: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 11v4"/><path d="M5 9a7 5 0 0 1 14 0"/>'
 };
 const I = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -101,14 +102,16 @@ LEVELS.forEach((L, li) => {
 LEVELS.forEach(L => {
   const R = READING[L.id];
   if (R) {
-    L.reads = [R, ...(READING2[L.id] || [])].map((r, k) => {
+    L.reads = [R, ...(READING2[L.id] || []), ...(READING3[L.id] || [])].map((r, k) => {
       const o = { title: r.title, text: r.text, k, sid: k ? L.id + "_" + k : L.id, qs: r.qs.trim().split("\n").map(x => x.trim()).filter(Boolean).map(parseLine) };
       o.qs.forEach((q, n) => { q.key = "r_" + L.id + (k ? k + 1 : "") + ":" + n; q.li = L.i; QMAP[q.key] = q; });
       return o;
     });
     L.read = L.reads[0];
   }
-  L.speak = (SPEAK[L.id] || []).concat(SPEAK2[L.id] || []);
+  // Praktik berbicara: 5 topik × 6 kalimat. L.speak = semua kalimat (untuk hitungan).
+  L.topics = (SPEAKT[L.id] || []).map((t, k) => ({ title: t.title, s: t.s, k }));
+  L.speak = L.topics.flatMap(t => t.s);
 });
 const NQ = LESSONS.reduce((n, x) => n + x.qs.length, 0) + LEVELS.reduce((n, L) => n + (L.reads || []).reduce((m, r) => m + r.qs.length, 0), 0);
 const RANKS = [[0, "Rakyat Biasa"], [200, "Murid Istana"], [600, "Pengawal"], [1500, "Kesatria"], [3000, "Penyihir Kata"], [5000, "Panglima"], [8000, "Penasihat Raja"], [12000, "Bangsawan"], [17000, "Penguasa Bahasa"], [25000, "Raja Bahasa"]];
@@ -130,6 +133,14 @@ function hydrate(o) {
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
   Object.keys(s.known).forEach(k => { if (!s.known[k] || typeof s.known[k] !== "object") s.known[k] = { b: 1, d: td }; });
+  // Progres berbicara lama (per level, indeks kalimat) → per topik.
+  LEVELS.forEach(L => {
+    const old = s.spoke[L.id]; if (!old || typeof old !== "object") return;
+    const list = (SPEAK[L.id] || []).concat(SPEAK2[L.id] || []);
+    Object.keys(old).forEach(i => { const en = list[+i] && list[+i][0]; if (!en) return;
+      L.topics.forEach(T => T.s.forEach((x, j) => { if (x[0] === en) { const key = L.id + ":" + T.k; s.spoke[key] = Object.assign({}, s.spoke[key], { [j]: 1 }); } })); });
+    delete s.spoke[L.id];
+  });
   { const OLD = { 30: 250, 50: 500, 100: 1000 }; if (OLD[s.goal]) s.goal = OLD[s.goal]; if (!GOALS.includes(s.goal)) s.goal = 500; }
   s.name = typeof s.name === "string" ? s.name.slice(0, 24) : "";
   if (!["auto", "light", "dark"].includes(s.theme)) s.theme = "auto";
@@ -160,7 +171,9 @@ const wrongItems = () => Object.keys(S.wrong).filter(k => S.wrong[k].d <= dkey()
 const wrongLater = () => Object.keys(S.wrong).filter(k => S.wrong[k].d > dkey() && QMAP[k]).length;
 const isKnown = w => !!(S.known[w] && S.known[w].b >= 1);
 const knownCount = () => VOCAB.filter(v => isKnown(v.w)).length;
-const spokeN = L => Object.keys(S.spoke[L.id] || {}).length;
+const topicN = (L, t) => Object.keys(S.spoke[L.id + ":" + t] || {}).length;
+const topicDone = (L, t) => topicN(L, t) >= L.topics[t].s.length;
+const spokeN = L => L.topics.reduce((n, T) => n + topicN(L, T.k), 0);
 const spokeTotal = () => LEVELS.reduce((n, L) => n + spokeN(L), 0);
 const streakNow = () => (S.lastDay === dkey() || S.lastDay === dayAgo(1)) ? S.streak : 0;
 function rankOf(xp) { let k = 0; RANKS.forEach((r, i) => { if (xp >= r[0]) k = i; }); const n = RANKS[k + 1]; return { name: RANKS[k][1], at: RANKS[k][0], next: n ? { at: n[0], name: n[1] } : null }; }
@@ -177,8 +190,8 @@ function addCoins(n) { S.coins += n; S.coinsAll += n; }
 const SPECIAL = {
   c2: () => !!S.cert.expert, streak30: () => S.best >= 30, streak100: () => S.best >= 100, streak7: () => S.best >= 7,
   stars36: () => LESSONS.every(x => starsOf(x) === 3), alltests: () => LEVELS.every(L => S.cert[L.id]), cert: () => Object.keys(S.cert).length > 0,
-  talk12: () => TALKS.every(T => S.talk[T.id] != null), examc1: () => S.exams.some(e => e.li >= 4), exam90: () => S.exams.some(e => e.sc >= 90),
-  read18: () => LEVELS.every(L => L.reads.every(r => S.read[r.sid] != null)), perfect10: () => S.perf >= 10
+  talk12: () => TALKS.filter(T => S.talk[T.id] != null).length >= 12, examc1: () => S.exams.some(e => e.li >= 4), exam90: () => S.exams.some(e => e.sc >= 90),
+  read18: () => Object.keys(S.read).length >= 18, perfect10: () => S.perf >= 10
 };
 const spOpen = it => it.p === null && !!(it.u && SPECIAL[it.u[0]] && SPECIAL[it.u[0]]());
 const ownsItem = (cat, it) => it.p === 0 || !!S.owned[cat + ":" + it.id] || spOpen(it);
@@ -196,21 +209,31 @@ const roundPassed = (x, r) => r === 1 ? !!S.done[x.id] || (S.scores[x.id] || 0) 
 const roundOpen = (x, r) => r === 1 || roundPassed(x, r - 1);
 const starsOf = x => [1, 2, 3].filter(r => roundPassed(x, r)).length;
 const starHTML = x => { const n = starsOf(x); return `<span class="stars" role="img" aria-label="${n} dari 3 bintang">${[1, 2, 3].map(k => `<i class="${k <= n ? "on" : ""}">${k <= n ? "★" : "☆"}</i>`).join("")}</span>`; };
-// Daftar percakapan: dua per level.
-const TALKS = []; LEVELS.forEach((L, li) => [[L.id, TALK[L.id]], [L.id + "2", TALK2[L.id]]].forEach(([id, t]) => { if (t) TALKS.push(Object.assign({ id, li }, t)); }));
+// Daftar percakapan: lima per level.
+const TALKS = []; LEVELS.forEach((L, li) => [[L.id, TALK[L.id]], [L.id + "2", TALK2[L.id]], ...(TALK3[L.id] || []).map((t, k) => [L.id + (k + 3), t])].forEach(([id, t]) => { if (t) TALKS.push(Object.assign({ id, li }, t)); }));
 // Semua materi di rute: pelajaran, bacaan, latihan berbicara, percakapan, dan tes level.
 function routeProgress() {
   const c = { lesson: [0, 0], read: [0, 0], speak: [0, 0], talk: [0, 0], test: [0, 0] };
   LEVELS.forEach(L => {
     L.lessons.forEach(x => { c.lesson[1]++; if (S.done[x.id]) c.lesson[0]++; });
     (L.reads || []).forEach(r => { c.read[1]++; if (S.read[r.sid] != null) c.read[0]++; });
-    if (L.speak.length) { c.speak[1]++; if (spokeN(L) >= L.speak.length) c.speak[0]++; }
+    L.topics.forEach(T => { c.speak[1]++; if (topicDone(L, T.k)) c.speak[0]++; });
     c.test[1]++; if (S.cert[L.id]) c.test[0]++;
   });
   TALKS.forEach(T => { c.talk[1]++; if (S.talk[T.id] != null) c.talk[0]++; });
   c.all = Object.values(c).reduce((a, v) => [a[0] + v[0], a[1] + v[1]], [0, 0]);
   return c;
 }
+// Praktik keterampilan per level: babak 1 bacaan, babak 2 berbicara, babak 3 percakapan (5 topik per babak).
+const SKB = [["Bacaan", "book"], ["Berbicara", "mic"], ["Percakapan", "chat"]];
+const levelTalks = li => TALKS.map((T, n) => ({ T, n })).filter(x => x.T.li === li);
+function skillCounts(li) {
+  const L = LEVELS[li];
+  return [(L.reads || []).filter(r => S.read[r.sid] != null).length, L.topics.filter(T => topicDone(L, T.k)).length, levelTalks(li).filter(x => S.talk[x.T.id] != null).length];
+}
+const skillTotals = li => [(LEVELS[li].reads || []).length, LEVELS[li].topics.length, levelTalks(li).length];
+const skillDone = li => skillCounts(li).reduce((a, b) => a + b, 0);
+const skillFirst = li => { const c = skillCounts(li), t = skillTotals(li); const b = c.findIndex((v, i) => v < t[i]); return b < 0 ? 0 : b; };
 const nCount = o => Object.keys(o || {}).length;
 const stars3 = () => LESSONS.filter(x => starsOf(x) === 3).length;
 const ownedCostumes = () => { let n = 0; Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { if (ownsItem(c, it)) n++; })); return n; };
@@ -257,10 +280,14 @@ const BADGES = [
   { id: "route50", r: 2, n: "Penjelajah rute", d: "Selesaikan 50 materi di rute", ic: "map", t: () => routeProgress().all[0] >= 50, p: () => routeProgress().all[0] / 50 },
   { id: "routeAll", r: 4, n: "Rute tuntas", d: "Selesaikan semua materi dari A1 sampai C2", ic: "map", t: () => { const a = routeProgress().all; return a[0] >= a[1]; }, p: () => { const a = routeProgress().all; return a[0] / a[1]; } },
   { id: "read6", r: 1, n: "Rajin membaca", d: "Kerjakan 6 bacaan", ic: "book", t: () => routeProgress().read[0] >= 6, p: () => routeProgress().read[0] / 6 },
-  { id: "read18", r: 3, n: "Kutu buku", d: "Kerjakan semua 18 bacaan", ic: "book", t: () => routeProgress().read[0] >= 18, p: () => routeProgress().read[0] / 18 },
+  { id: "read18", r: 3, n: "Kutu buku", d: "Kerjakan 18 bacaan", ic: "book", t: () => routeProgress().read[0] >= 18, p: () => routeProgress().read[0] / 18 },
   { id: "speak36", r: 2, n: "Suara percaya diri", d: "Ucapkan 36 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 36, p: () => spokeTotal() / 36 },
-  { id: "speak72", r: 3, n: "Lidah fasih", d: "Ucapkan semua 72 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 72, p: () => spokeTotal() / 72 },
-  { id: "talk12", r: 3, n: "Diplomat", d: "Selesaikan semua 12 percakapan", ic: "chat", t: () => TALKS.every(T => S.talk[T.id] != null), p: () => TALKS.filter(T => S.talk[T.id] != null).length / TALKS.length },
+  { id: "speak72", r: 3, n: "Lidah fasih", d: "Ucapkan 72 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 72, p: () => spokeTotal() / 72 },
+  { id: "talk12", r: 3, n: "Diplomat", d: "Selesaikan 12 percakapan", ic: "chat", t: () => routeProgress().talk[0] >= 12, p: () => routeProgress().talk[0] / 12 },
+  { id: "read30", r: 4, n: "Perpustakaan berjalan", d: "Kerjakan semua 30 bacaan", ic: "book", t: () => routeProgress().read[0] >= 30, p: () => routeProgress().read[0] / 30 },
+  { id: "speak180", r: 4, n: "Orator", d: "Ucapkan semua 180 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 180, p: () => spokeTotal() / 180 },
+  { id: "talk30", r: 4, n: "Duta bahasa", d: "Selesaikan semua 30 percakapan", ic: "chat", t: () => routeProgress().talk[0] >= 30, p: () => routeProgress().talk[0] / 30 },
+  { id: "route_skill1", r: 2, n: "Serba bisa", d: "Tuntaskan 15 topik Praktik di satu level", ic: "spark", t: () => LEVELS.some(L => skillDone(L.i) >= 15), p: () => Math.max(...LEVELS.map(L => skillDone(L.i))) / 15 },
   { id: "talkPerfect", r: 2, n: "Lawan bicara ideal", d: "Skor 100% di 5 percakapan", ic: "chat", t: () => Object.values(S.talk).filter(v => v === 100).length >= 5, p: () => Object.values(S.talk).filter(v => v === 100).length / 5 },
   { id: "test1", r: 1, n: "Lulus ujian", d: "Lulus satu tes level", ic: "flag", t: () => nCount(S.cert) >= 1, p: () => nCount(S.cert) },
   { id: "test3", r: 2, n: "Tiga sertifikat", d: "Lulus 3 tes level", ic: "award", t: () => nCount(S.cert) >= 3, p: () => nCount(S.cert) / 3 },
@@ -453,7 +480,7 @@ function confetti() {
 /* ================= router ================= */
 let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null, QT = null;
 const VIEWS = {};
-const SECTION = { badges: "profile", wardrobe: "wardrobe", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
+const SECTION = { badges: "profile", wardrobe: "wardrobe", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", skill: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
 /* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
    Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
@@ -462,7 +489,8 @@ function hashOf(v, a) {
   switch (v) {
     case "lesson": return "#pelajaran-" + a[0] + "-" + a[1];
     case "read": return "#bacaan-" + a[0] + (a[1] ? "-" + a[1] : "");
-    case "speak": return "#bicara-" + a[0];
+    case "speak": return "#bicara-" + a[0] + "-" + (a[1] || 0);
+    case "skill": return "#praktik-" + a[0] + "-" + (a[1] || 0);
     case "talk": return a[0] != null ? "#ngobrol-" + a[0] : "#ngobrol";
     case "flash": return "#flashcard-" + (a[0] || "all");
     case "practice": return "#latihan";
@@ -492,7 +520,8 @@ function parseHash(h) {
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
     case "bacaan": { const li = n(p[1]), k = n(p[2]) || 0; return LEVELS[li] && LEVELS[li].reads && LEVELS[li].reads[k] ? { v: "read", a: [li, k] } : null; }
     case "ngobrol": { const k = n(p[1]); return { v: "talk", a: isNaN(k) ? [] : [k] }; }
-    case "bicara": { const li = n(p[1]); return LEVELS[li] ? { v: "speak", a: [li] } : null; }
+    case "bicara": { const li = n(p[1]), t = n(p[2]) || 0; return LEVELS[li] && LEVELS[li].topics[t] ? { v: "speak", a: [li, t] } : null; }
+    case "praktik": { const li = n(p[1]), b = Math.min(2, n(p[2]) || 0); return LEVELS[li] ? { v: "skill", a: [li, b] } : null; }
     default: return null;
   }
 }
@@ -613,9 +642,10 @@ VIEWS.home = function () {
         const st = S.done[x.id] ? "done" : (next && next.id === x.id ? "cur" : "todo");
         return `<li><button class="lrow ${st}" data-a="open" data-l="${L.i}" data-j="${x.j}"><span class="n">${st === "done" ? I("check") : x.j + 1}</span><span class="grow"><b>${esc(x.title)}</b><small>3 babak · ${x.qs.length} soal</small></span>${st === "cur" ? "" : starHTML(x)}${st === "cur" ? '<span class="go">Mulai</span>' : ""}</button></li>`;
       }).join("")}
-      ${(L.reads || []).map(r => `<li><button class="lrow${S.read[r.sid] != null ? " done" : ""}" data-a="read" data-l="${L.i}" data-k="${r.k}"><span class="n">${I("book")}</span><span><b>Bacaan: ${esc(r.title)}</b><small>${r.qs.length} soal pemahaman${S.read[r.sid] != null ? " · terbaik " + S.read[r.sid] + "%" : ""}</small></span></button></li>`).join("")}
-      ${L.speak.length ? `<li><button class="lrow${spokeN(L) >= L.speak.length ? " done" : ""}" data-a="speak" data-l="${L.i}"><span class="n">${I("mic")}</span><span><b>Latihan berbicara</b><small>${spokeN(L)} dari ${L.speak.length} kalimat lancar</small></span></button></li>` : ""}
-      ${TALKS.map((T, n) => T.li !== L.i ? "" : `<li><button class="lrow${S.talk[T.id] != null ? " done" : ""}" data-a="talk" data-l="${n}"><span class="n">${I("chat")}</span><span><b>Percakapan: ${esc(T.title)}</b><small>Ngobrol bersama ${esc(T.who)}${S.talk[T.id] != null ? " · terbaik " + S.talk[T.id] + "%" : ""}</small></span></button></li>`).join("")}
+      ${(() => { const c = skillCounts(L.i), t = skillTotals(L.i), d = c.reduce((a, b) => a + b, 0), tt = t.reduce((a, b) => a + b, 0);
+        return `<li><button class="lrow skillrow${d >= tt ? " done" : ""}" data-a="skill" data-l="${L.i}"><span class="n">${d >= tt ? I("check") : I("spark")}</span><span class="grow"><b>Praktik keterampilan ${L.cefr}</b><small>3 babak · ${tt} topik</small>
+          <span class="skchips">${SKB.map(([n, ic], b) => `<span class="${c[b] >= t[b] ? "ok" : ""}">${I(ic)}<b>${c[b]}/${t[b]}</b><i>${n}</i></span>`).join("")}</span>
+          <span class="pbar"><i style="width:${d / tt * 100}%"></i></span></span><span class="skn">${d}/${tt}</span></button></li>`; })()}
       <li><button class="lrow test${dn === n ? " done" : ""}" data-a="test" data-l="${L.i}"><span class="n">${I("flag")}</span><span><b>Tes level ${L.cefr}</b><small>20 soal acak · lulus 75% menandai level selesai</small></span></button></li></ol></details>`;
   };
   app.innerHTML = `<div class="home">
@@ -646,8 +676,7 @@ VIEWS.home = function () {
     allopen() { const all = OPENLV.size === LEVELS.length; $$("details.lvcard").forEach(dd => { dd.open = !all; }); },
     test(el) { levelTest(+el.dataset.l); },
     read(el) { nav("read", +el.dataset.l, +el.dataset.k || 0); },
-    speak(el) { nav("speak", +el.dataset.l); },
-    talk(el) { TALKFROM = "home"; nav("talk", +el.dataset.l); },
+    skill(el) { const li = +el.dataset.l; nav("skill", li, skillFirst(li)); },
     wknow(el) { const w = el.dataset.w; if (!isKnown(w)) S.known[w] = { b: 1, d: addDays(INT[1]) }; newBadges(); save(); const y = window.scrollY; rerender(); try { window.scrollTo(0, y); } catch (e) {} sfx.ok(); },
     cont() { nav("lesson", next.li, next.j); },
     flash() { nav("flash"); },
@@ -778,14 +807,14 @@ VIEWS.lesson = function (li, j, tab = "m") {
 function routeSteps(li) {
   const L = LEVELS[li], out = L.lessons.map(x => ({ t: "lesson", li, j: x.j, title: x.title }));
   (L.reads || []).forEach(r => out.push({ t: "read", li, k: r.k, title: "Bacaan: " + r.title }));
-  if (L.speak.length) out.push({ t: "speak", li, title: "Latihan berbicara " + L.cefr });
+  L.topics.forEach(T => out.push({ t: "speak", li, k: T.k, title: "Berbicara: " + T.title }));
   TALKS.forEach((T, n) => { if (T.li === li) out.push({ t: "talk", li, n, title: "Percakapan: " + T.title }); });
   out.push({ t: "test", li, title: "Tes level " + L.cefr });
   return out;
 }
 // Langkah sesudah langkah tertentu; sesudah tes level lanjut ke pelajaran pertama level berikutnya.
 function stepAfter(t, li, key) {
-  const st = routeSteps(li), i = st.findIndex(x => x.t === t && (t === "lesson" ? x.j === key : t === "read" ? x.k === key : t === "talk" ? x.n === key : true));
+  const st = routeSteps(li), i = st.findIndex(x => x.t === t && (t === "lesson" ? x.j === key : t === "read" || t === "speak" ? x.k === key : t === "talk" ? x.n === key : true));
   if (i >= 0 && i + 1 < st.length) return st[i + 1];
   return li + 1 < LEVELS.length ? routeSteps(li + 1)[0] : null;
 }
@@ -793,11 +822,13 @@ function goStep(x) {
   if (!x) return nav("home");
   if (x.t === "lesson") nav("lesson", x.li, x.j);
   else if (x.t === "read") nav("read", x.li, x.k);
-  else if (x.t === "speak") nav("speak", x.li);
-  else if (x.t === "talk") { TALKFROM = "home"; nav("talk", x.n); }
+  else if (x.t === "speak") nav("speak", x.li, x.k);
+  else if (x.t === "talk") { TALKFROM = ["skill", x.li, 2]; nav("talk", x.n); }
   else levelTest(x.li);
 }
 const stepLabel = x => !x ? "" : x.t === "test" ? "Lanjut ke " + x.title : x.t === "lesson" && x.j === 0 ? "Lanjut ke Level " + LEVELS[x.li].cefr : "Lanjut ke materi berikutnya";
+// Ketika langkah berikut pindah babak, labelnya menyebut babaknya.
+const stepLabel2 = (x, from) => x && x.t !== from && ["read", "speak", "talk"].includes(x.t) ? "Lanjut ke Babak " + (["read", "speak", "talk"].indexOf(x.t) + 1) + ": " + SKB[["read", "speak", "talk"].indexOf(x.t)][0] : stepLabel(x);
 // Pelajaran sesudah (li, j): lanjut di level yang sama, atau pelajaran pertama level berikutnya.
 function nextOf(li, j) { const L = LEVELS[li]; if (j + 1 < L.lessons.length) return { li, j: j + 1, title: L.lessons[j + 1].title }; if (li + 1 < LEVELS.length) return { li: li + 1, j: 0, title: LEVELS[li + 1].lessons[0].title }; return null; }
 function lessonQuiz(li, j, r = 1) {
@@ -1194,20 +1225,20 @@ VIEWS.read = function (li, k = 0) {
   if (!L || !L.reads || !L.reads[k]) return nav("home");
   const R = L.reads[k], full = R.text.join(" ").replace(/<br>/g, ". ");
   app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
-    <div><button class="back" data-g="home">${I("left")} Rute</button>
-    <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Bacaan · ${L.name}</p><h1>${esc(R.title)}</h1></div></div></div>
+    <div><button class="back" data-a="toskill">${I("left")} Praktik ${L.cefr}</button>
+    <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Babak 1 · Bacaan ${k + 1} dari ${L.reads.length}</p><h1>${esc(R.title)}</h1></div></div></div>
     ${canSpeak() ? `<div class="pair"><button class="btn ghost" data-a="listen">${I("headphones")} Dengarkan</button><button class="btn ghost" data-a="slow">Lambat</button></div>` : ""}
     <article class="card reading">${R.text.map(p => `<p>${p}</p>`).join("")}</article>
     <p class="muted">Baca sampai selesai, lalu jawab ${R.qs.length} soal. Teksnya tetap bisa dibuka saat menjawab.</p>
     <button class="btn lv" data-a="go">Jawab soal ${I("right")}</button></div>`;
-  H = { listen() { speak(full); }, slow() { speak(full, true); }, go() { startRead(li, k); } };
+  H = { listen() { speak(full); }, slow() { speak(full, true); }, go() { startRead(li, k); }, toskill() { nav("skill", li, 0); } };
 };
 function startRead(li, k = 0) {
   const L = LEVELS[li], R = L.reads[k];
   runQuiz(R.qs.slice(), {
     title: "Bacaan · " + R.title, li, pass: 60, bonus: true, passMsg: "Pemahaman bacaan Anda bagus.",
     back: () => nav("read", li, k), again: () => startRead(li, k),
-    next: () => goStep(stepAfter("read", li, k)), nextLabel: stepLabel(stepAfter("read", li, k)),
+    next: () => goStep(stepAfter("read", li, k)), nextLabel: stepLabel2(stepAfter("read", li, k), "read"),
     ctx: `<details class="ctx"><summary>Lihat bacaan</summary>${R.text.map(p => `<p>${p}</p>`).join("")}</details>`,
     onEnd(p) { S.read[R.sid] = Math.max(S.read[R.sid] || 0, p); }
   });
@@ -1225,32 +1256,35 @@ function sayScore(target, heard) {
   let hit = 0; T.forEach(w => { const k = pool.indexOf(w); if (k >= 0) { hit++; pool.splice(k, 1); } });
   return Math.round(hit / T.length * 100);
 }
-VIEWS.speak = function (li) {
+VIEWS.speak = function (li, t = 0) {
   const L = LEVELS[li];
-  if (!L || !L.speak.length) return nav("home");
-  let k = 0, st = "idle", heard = "", pct = 0;
-  const done = () => S.spoke[L.id] || {};
+  if (!L || !L.topics[t]) return nav("home");
+  const TP = L.topics[t], SS = TP.s, key = L.id + ":" + t;
+  let k = Math.max(0, SS.findIndex((_, n) => !(S.spoke[key] || {})[n])), st = "idle", heard = "", pct = 0;
+  const done = () => S.spoke[key] || {};
+  const nx = stepAfter("speak", li, t);
   const draw = () => {
-    const [en, tr] = L.speak[k], ok = done()[k];
+    const [en, tr] = SS[k], ok = done()[k];
     const fb = st === "ok" || st === "no" ? `<div class="fb ${st}"><p class="fb-h"><span>${st === "ok" ? "Lancar!" : "Coba lagi"}</span><span class="plus">${pct}% cocok</span></p><p>Terdengar: <b>${esc(heard || "(tidak ada suara)")}</b></p>${st === "no" ? "<p>Ucapkan pelan dan jelas. Targetnya 80% kata cocok.</p>" : ""}</div>`
       : st === "err" ? `<div class="fb no"><p>${esc(heard)}</p></div>` : "";
     app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
-      <div><button class="back" data-g="home">${I("left")} Rute</button>
-      <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Latihan berbicara · ${spokeN(L)}/${L.speak.length} lancar</p><h1>Ucapkan kalimat ini</h1></div></div></div>
-      <div class="dots" role="group" aria-label="Pilih kalimat">${L.speak.map((_, n) => `<button class="${n === k ? "cur" : ""}${done()[n] ? " ok" : ""}" data-a="jump" data-k="${n}" aria-label="Kalimat ${n + 1}${done()[n] ? ", lancar" : ""}"></button>`).join("")}</div>
-      <div class="tcard say${st === "ok" ? " ok" : st === "no" ? " no" : ""}"><span class="tag">Kalimat ${k + 1} dari ${L.speak.length}${ok ? " · lancar" : ""}</span><p class="qtext tq">${esc(en)}</p><span class="muted" style="font-weight:600">${esc(tr)}</span></div>
+      <div><button class="back" data-a="toskill">${I("left")} Praktik ${L.cefr}</button>
+      <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Babak 2 · Topik ${t + 1} dari ${L.topics.length} · ${topicN(L, t)}/${SS.length} lancar</p><h1>${esc(TP.title)}</h1></div></div></div>
+      <div class="dots" role="group" aria-label="Pilih kalimat">${SS.map((_, n) => `<button class="${n === k ? "cur" : ""}${done()[n] ? " ok" : ""}" data-a="jump" data-k="${n}" aria-label="Kalimat ${n + 1}${done()[n] ? ", lancar" : ""}"></button>`).join("")}</div>
+      <div class="tcard say${st === "ok" ? " ok" : st === "no" ? " no" : ""}"><span class="tag">Kalimat ${k + 1} dari ${SS.length}${ok ? " · lancar" : ""}</span><p class="qtext tq">${esc(en)}</p><span class="muted" style="font-weight:600">${esc(tr)}</span></div>
       ${canSpeak() ? `<div class="pair"><button class="btn ghost" data-say="${esc(en)}">${I("speaker")} Dengar</button><button class="btn ghost" data-a="slow">Lambat</button></div>` : ""}
       ${SR ? `<button class="btn ${st === "rec" ? "bad" : "blue"}" data-a="rec">${I("mic")} ${st === "rec" ? "Mendengarkan… ketuk untuk berhenti" : "Ketuk lalu ucapkan"}</button>`
            : `<div class="card"><p><b>Penilaian suara tidak tersedia di browser ini.</b> Buka English Path di Chrome (Android atau komputer) agar ucapan Anda dinilai otomatis. Untuk sekarang: dengarkan, tirukan dengan suara keras, lalu tandai sendiri.</p></div><button class="btn blue" data-a="self">Saya sudah mengucapkannya</button>`}
       <div aria-live="polite">${fb}</div>
-      <div class="pair"><button class="btn ghost" data-a="prev"${k === 0 ? " disabled" : ""}>Sebelumnya</button><button class="btn lv" data-a="next">${k + 1 < L.speak.length ? "Berikutnya" : "Lanjut ke materi berikutnya"}</button></div></div>`;
+      <div class="pair"><button class="btn ghost" data-a="prev"${k === 0 ? " disabled" : ""}>Sebelumnya</button><button class="btn lv" data-a="next">${k + 1 < SS.length ? "Berikutnya" : nx ? stepLabel2(nx, "speak").replace("materi berikutnya", "topik berikutnya") : "Selesai"}</button></div></div>`;
   };
-  const pass = () => { if (done()[k]) return; S.spoke[L.id] = Object.assign({}, done(), { [k]: 1 }); addXp(5); addCoins(1); newBadges(); save(); chrome(); };
+  const pass = () => { if (done()[k]) return; S.spoke[key] = Object.assign({}, done(), { [k]: 1 }); addXp(5); addCoins(1); newBadges(); save(); chrome(); };
   H = {
     jump(el) { stopRec(); k = +el.dataset.k; st = "idle"; draw(); },
     prev() { stopRec(); if (k > 0) { k--; st = "idle"; draw(); } },
-    next() { stopRec(); if (k + 1 < L.speak.length) { k++; st = "idle"; draw(); } else goStep(stepAfter("speak", li)); },
-    slow() { speak(L.speak[k][0], true); },
+    next() { stopRec(); if (k + 1 < SS.length) { k++; st = "idle"; draw(); } else goStep(nx); },
+    toskill() { stopRec(); nav("skill", li, 1); },
+    slow() { speak(SS[k][0], true); },
     self() { pass(); st = "ok"; pct = 100; heard = "(ditandai sendiri)"; sfx.ok(); draw(); },
     rec() {
       if (st === "rec") { try { REC && REC.stop(); } catch (e) {} return; }
@@ -1259,7 +1293,7 @@ VIEWS.speak = function (li) {
         const r = REC = new SR(); r.lang = "en-US"; r.interimResults = false; r.maxAlternatives = 3;
         r.onresult = e => {
           const alts = [...e.results[0]].map(x => x.transcript); let best = -1, bh = alts[0] || "";
-          alts.forEach(a => { const sc = sayScore(L.speak[k][0], a); if (sc > best) { best = sc; bh = a; } });
+          alts.forEach(a => { const sc = sayScore(SS[k][0], a); if (sc > best) { best = sc; bh = a; } });
           heard = bh; pct = Math.max(0, best); st = pct >= 80 ? "ok" : "no";
           if (st === "ok") { pass(); sfx.ok(); } else sfx.no();
           draw();
@@ -1581,11 +1615,11 @@ VIEWS.talk = function (n) {
     const [mood, line] = resultMood(pct, pct >= 60);
     reply.innerHTML = `<div class="talkend"><div class="greet">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><b>${score} dari ${nU} tepat</b><span>${line} +${bonus} XP</span></div></div>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
-      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn ${pct >= 60 ? "ghost" : "lv"}" data-a="exit">Selesai</button></div>${pct >= 60 ? `<button class="btn lv" data-a="nextstep">${stepLabel(stepAfter("talk", li, n))} ${I("right")}</button>` : ""}<button class="btn ghost" data-g="home">${I("map")} Kembali ke beranda</button></div>`;
+      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn ${pct >= 60 ? "ghost" : "lv"}" data-a="exit">Selesai</button></div>${pct >= 60 ? `<button class="btn lv" data-a="nextstep">${stepLabel2(stepAfter("talk", li, n), "talk")} ${I("right")}</button>` : ""}<button class="btn ghost" data-g="home">${I("map")} Kembali ke beranda</button></div>`;
     if (pct >= 60) { sfx.win(); confetti(); }
   }
   H = {
-    exit() { const f = TALKFROM; TALKFROM = "talk"; nav(f); },
+    exit() { const f = [].concat(TALKFROM); TALKFROM = "talk"; nav(...f); },
     again() { rerender(); },
     nextstep() { TALKFROM = "talk"; goStep(stepAfter("talk", li, n)); },
     share() { shareCard({ kind: "result", li, pct: Math.round(score / nU * 100), title: T.title, sub: "Percakapan " + L.cefr + " · " + L.name }); },
@@ -1852,6 +1886,31 @@ VIEWS.wardrobe = function () {
 };
 
 /* ================= koleksi lencana ================= */
+/* ================= praktik keterampilan ================= */
+VIEWS.skill = function (li, b = 0) {
+  const L = LEVELS[li];
+  if (!L) return nav("home");
+  b = Math.max(0, Math.min(2, +b || 0));
+  const c = skillCounts(li), t = skillTotals(li), d = c.reduce((x, y) => x + y, 0), tt = t.reduce((x, y) => x + y, 0);
+  const row = (done, ic, title, sub, a, k, isNew) => `<li><button class="lrow${done ? " done" : ""}" data-a="${a}" data-k="${k}"><span class="n">${I(done ? "check" : ic)}</span><span class="grow"><b>${esc(title)}${isNew && !done ? ' <span class="newtag">Baru</span>' : ""}</b><small>${sub}</small></span>${I("right")}</button></li>`;
+  const list = b === 0 ? L.reads.map(r => row(S.read[r.sid] != null, "book", r.title, r.qs.length + " soal pemahaman" + (S.read[r.sid] != null ? " · terbaik " + S.read[r.sid] + "%" : ""), "rd", r.k, r.k >= 3))
+    : b === 1 ? L.topics.map(T => row(topicDone(L, T.k), "mic", T.title, topicN(L, T.k) + " dari " + T.s.length + " kalimat lancar", "sp", T.k, true))
+    : levelTalks(li).map(({ T, n }, j) => row(S.talk[T.id] != null, "chat", T.title, "Ngobrol bersama " + esc(T.who) + (S.talk[T.id] != null ? " · terbaik " + S.talk[T.id] + "%" : ""), "tk", n, j >= 2));
+  app.innerHTML = `<div class="skpage stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
+    <div><button class="back" data-g="home">${I("left")} Rute</button>
+    <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">${L.name} · ${d} dari ${tt} topik selesai</p><h1>Praktik ${L.cefr}</h1></div></div>
+    <span class="pbar skbar"><i style="width:${d / tt * 100}%"></i></span></div>
+    <div class="skwrap"><div class="sktabs" role="tablist" aria-label="Babak">${SKB.map(([n, ic], k) => `<button role="tab" aria-selected="${k === b}" data-a="tab" data-b="${k}" class="${c[k] >= t[k] ? "full" : ""}"><span class="skic">${I(c[k] >= t[k] ? "check" : ic)}</span><span><b>Babak ${k + 1}</b><small>${n} ${c[k]}/${t[k]}</small></span></button>`).join("")}</div>
+    <section class="card sklist" role="tabpanel" aria-label="${SKB[b][0]}"><ol class="lrows">${list.join("")}</ol></section></div>
+    <p class="muted">${b === 0 ? "Baca teksnya, lalu jawab 5 soal pemahaman." : b === 1 ? "Topik selesai kalau keenam kalimatnya diucapkan dengan lancar." : "Pilih balasan yang paling tepat dalam obrolan."} Babak bisa dikerjakan dalam urutan apa saja.</p></div>`;
+  H = {
+    tab(el) { nav("skill", li, +el.dataset.b); },
+    rd(el) { nav("read", li, +el.dataset.k); },
+    sp(el) { nav("speak", li, +el.dataset.k); },
+    tk(el) { TALKFROM = ["skill", li, 2]; nav("talk", +el.dataset.k); }
+  };
+};
+
 VIEWS.badges = function () {
   let show = "all", tier = 0;
   app.innerHTML = `<div class="narrow stack">

@@ -813,3 +813,32 @@ body.wardpage .shell{padding-bottom:0}
 @keyframes rise{from{transform:translateY(12px)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 [hidden]{display:none!important}
+
+/* ---------- praktik keterampilan ---------- */
+.skillrow{align-items:start}.skillrow .n{margin-top:2px;background:var(--primary-l);border-color:var(--primary-l);color:var(--primary-d)}
+.skillrow.done .n{background:var(--ldk,var(--mint));border-color:var(--ldk,var(--mint));color:#fff}
+.skillrow .skn{font:700 15px/1 var(--display);color:var(--primary-d);align-self:center}
+.skchips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.skchips>span{display:grid;justify-items:center;gap:1px;padding:6px 4px;border-radius:12px;background:var(--soft);color:var(--muted);font-size:11.5px;font-weight:700;text-align:center}
+.skchips .ic{width:16px;height:16px}.skchips b{font:700 14px/1.1 var(--display)!important;color:var(--ink)}.skchips i{font-style:normal}
+.skchips .ok{background:var(--mint-l);color:var(--good-ink)}
+.skillrow .pbar{display:block}
+.skpage{max-width:980px}
+.skbar{display:block;margin-top:12px}
+.sktabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;border-radius:18px;background:var(--surface);box-shadow:0 3px 0 var(--line)}
+.sktabs button{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:56px;padding:8px 4px;border-radius:13px;text-align:center;color:var(--muted)}
+.sktabs b{display:block;font:700 15px/1.1 var(--display);color:var(--ink)}.sktabs small{font-size:12px;font-weight:700}
+.sktabs .skic{display:none}
+.sktabs button[aria-selected="true"]{background:var(--primary-l)}.sktabs button[aria-selected="true"] b{color:var(--primary-d)}
+.sklist{padding:4px 0;overflow:hidden}.sklist .lrow:last-child{border-bottom:0}.sklist .lrow>.ic{color:var(--muted)}
+.skwrap{display:grid;gap:14px}
+.newtag{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:99px;background:var(--sun-l);color:var(--xp-ink);font:800 10.5px/1.3 var(--body);text-transform:uppercase;letter-spacing:.04em;vertical-align:3px}
+@media (min-width:1000px){
+  .skwrap{grid-template-columns:300px 1fr;align-items:start}
+  .sktabs{grid-template-columns:1fr;gap:4px}
+  .sktabs button{flex-direction:row;justify-content:flex-start;gap:12px;padding:12px;text-align:left}
+  .sktabs .skic{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:3px solid var(--line);background:var(--surface);flex:none}
+  .sktabs button[aria-selected="true"] .skic{background:var(--primary);border-color:var(--primary);color:#fff}
+  .sktabs button.full .skic{background:var(--ldk,var(--mint));border-color:var(--ldk,var(--mint));color:#fff}
+}
+:root[data-theme="dark"] .sktabs button[aria-selected="true"]{background:var(--primary)}:root[data-theme="dark"] .sktabs button[aria-selected="true"] b,:root[data-theme="dark"] .sktabs button[aria-selected="true"] small{color:#fff}

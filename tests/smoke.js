@@ -193,18 +193,23 @@ require("fs").mkdirSync(shots, { recursive: true });
 
   // reading
   await click('#nav [data-g="home"]');
-  await click('.lrow[data-a="read"][data-l="1"]');
+  await click('.lrow[data-a="skill"][data-l="1"]');
+  await click('[data-a="tab"][data-b="0"]');
+  await click('.lrow[data-a="rd"][data-k="0"]');
   await page.screenshot({ path: path.join(shots, "12-reading.png") });
   await click('[data-a="go"]');
   await page.locator("details.ctx summary").click();
   r = await playQuiz(0); log("reading:", JSON.stringify(r)); s = await state(); log("read score", JSON.stringify(s.read));
   await click('[data-a="back"]');
   // speaking
+  await click('.back[data-a="toskill"]');
   await click('.back[data-g="home"]');
-  await click('.lrow[data-a="speak"][data-l="0"]');
+  await click('.lrow[data-a="skill"][data-l="0"]');
+  await click('[data-a="tab"][data-b="1"]');
+  await click('.lrow[data-a="sp"][data-k="0"]');
   await page.screenshot({ path: path.join(shots, "13-speak.png") });
   if (await page.locator('[data-a="self"]').count()) { await click('[data-a="self"]'); await click('[data-a="next"]'); await click('[data-a="self"]'); log("speak: self-mark path"); }
-  else { log("speak: mic button present", await page.locator('[data-a="rec"]').count()); await page.evaluate(() => { S.spoke.basic = { 0: 1, 1: 1 }; save(); }); }
+  else { log("speak: mic button present", await page.locator('[data-a="rec"]').count()); await page.evaluate(() => { S.spoke["basic:0"] = { 0: 1, 1: 1 }; save(); }); }
   s = await state(); log("spoke", JSON.stringify(s.spoke));
   // export / import roundtrip
   await click('#nav [data-g="profile"]'); await click('.setrow[data-g="settings"]');

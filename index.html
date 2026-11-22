@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>English Path — Belajar Bahasa Inggris Gratis</title>
-<meta name="description" content="Belajar bahasa Inggris gratis dari A1 sampai C2: 36 pelajaran × 3 babak, 2.250 soal, 550+ kosakata, 18 bacaan, 12 percakapan, latihan dengar dan berbicara, dijelaskan dalam bahasa Indonesia.">
+<meta name="description" content="Belajar bahasa Inggris gratis dari A1 sampai C2: 36 pelajaran × 3 babak, 2.250 soal, 550+ kosakata, 30 bacaan, 30 percakapan, 180 kalimat berbicara, latihan dengar, dijelaskan dalam bahasa Indonesia.">
 <meta name="theme-color" content="#eef4ff">
 <meta name="color-scheme" content="light dark">
 <script>try{var t=(JSON.parse(localStorage.getItem("englishpath_v1")||"{}").theme)||"auto";if(t==="dark"||(t==="auto"&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.theme="dark"}catch(e){}</script>
@@ -838,6 +838,35 @@ body.wardpage .shell{padding-bottom:0}
 @keyframes rise{from{transform:translateY(12px)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 [hidden]{display:none!important}
+
+/* ---------- praktik keterampilan ---------- */
+.skillrow{align-items:start}.skillrow .n{margin-top:2px;background:var(--primary-l);border-color:var(--primary-l);color:var(--primary-d)}
+.skillrow.done .n{background:var(--ldk,var(--mint));border-color:var(--ldk,var(--mint));color:#fff}
+.skillrow .skn{font:700 15px/1 var(--display);color:var(--primary-d);align-self:center}
+.skchips{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0}
+.skchips>span{display:grid;justify-items:center;gap:1px;padding:6px 4px;border-radius:12px;background:var(--soft);color:var(--muted);font-size:11.5px;font-weight:700;text-align:center}
+.skchips .ic{width:16px;height:16px}.skchips b{font:700 14px/1.1 var(--display)!important;color:var(--ink)}.skchips i{font-style:normal}
+.skchips .ok{background:var(--mint-l);color:var(--good-ink)}
+.skillrow .pbar{display:block}
+.skpage{max-width:980px}
+.skbar{display:block;margin-top:12px}
+.sktabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;border-radius:18px;background:var(--surface);box-shadow:0 3px 0 var(--line)}
+.sktabs button{display:flex;flex-direction:column;align-items:center;gap:4px;min-height:56px;padding:8px 4px;border-radius:13px;text-align:center;color:var(--muted)}
+.sktabs b{display:block;font:700 15px/1.1 var(--display);color:var(--ink)}.sktabs small{font-size:12px;font-weight:700}
+.sktabs .skic{display:none}
+.sktabs button[aria-selected="true"]{background:var(--primary-l)}.sktabs button[aria-selected="true"] b{color:var(--primary-d)}
+.sklist{padding:4px 0;overflow:hidden}.sklist .lrow:last-child{border-bottom:0}.sklist .lrow>.ic{color:var(--muted)}
+.skwrap{display:grid;gap:14px}
+.newtag{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:99px;background:var(--sun-l);color:var(--xp-ink);font:800 10.5px/1.3 var(--body);text-transform:uppercase;letter-spacing:.04em;vertical-align:3px}
+@media (min-width:1000px){
+  .skwrap{grid-template-columns:300px 1fr;align-items:start}
+  .sktabs{grid-template-columns:1fr;gap:4px}
+  .sktabs button{flex-direction:row;justify-content:flex-start;gap:12px;padding:12px;text-align:left}
+  .sktabs .skic{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:3px solid var(--line);background:var(--surface);flex:none}
+  .sktabs button[aria-selected="true"] .skic{background:var(--primary);border-color:var(--primary);color:#fff}
+  .sktabs button.full .skic{background:var(--ldk,var(--mint));border-color:var(--ldk,var(--mint));color:#fff}
+}
+:root[data-theme="dark"] .sktabs button[aria-selected="true"]{background:var(--primary)}:root[data-theme="dark"] .sktabs button[aria-selected="true"] b,:root[data-theme="dark"] .sktabs button[aria-selected="true"] small{color:#fff}
 </style>
 </head>
 <body>
@@ -4136,6 +4165,397 @@ expert: { title: "Menyampaikan kabar buruk", place: "Panggilan video dengan klie
 ] }
 };
 
+// Konten Praktik: 2 bacaan tambahan per level (total 5 bacaan per level).
+const READING3 = {
+basic: [
+{title:"My Small House", text:["I live in a small house in Bogor with my parents. The house is old, but it is very clean and comfortable.","There are two bedrooms, a living room, a kitchen, and one bathroom. My bedroom is small. There is a bed, a desk, and a big window. I can see a mango tree from my window.","My favourite room is the kitchen. My mother cooks there every evening, and the kitchen always smells good. We eat dinner at a small table near the door."],
+ qs:`
+m|Where does the writer live?|in Bogor|in Bandung|in Bali|in Surabaya|"I live in a small house in Bogor."
+m|How many bedrooms are there?|two|one|three|four|"There are two bedrooms…"
+m|What can the writer see from the window?|a mango tree|a big river|a park|the sea|"I can see a mango tree from my window."
+f|The house is new.|0|"The house is old…"
+f|The writer's favourite room is the kitchen.|1|"My favourite room is the kitchen."
+`},
+{title:"A Day at the Beach", text:["Today is Sunday. Dewi and her cousin Rudi are at the beach. The weather is hot and sunny, and the sky is blue.","Dewi is swimming in the sea. Rudi doesn't like swimming, so he is sitting under a big umbrella. He is reading a book and drinking coconut water.","At twelve o'clock they eat fried rice and grilled fish at a small restaurant. In the afternoon they walk on the sand and take photos. They are tired but very happy."],
+ qs:`
+m|What is the weather like?|hot and sunny|cold and windy|rainy|cloudy|"The weather is hot and sunny…"
+m|What is Rudi drinking?|coconut water|tea|orange juice|coffee|"…drinking coconut water."
+m|What do they eat for lunch?|fried rice and grilled fish|noodles and chicken|bread and eggs|soup and rice|"…fried rice and grilled fish…"
+f|Rudi likes swimming.|0|"Rudi doesn't like swimming…"
+f|They take photos in the afternoon.|1|"In the afternoon they walk on the sand and take photos."
+`}],
+elem: [
+{title:"My First Job", text:["When I was nineteen, I got my first job at a small bookshop in Semarang. I worked there every Saturday and Sunday for one year.","My boss, Pak Hadi, was kind but very strict. I had to arrive at eight o'clock sharp. I put new books on the shelves, cleaned the floor, and helped customers find the books they wanted.","The pay was not very good, but I learned a lot. I learned how to talk to people politely and how to work in a team. I also read many books during my lunch breaks!"],
+ qs:`
+m|How old was the writer when they got the job?|nineteen|seventeen|twenty-one|twenty-five|"When I was nineteen…"
+m|When did the writer work?|at weekends|every evening|on weekdays|only in the holidays|"…every Saturday and Sunday…"
+m|What did the writer learn?|how to talk to people politely|how to drive a car|how to write books|how to cook|"I learned how to talk to people politely…"
+f|Pak Hadi was not strict.|0|"…kind but very strict."
+f|The writer read books during lunch breaks.|1|"I also read many books during my lunch breaks!"
+`},
+{title:"Plans for the Weekend", text:["Maya is very excited because this weekend is a long weekend. She is going to visit her grandparents in a village near Malang.","On Friday evening she is going to take the train with her younger brother. The journey takes about six hours, so she is going to bring snacks and a good book.","On Saturday her grandfather is going to show them his rice fields, and on Sunday the whole family is going to have a big lunch together. Maya hopes it won't rain."],
+ qs:`
+m|Where is Maya going?|to her grandparents' village|to the beach|to Jakarta|to a hotel|"…visit her grandparents in a village near Malang."
+m|How long is the train journey?|about six hours|about two hours|about one day|about thirty minutes|"The journey takes about six hours…"
+m|What will happen on Sunday?|a big family lunch|a trip to the rice fields|a train journey home|a party at school|"…on Sunday the whole family is going to have a big lunch together."
+f|Maya is travelling alone.|0|She is going with her younger brother.
+f|Maya hopes the weather will be dry.|1|"Maya hopes it won't rain."
+`}],
+inter: [
+{title:"Living in a Big City", text:["More than half of the world's population now lives in cities, and this number is expected to grow. People move to big cities for better jobs, schools, and hospitals.","However, city life also has its problems. Traffic jams can make a short journey take hours, and housing is often very expensive. Many people spend a large part of their salary on rent.","Some cities are trying to solve these problems by building better public transport and more parks. Experts believe that if cities are planned well, they can be healthy and pleasant places to live."],
+ qs:`
+m|Why do people move to big cities?|for better jobs, schools, and hospitals|because houses are cheap|to avoid traffic|because cities are quiet|"…for better jobs, schools, and hospitals."
+m|What problem with housing is mentioned?|It is very expensive.|It is too big.|It is too far from work.|It is very old.|"…housing is often very expensive."
+m|How are some cities solving problems?|building better public transport and parks|making cars cheaper|closing schools|moving people to villages|"…building better public transport and more parks."
+f|Less than half of the world's population lives in cities.|0|More than half now lives in cities.
+f|Experts think well-planned cities can be pleasant.|1|"…they can be healthy and pleasant places to live."
+`},
+{title:"Plastic in the Ocean", text:["Every year, millions of tonnes of plastic end up in the ocean. Much of it comes from rivers that carry rubbish from towns and cities into the sea.","Plastic doesn't disappear. Instead, it breaks into tiny pieces called microplastics. Fish and sea birds often eat these pieces because they think they are food, and the plastic can then enter our own food chain.","There are simple things everyone can do to help. We can carry reusable bags and bottles, say no to plastic straws, and join beach clean-ups. If enough people change their habits, the amount of plastic in the sea could be reduced."],
+ qs:`
+m|Where does much ocean plastic come from?|rivers carrying rubbish from towns|ships|fish farms|beach hotels only|"Much of it comes from rivers…"
+m|What are microplastics?|tiny pieces of plastic|a type of fish|a kind of food|new plastic bottles|"…tiny pieces called microplastics."
+m|Why do animals eat plastic?|They think it is food.|They are very hungry.|It tastes good.|People give it to them.|"…because they think they are food…"
+f|Plastic disappears after a few years.|0|"Plastic doesn't disappear."
+f|Joining beach clean-ups is one way to help.|1|"…and join beach clean-ups."
+`}],
+upper: [
+{title:"The Rise of Online Learning", text:["Ten years ago, few people would have imagined taking a university course from their bedroom. Today, millions of learners study online, often for free, with teachers they will never meet in person.","Supporters argue that online learning has made education far more accessible. People who live far from a university, or who need to work during the day, can now study at their own pace. Courses can also be updated quickly to keep up with new developments.","Critics, however, point out that many students fail to finish online courses. Without classmates and a fixed timetable, it is easy to lose motivation. The most successful learners, it seems, are those who set clear goals and build a routine."],
+ qs:`
+m|What is one advantage of online learning?|People can study at their own pace.|It always costs a lot.|Students meet teachers in person.|Courses never change.|"…can now study at their own pace."
+m|What problem do critics mention?|Many students don't finish courses.|Courses are too short.|The internet is too slow.|Teachers are not qualified.|"…many students fail to finish online courses."
+m|Who are the most successful online learners?|those who set goals and build a routine|those who study at night|those with expensive computers|those who skip lessons|"…those who set clear goals and build a routine."
+f|Online courses can be updated quickly.|1|"Courses can also be updated quickly…"
+f|The text says online learning is only for people living near universities.|0|It helps people who live far from a university.
+`},
+{title:"Why We Procrastinate", text:["Almost everyone has put off an important task at some point, choosing instead to tidy their desk or scroll through social media. This habit, known as procrastination, is often blamed on laziness, but psychologists say the real cause is more complex.","According to recent research, we tend to procrastinate when a task makes us feel anxious, bored, or uncertain. Avoiding it gives us short-term relief, even though it usually leads to more stress later.","Experts suggest breaking big tasks into smaller steps and starting with just five minutes of work. Once people have started, they often find it easier to keep going than they had expected."],
+ qs:`
+m|What do psychologists say about procrastination?|Its cause is more complex than laziness.|It is only caused by laziness.|It never causes stress.|It only affects students.|"…the real cause is more complex."
+m|When do we tend to procrastinate?|when a task makes us feel anxious or bored|when we are very hungry|when we have too much free time|only at weekends|"…when a task makes us feel anxious, bored, or uncertain."
+m|What do experts suggest?|starting with just five minutes of work|working all night|ignoring difficult tasks|doing several tasks at once|"…starting with just five minutes of work."
+f|Avoiding a task gives long-term relief.|0|It gives short-term relief and more stress later.
+f|People often find it easier to continue once they have started.|1|"…they often find it easier to keep going…"
+`}],
+adv: [
+{title:"The Value of Boredom", text:["In an age of constant notifications, boredom has become something most of us go to great lengths to avoid. The moment we find ourselves waiting in a queue, we instinctively reach for our phones.","Yet a growing body of research suggests that boredom may serve a valuable purpose. When the mind is left to wander, it tends to make unexpected connections, which is why so many people claim their best ideas come to them in the shower or on a long walk.","Some psychologists therefore recommend deliberately building unstructured time into our days. Far from being wasted, these moments of apparent idleness may be precisely what allows creativity to flourish."],
+ qs:`
+m|What do people usually do when they feel bored?|reach for their phones|go for a walk|start a conversation|close their eyes|"…we instinctively reach for our phones."
+m|According to research, what happens when the mind wanders?|It makes unexpected connections.|It becomes tired.|It forgets important information.|It stops working.|"…it tends to make unexpected connections…"
+m|What do some psychologists recommend?|building unstructured time into our days|avoiding boredom completely|working longer hours|using more apps|"…deliberately building unstructured time into our days."
+f|The writer believes idle moments are a complete waste of time.|0|"Far from being wasted…"
+f|Many people say their best ideas come in the shower.|1|"…their best ideas come to them in the shower…"
+`},
+{title:"Cities That Never Sleep", text:["Thanks to electric lighting, many modern cities remain brightly lit throughout the night. While this has undoubtedly made streets safer and extended working hours, scientists are increasingly concerned about the side effects of artificial light.","Exposure to light at night disrupts the body's internal clock, suppressing the hormone melatonin, which regulates sleep. Studies have linked long-term disruption to poorer sleep quality and a range of health problems. Wildlife is affected too: migrating birds and newly hatched turtles can become disoriented by bright coastal lights.","In response, several cities have introduced 'dark sky' policies, such as dimming streetlights after midnight and shielding lamps so that light points downwards. Such measures, campaigners argue, cost little and benefit both people and nature."],
+ qs:`
+m|What does light at night suppress?|melatonin, a hormone that regulates sleep|appetite|body temperature|our memory|"…suppressing the hormone melatonin…"
+m|Which animals are mentioned as affected?|migrating birds and baby turtles|cats and dogs|bees and butterflies|fish in rivers|"…migrating birds and newly hatched turtles…"
+m|What is one 'dark sky' measure?|dimming streetlights after midnight|banning all cars at night|closing shops early|painting buildings black|"…dimming streetlights after midnight…"
+f|The text says artificial light has no benefits.|0|It has made streets safer and extended working hours.
+f|Campaigners say dark sky measures are cheap.|1|"…cost little and benefit both people and nature."
+`}],
+expert: [
+{title:"Memo: New Hybrid Policy", text:["To all staff: following extensive consultation, the leadership team has agreed on a revised hybrid working policy, which will take effect from the first of next month.","Under the new arrangement, employees will be expected to be in the office on Tuesdays and Thursdays, which have been designated as collaboration days. The remaining days may be worked remotely, subject to the operational needs of each department. Managers retain discretion to approve exceptions in individual circumstances.","We recognise that this represents a change for some colleagues, and we are committed to reviewing the policy after six months in light of your feedback. Should you have any concerns in the meantime, please do not hesitate to raise them with your line manager or HR."],
+ qs:`
+m|When will the new policy take effect?|from the first of next month|immediately|next year|after six months|"…will take effect from the first of next month."
+m|Why are Tuesdays and Thursdays special?|They are collaboration days in the office.|They are days off.|They are remote-only days.|They are training days.|"…designated as collaboration days."
+m|Who can approve exceptions?|managers|any employee|the IT team|clients|"Managers retain discretion to approve exceptions…"
+f|The policy will be reviewed after six months.|1|"…reviewing the policy after six months…"
+f|Staff must raise concerns only at the review.|0|They can raise them in the meantime with their manager or HR.
+`},
+{title:"The Ethics of Algorithms", text:["Algorithms now play a decisive role in decisions that profoundly affect people's lives, from who is shortlisted for a job to who is granted a loan. Their appeal lies in the promise of speed, consistency and apparent objectivity.","Yet that objectivity can be illusory. Because algorithms learn from historical data, they risk reproducing, and even amplifying, the biases embedded in past decisions. A recruitment tool trained on a decade of hiring records, for instance, may quietly penalise candidates who do not resemble those previously hired.","Consequently, there are growing calls for algorithmic accountability: requiring organisations to explain how automated decisions are reached, to audit their systems regularly for bias, and to ensure that a human being can review contested outcomes."],
+ qs:`
+m|What is the appeal of algorithms?|speed, consistency and apparent objectivity|low cost and fun|creativity and emotion|privacy and secrecy|"…speed, consistency and apparent objectivity."
+m|Why can algorithms be biased?|They learn from historical data.|They are designed to be unfair.|They are too slow.|They use too little data.|"Because algorithms learn from historical data…"
+m|What does 'algorithmic accountability' include?|explaining decisions and auditing for bias|banning all algorithms|keeping systems secret|removing humans from decisions|"…explain how automated decisions are reached, to audit their systems…"
+f|The writer argues that algorithms are always objective.|0|"…that objectivity can be illusory."
+f|People should be able to have a human review contested decisions.|1|"…ensure that a human being can review contested outcomes."
+`}]
+};
+
+// Praktik berbicara: 5 topik per level, masing-masing 6 kalimat.
+// Kalimat lama (SPEAK + SPEAK2) dipakai ulang persis sama supaya progres lama bisa dipindahkan.
+const SPEAKT = {
+basic: [
+{title:"Perkenalan diri", s:[["Hello, my name is Rina.","Halo, nama saya Rina."],["I am a student.","Saya seorang pelajar."],["I am from Indonesia.","Saya dari Indonesia."],["I am twenty years old.","Umur saya dua puluh tahun."],["Where do you live?","Kamu tinggal di mana?"],["Nice to meet you.","Senang bertemu denganmu."]]},
+{title:"Keluarga saya", s:[["This is my brother.","Ini saudara laki-laki saya."],["I have two sisters.","Saya punya dua saudara perempuan."],["My father is a driver.","Ayah saya seorang sopir."],["My mother cooks every day.","Ibu saya memasak setiap hari."],["We live in a small house.","Kami tinggal di rumah kecil."],["I love my family.","Saya sayang keluarga saya."]]},
+{title:"Rutinitas harian", s:[["I wake up at six every day.","Saya bangun jam enam setiap hari."],["What time is it now?","Jam berapa sekarang?"],["I eat breakfast at home.","Saya sarapan di rumah."],["I go to school by bus.","Saya pergi ke sekolah naik bus."],["I watch TV in the evening.","Saya menonton TV di malam hari."],["I go to bed at ten.","Saya tidur jam sepuluh."]]},
+{title:"Makanan & minuman", s:[["Can I have some water, please?","Boleh saya minta air?"],["I don't like spicy food.","Saya tidak suka makanan pedas."],["My favourite food is fried rice.","Makanan favorit saya nasi goreng."],["I drink tea every morning.","Saya minum teh setiap pagi."],["Is this chicken or fish?","Ini ayam atau ikan?"],["The soup is very hot.","Supnya sangat panas."]]},
+{title:"Rumah & sekitar", s:[["There is a cat under the table.","Ada kucing di bawah meja."],["The bank is next to the market.","Banknya di sebelah pasar."],["My favourite colour is blue.","Warna favorit saya biru."],["My room is small but clean.","Kamar saya kecil tapi bersih."],["The park is near my house.","Taman itu dekat rumah saya."],["Where is the bathroom?","Kamar mandinya di mana?"]]}],
+elem: [
+{title:"Cerita kemarin", s:[["I went to the beach yesterday.","Saya pergi ke pantai kemarin."],["I bought a new phone last week.","Saya membeli ponsel baru minggu lalu."],["We had dinner at a nice restaurant.","Kami makan malam di restoran yang enak."],["The film was really funny.","Filmnya sangat lucu."],["I didn't go to work on Monday.","Saya tidak pergi bekerja hari Senin."],["Did you have a good weekend?","Akhir pekanmu menyenangkan?"]]},
+{title:"Sedang terjadi", s:[["What are you doing now?","Kamu sedang apa sekarang?"],["It is raining at the moment.","Sedang hujan saat ini."],["I am cooking dinner.","Saya sedang memasak makan malam."],["She is talking on the phone.","Dia sedang menelepon."],["They are waiting for the bus.","Mereka sedang menunggu bus."],["Are you listening to me?","Kamu mendengarkan saya?"]]},
+{title:"Rencana ke depan", s:[["I am going to visit my grandmother.","Saya akan mengunjungi nenek saya."],["I will call you tomorrow morning.","Saya akan meneleponmu besok pagi."],["The meeting starts at nine.","Rapatnya mulai jam sembilan."],["We are going to travel next month.","Kami akan bepergian bulan depan."],["What are you doing this weekend?","Apa rencanamu akhir pekan ini?"],["I hope it doesn't rain.","Semoga tidak hujan."]]},
+{title:"Belanja", s:[["How much is this shirt?","Berapa harga kemeja ini?"],["This bag is cheaper than that one.","Tas ini lebih murah daripada yang itu."],["Can I try it on?","Boleh saya mencobanya?"],["Do you have a bigger size?","Ada ukuran yang lebih besar?"],["I'll take the black one.","Saya ambil yang hitam."],["Can I pay by card?","Boleh saya bayar pakai kartu?"]]},
+{title:"Membandingkan & jumlah", s:[["She is taller than her brother.","Dia lebih tinggi daripada kakaknya."],["How much water do you drink?","Berapa banyak air yang kamu minum?"],["We have a little time left.","Kita masih punya sedikit waktu."],["How many people are coming?","Berapa orang yang datang?"],["This is the best café in town.","Ini kafe terbaik di kota."],["There isn't much milk in the fridge.","Tidak banyak susu di kulkas."]]}],
+inter: [
+{title:"Pengalaman hidup", s:[["I have never been to Japan.","Saya belum pernah ke Jepang."],["I used to live in Medan.","Dulu saya tinggal di Medan."],["I used to live in a small village.","Dulu saya tinggal di desa kecil."],["Have you ever tried durian?","Kamu pernah mencoba durian?"],["I've lived here for five years.","Saya sudah tinggal di sini lima tahun."],["It was the best trip of my life.","Itu perjalanan terbaik dalam hidup saya."]]},
+{title:"Memberi saran", s:[["You should get some rest.","Kamu sebaiknya istirahat."],["You don't have to come if you're busy.","Kamu tidak perlu datang kalau sibuk."],["Why don't you ask your teacher?","Kenapa tidak tanya gurumu saja?"],["You'd better see a doctor.","Sebaiknya kamu periksa ke dokter."],["If I were you, I'd save some money.","Kalau saya jadi kamu, saya akan menabung."],["It might be a good idea to start early.","Mungkin ide bagus untuk mulai lebih awal."]]},
+{title:"Kalau dan jika", s:[["If it rains, we will stay at home.","Kalau hujan, kita akan di rumah saja."],["Unless you hurry, you will be late.","Kalau tidak bergegas, kamu akan terlambat."],["If you heat ice, it melts.","Kalau es dipanaskan, es itu mencair."],["I'll lend you my book if you need it.","Saya pinjamkan bukuku kalau kamu perlu."],["If I finish early, I'll call you.","Kalau selesai lebih awal, saya akan meneleponmu."],["What will you do if you miss the train?","Apa yang akan kamu lakukan kalau ketinggalan kereta?"]]},
+{title:"Kejadian di masa lalu", s:[["I was cooking when the phone rang.","Saya sedang memasak ketika telepon berdering."],["I was cooking when you called.","Saya sedang memasak ketika kamu menelepon."],["Have you finished your homework yet?","Apakah kamu sudah menyelesaikan PR-mu?"],["We were watching a film when the lights went out.","Kami sedang menonton film ketika lampu padam."],["She was sleeping when I got home.","Dia sedang tidur ketika saya sampai di rumah."],["What were you doing at eight last night?","Kamu sedang apa jam delapan tadi malam?"]]},
+{title:"Fakta & kalimat pasif", s:[["English is spoken all over the world.","Bahasa Inggris digunakan di seluruh dunia."],["The bridge was built in 1990.","Jembatan itu dibangun pada 1990."],["Coffee is grown in many parts of Indonesia.","Kopi ditanam di banyak daerah di Indonesia."],["This room is cleaned every day.","Ruangan ini dibersihkan setiap hari."],["The letter was sent last week.","Surat itu dikirim minggu lalu."],["My phone was made in Korea.","Ponsel saya dibuat di Korea."]]}],
+upper: [
+{title:"Andaikan", s:[["If I were you, I would take the job.","Kalau saya jadi kamu, saya akan ambil pekerjaan itu."],["If I had known, I would have helped you.","Kalau saya tahu, saya pasti membantumu."],["I wish I could speak French.","Andai saya bisa berbahasa Prancis."],["If we had left earlier, we wouldn't have missed the train.","Kalau kita berangkat lebih awal, kita tidak akan ketinggalan kereta."],["What would you do if you won the lottery?","Apa yang akan kamu lakukan kalau menang lotre?"],["I'd rather stay at home tonight.","Saya lebih suka di rumah malam ini."]]},
+{title:"Menyampaikan ucapan orang", s:[["She said that she was tired.","Dia bilang dia lelah."],["He told me that he had lost his keys.","Dia bilang dia kehilangan kuncinya."],["They asked me where I lived.","Mereka bertanya di mana saya tinggal."],["My boss said the meeting had been cancelled.","Atasan saya bilang rapatnya dibatalkan."],["She asked if I could help her.","Dia bertanya apakah saya bisa membantunya."],["He promised he would call me back.","Dia berjanji akan menelepon saya kembali."]]},
+{title:"Menjelaskan orang & benda", s:[["The man who called you is my uncle.","Pria yang meneleponmu adalah paman saya."],["The woman whose car was stolen called the police.","Wanita yang mobilnya dicuri menelepon polisi."],["That's the restaurant where we first met.","Itu restoran tempat kita pertama bertemu."],["The book that you lent me was amazing.","Buku yang kamu pinjamkan luar biasa."],["My sister, who lives in Bali, is a doctor.","Kakak saya, yang tinggal di Bali, seorang dokter."],["Is this the bag you were looking for?","Apakah ini tas yang kamu cari?"]]},
+{title:"Menebak & menyimpulkan", s:[["He must be very tired.","Dia pasti sangat lelah."],["She must be very tired after the trip.","Dia pasti sangat lelah setelah perjalanan."],["They can't be at home; the lights are off.","Mereka tidak mungkin di rumah; lampunya mati."],["It might rain later, so take an umbrella.","Mungkin nanti hujan, jadi bawa payung."],["He must have forgotten about the meeting.","Dia pasti lupa soal rapatnya."],["The train had left when I arrived.","Keretanya sudah berangkat ketika saya tiba."]]},
+{title:"Rencana & harapan", s:[["I'm looking forward to seeing you.","Saya menantikan bertemu denganmu."],["I'm thinking about changing my job.","Saya sedang berpikir untuk ganti pekerjaan."],["By the time we arrived, the film had started.","Saat kami tiba, filmnya sudah mulai."],["I'm planning to take a course next year.","Saya berencana ikut kursus tahun depan."],["I'd like to get better at public speaking.","Saya ingin lebih mahir berbicara di depan umum."],["Hopefully, things will improve soon.","Semoga keadaan segera membaik."]]}],
+adv: [
+{title:"Penekanan & inversi", s:[["Never have I seen such a beautiful view.","Belum pernah saya melihat pemandangan seindah ini."],["Not only is she talented, but she is also hardworking.","Dia tidak hanya berbakat, tapi juga pekerja keras."],["What I need is a long holiday.","Yang saya butuhkan adalah liburan panjang."],["What I really need is a long holiday.","Yang benar-benar saya butuhkan adalah liburan panjang."],["Rarely do we get such an opportunity.","Jarang sekali kita mendapat kesempatan seperti ini."],["It was only later that I realised my mistake.","Baru belakangan saya menyadari kesalahan saya."]]},
+{title:"Penyesalan & harapan", s:[["I wish I had studied harder.","Andai dulu saya belajar lebih giat."],["If only I had more time to travel.","Seandainya saya punya lebih banyak waktu untuk bepergian."],["I regret not taking that opportunity.","Saya menyesal tidak mengambil kesempatan itu."],["I wish you wouldn't interrupt me.","Saya harap kamu tidak memotong pembicaraan saya."],["Had I known, I would have come earlier.","Seandainya saya tahu, saya akan datang lebih awal."],["It's time we made a decision.","Sudah waktunya kita mengambil keputusan."]]},
+{title:"Di tempat kerja", s:[["We need to come up with a better plan.","Kita perlu menyusun rencana yang lebih baik."],["We have run out of coffee again.","Kopinya habis lagi."],["Let's go over the figures one more time.","Mari periksa angkanya sekali lagi."],["I'll look into the problem this afternoon.","Saya akan menyelidiki masalahnya sore ini."],["Could you bring me up to speed on the project?","Bisa jelaskan perkembangan proyeknya kepada saya?"],["We're running behind schedule.","Kita terlambat dari jadwal."]]},
+{title:"Urutan waktu", s:[["Having finished the report, she went home.","Setelah menyelesaikan laporan, dia pulang."],["By next year, I will have graduated.","Tahun depan, saya sudah lulus."],["No sooner had I sat down than the phone rang.","Baru saja saya duduk, telepon berdering."],["By the end of the month, we'll have been working here for a year.","Akhir bulan ini, kami sudah bekerja di sini setahun."],["Once the contract is signed, we can start.","Begitu kontrak ditandatangani, kita bisa mulai."],["Hardly had we left when it started to pour.","Baru saja kami pergi, hujan turun deras."]]},
+{title:"Berpendapat", s:[["As far as I'm concerned, it's a waste of money.","Menurut saya, itu buang-buang uang."],["I'm inclined to agree with you.","Saya cenderung setuju denganmu."],["That's a fair point, but I see it differently.","Poin yang masuk akal, tapi saya melihatnya berbeda."],["There's a lot to be said for working from home.","Bekerja dari rumah punya banyak kelebihan."],["I can't help thinking we've missed something.","Saya tidak bisa berhenti berpikir ada yang terlewat."],["On balance, I think it's the right decision.","Secara keseluruhan, saya pikir itu keputusan yang tepat."]]}],
+expert: [
+{title:"Ungkapan sehari-hari", s:[["That exam was a piece of cake.","Ujian itu gampang sekali."],["I'm afraid not, but I'll look into it.","Sayangnya tidak, tapi akan saya cek."],["Let's call it a day.","Mari kita sudahi untuk hari ini."],["It's not my cup of tea.","Itu bukan selera saya."],["We're on the same page.","Kita sepemahaman."],["Let's play it by ear.","Kita lihat saja nanti."]]},
+{title:"Bahasa formal", s:[["It is essential that he be present.","Penting sekali bahwa dia hadir."],["It is essential that everyone be informed.","Penting sekali bahwa semua orang diberi tahu."],["I would appreciate it if you could reply by Friday.","Saya akan menghargai jika Anda bisa membalas paling lambat Jumat."],["I look forward to hearing from you.","Saya menantikan kabar dari Anda."],["Please do not hesitate to contact me.","Jangan ragu untuk menghubungi saya."],["We regret to inform you that the event has been postponed.","Dengan menyesal kami memberitahukan bahwa acara ditunda."]]},
+{title:"Rapat & koordinasi", s:[["Could we reschedule the meeting to Thursday?","Bisakah rapatnya dijadwalkan ulang ke Kamis?"],["Let's cut to the chase and discuss the budget.","Mari langsung ke intinya dan membahas anggaran."],["Could we touch base early next week?","Bisa kita berkoordinasi awal minggu depan?"],["Let's take this offline.","Mari bahas ini di luar rapat."],["Shall we circle back to this later?","Bagaimana kalau kita kembali ke hal ini nanti?"],["I'll send round the minutes this afternoon.","Saya akan mengirimkan notulen sore ini."]]},
+{title:"Akademik & data", s:[["These findings suggest a possible link.","Temuan ini menunjukkan kemungkinan adanya kaitan."],["The results appear to support our hypothesis.","Hasilnya tampaknya mendukung hipotesis kami."],["Further research is needed to confirm this.","Penelitian lebih lanjut diperlukan untuk memastikannya."],["The sample size was relatively small.","Ukuran sampelnya relatif kecil."],["This trend is consistent with previous studies.","Tren ini sejalan dengan penelitian sebelumnya."],["Correlation does not imply causation.","Korelasi tidak berarti sebab-akibat."]]},
+{title:"Diplomasi & negosiasi", s:[["I see your point, but I would suggest another approach.","Saya paham maksud Anda, tapi saya menyarankan pendekatan lain."],["Would you be open to a compromise?","Apakah Anda terbuka untuk berkompromi?"],["With all due respect, I'd have to disagree.","Dengan segala hormat, saya harus tidak setuju."],["That's a reasonable request; let me see what I can do.","Itu permintaan yang wajar; akan saya usahakan."],["We'd be prepared to offer a ten percent discount.","Kami bersedia memberikan diskon sepuluh persen."],["I'm afraid that's not something we can agree to.","Sayangnya, itu bukan hal yang bisa kami setujui."]]}]
+};
+
+// Praktik percakapan: 3 adegan tambahan per level (total 5 per level). Format sama dengan TALK.
+const TALK3 = {
+basic: [
+{ title: "Pesan di warung", place: "Warung makan dekat kampus", who: "Pak Budi", turns: [
+  ["p", "Hello! What would you like?", "Halo! Mau pesan apa?"],
+  ["u", ["Can I have fried rice, please?", "Can I has fried rice, please?", "I want fried rice give me."], "Pesan dengan sopan: Can I have …, please? Setelah can selalu kata kerja dasar: have."],
+  ["p", "Sure. Do you want an egg on it?", "Tentu. Mau pakai telur?"],
+  ["u", ["Yes, please. One egg.", "Yes, please. One eggs.", "Yes, please. A one egg."], "Satu benda memakai bentuk tunggal: one egg."],
+  ["p", "And to drink?", "Minumnya?"],
+  ["u", ["Iced tea, please.", "Ice teas, please.", "Iced tea, thanks you."], "Iced tea = es teh. Yang benar thank you atau thanks, bukan thanks you."],
+  ["p", "OK. Eat here or take away?", "Baik. Makan di sini atau dibungkus?"],
+  ["u", ["Eat here, please.", "Eat in here is.", "I eating here."], "Jawaban singkat cukup: Eat here, please atau Take away, please."],
+  ["p", "That's twenty thousand rupiah.", "Jadi dua puluh ribu rupiah."],
+  ["u", ["Here you are. Thank you!", "Here you is. Thank you!", "This for you are. Thank you!"], "Saat menyerahkan sesuatu: Here you are."],
+  ["p", "Thank you. Enjoy your meal!", "Terima kasih. Selamat makan!"]
+] },
+{ title: "Tanya jalan", place: "Di depan stasiun", who: "Lisa", turns: [
+  ["p", "Excuse me, are you OK? You look lost.", "Permisi, kamu baik-baik saja? Kamu kelihatan tersesat."],
+  ["u", ["Yes, I'm looking for the post office.", "Yes, I look for post office now.", "Yes, I'm looking the post office."], "Sedang mencari: I'm looking for … (look for = mencari)."],
+  ["p", "Oh, it's near here. Go straight and turn left at the bank.", "Oh, dekat dari sini. Lurus lalu belok kiri di bank."],
+  ["u", ["Turn left at the bank? OK.", "Turn left on the bank? OK.", "Turning left at bank? OK."], "Belok di suatu tempat memakai at: turn left at the bank."],
+  ["p", "Yes. The post office is next to a café.", "Ya. Kantor posnya di sebelah kafe."],
+  ["u", ["Is it far from here?", "Is it far of here?", "It is far from here is?"], "Bertanya jarak: Is it far from here?"],
+  ["p", "No, it's about five minutes on foot.", "Tidak, sekitar lima menit jalan kaki."],
+  ["u", ["Great. Thank you very much!", "Great. Thank you very much you!", "Great. Very thank you!"], "Thank you very much sudah lengkap, tanpa tambahan you."],
+  ["p", "You're welcome. Have a nice day!", "Sama-sama. Semoga harimu menyenangkan!"],
+  ["u", ["You too. Bye!", "You also too. Bye!", "Same you. Bye!"], "Balasan singkat untuk ucapan baik: You too!"],
+  ["p", "Bye!", "Dah!"]
+] },
+{ title: "Telepon teman", place: "Lewat telepon, Sabtu pagi", who: "Dika", turns: [
+  ["p", "Hi, {n}! It's Dika. How are you?", "Hai, {n}! Ini Dika. Apa kabar?"],
+  ["u", ["I'm fine, thanks. And you?", "I'm fine, thanks. And your?", "I fine, thanks. You and?"], "Jawaban umum: I'm fine, thanks. And you?"],
+  ["p", "I'm good! Are you free this afternoon?", "Aku baik! Kamu kosong sore ini?"],
+  ["u", ["Yes, I am. Why?", "Yes, I do. Why?", "Yes, I free. Why?"], "Pertanyaan Are you …? dijawab Yes, I am atau No, I'm not."],
+  ["p", "Do you want to play badminton with me?", "Mau main bulu tangkis bersamaku?"],
+  ["u", ["Sure! What time?", "Sure! What time is it?", "Sure! When time?"], "Menanyakan jam janjian: What time? (What time is it? = jam berapa sekarang)."],
+  ["p", "At four o'clock, at the sports hall.", "Jam empat, di gedung olahraga."],
+  ["u", ["OK. See you at four!", "OK. See you on four!", "OK. See you in four!"], "Untuk jam memakai at: at four."],
+  ["p", "Don't forget your racket!", "Jangan lupa raketmu!"],
+  ["u", ["Don't worry. I won't forget.", "Don't worry. I not forget.", "No worry. I don't forgot."], "Janji di masa depan: I won't forget (won't = will not)."],
+  ["p", "Great. Bye, {n}!", "Sip. Dah, {n}!"]
+] }],
+elem: [
+{ title: "Beli tiket kereta", place: "Loket Stasiun Gambir", who: "Petugas loket", turns: [
+  ["p", "Good afternoon. Where are you going?", "Selamat siang. Mau ke mana?"],
+  ["u", ["I'd like a ticket to Bandung, please.", "I'd like a ticket for go Bandung, please.", "I like ticket Bandung, please."], "Membeli tiket: I'd like a ticket to + tujuan."],
+  ["p", "Single or return?", "Sekali jalan atau pulang-pergi?"],
+  ["u", ["Return, please. I'm coming back on Sunday.", "Return, please. I come back in Sunday.", "Return, please. I'm come back Sunday."], "Rencana pasti memakai present continuous: I'm coming back. Hari memakai on."],
+  ["p", "The next train leaves at 3:15. Is that OK?", "Kereta berikutnya berangkat jam 3.15. Tidak apa-apa?"],
+  ["u", ["Yes, that's fine. How long does the journey take?", "Yes, that's fine. How long the journey takes?", "Yes, fine. How long is take the journey?"], "Menanyakan durasi: How long does it take? Pertanyaan butuh does."],
+  ["p", "About three hours. That's 300,000 rupiah.", "Sekitar tiga jam. Jadi 300.000 rupiah."],
+  ["u", ["Can I pay by card?", "Can I pay with by card?", "Can I paying by card?"], "Cara bayar: pay by card / pay in cash."],
+  ["p", "Yes, of course. Here's your ticket. Platform 4.", "Ya, tentu. Ini tiketnya. Peron 4."],
+  ["u", ["Thanks. Where is platform 4?", "Thanks. Where platform 4 is?", "Thanks. Where are platform 4?"], "Pertanyaan Where + is + benda tunggal."],
+  ["p", "Go up the stairs and turn right.", "Naik tangga lalu belok kanan."]
+] },
+{ title: "Pesan kamar lewat telepon", place: "Telepon ke Hotel Melati", who: "Resepsionis", turns: [
+  ["p", "Hotel Melati, good morning. How can I help you?", "Hotel Melati, selamat pagi. Ada yang bisa dibantu?"],
+  ["u", ["I'd like to book a room for two nights, please.", "I'd like booking a room for two night, please.", "I want book room two nights, please."], "I'd like to + kata kerja. Lebih dari satu malam: two nights."],
+  ["p", "Certainly. What dates?", "Baik. Tanggal berapa?"],
+  ["u", ["From the 12th to the 14th of March.", "Since the 12th until 14th March.", "From 12 March until to 14."], "Rentang tanggal: from … to …"],
+  ["p", "A single or a double room?", "Kamar single atau double?"],
+  ["u", ["A double room, please. Is breakfast included?", "A double room, please. Is breakfast include?", "Double room, please. Breakfast is including?"], "Is breakfast included? memakai bentuk pasif (included)."],
+  ["p", "Yes, it is. The room is 500,000 rupiah a night.", "Ya. Kamarnya 500.000 rupiah per malam."],
+  ["u", ["That's fine. Could I have a room with a view?", "That's fine. Could I have a room with view?", "Fine. I could have room view?"], "Could I have …? untuk meminta dengan sopan. A room with a view."],
+  ["p", "I'll do my best. Can I have your name, please?", "Akan saya usahakan. Boleh tahu nama Anda?"],
+  ["u", ["Yes, it's {n}.", "Yes, my name are {n}.", "Yes, I name {n}."], "Menyebut nama: It's … atau My name is …"],
+  ["p", "Thank you, {n}. Your room is booked.", "Terima kasih, {n}. Kamar Anda sudah dipesan."]
+] },
+{ title: "Ajak nonton film", place: "Di kantor, jam makan siang", who: "Tari", turns: [
+  ["p", "Hey, {n}! Have you got any plans for Friday night?", "Hai, {n}! Ada rencana Jumat malam?"],
+  ["u", ["No, I haven't. Why?", "No, I don't haven't. Why?", "No, I not have. Why?"], "Have you got …? dijawab Yes, I have atau No, I haven't."],
+  ["p", "There's a new comedy at the cinema. Do you want to come?", "Ada film komedi baru di bioskop. Mau ikut?"],
+  ["u", ["That sounds great! What time does it start?", "That sounds great! What time it starts?", "That sound great! What time start?"], "That sounds … (sounds pakai -s). Pertanyaan: What time does it start?"],
+  ["p", "At seven thirty. We could have dinner before.", "Jam setengah delapan. Kita bisa makan malam dulu."],
+  ["u", ["Good idea. Where shall we meet?", "Good idea. Where we shall meet?", "Good idea. Where meet we?"], "Mengajak menentukan: Where shall we meet?"],
+  ["p", "How about the noodle place next to the cinema?", "Bagaimana kalau di tempat mi sebelah bioskop?"],
+  ["u", ["Perfect. I'll be there at six.", "Perfect. I'm be there at six.", "Perfect. I will to be there at six."], "Janji spontan: I'll (I will) + kata kerja dasar."],
+  ["p", "Great! I'll book the tickets online.", "Sip! Aku pesan tiketnya online."],
+  ["u", ["Thanks! How much do I owe you?", "Thanks! How many do I owe you?", "Thanks! How much I owe you?"], "Uang tidak dihitung satuan: How much. Pertanyaan butuh do."],
+  ["p", "Don't worry, you can pay me later.", "Santai, kamu bisa bayar nanti."]
+] }],
+inter: [
+{ title: "Di bandara", place: "Konter check-in bandara", who: "Petugas maskapai", turns: [
+  ["p", "Good morning. Can I see your passport and ticket, please?", "Selamat pagi. Boleh saya lihat paspor dan tiket Anda?"],
+  ["u", ["Of course. Here you are.", "Of course. Here are you.", "Of course. Here is you."], "Menyerahkan sesuatu: Here you are."],
+  ["p", "Thank you. How many bags are you checking in?", "Terima kasih. Berapa tas yang akan masuk bagasi?"],
+  ["u", ["Just one. I'll take this small one as hand luggage.", "Just one. I'll take this small as hand luggage.", "Just one. I take this small one like hand luggage."], "One menggantikan bag: this small one."],
+  ["p", "Did you pack your bags yourself?", "Apakah Anda mengemas tas sendiri?"],
+  ["u", ["Yes, I did, and I haven't left them alone.", "Yes, I packed, and I didn't leave them alone since.", "Yes, I do, and I haven't leave them alone."], "Did you …? dijawab Yes, I did. Present perfect: haven't left."],
+  ["p", "Would you prefer a window or an aisle seat?", "Mau kursi dekat jendela atau lorong?"],
+  ["u", ["I'd prefer a window seat, if possible.", "I'd prefer window seat, if is possible.", "I prefer more a window seat, if possible."], "I'd prefer + kata benda; if possible = kalau bisa."],
+  ["p", "No problem. Boarding starts at 9:40 from gate 12.", "Tidak masalah. Boarding mulai jam 9.40 di gerbang 12."],
+  ["u", ["Thank you. Is the flight on time?", "Thank you. Is the flight in time?", "Thank you. The flight is on time is?"], "On time = tepat jadwal; in time = sempat/tidak terlambat."],
+  ["p", "Yes, it is. Have a pleasant flight!", "Ya. Selamat menikmati penerbangan!"]
+] },
+{ title: "Lapor barang hilang", place: "Kantor polisi stasiun", who: "Officer Ray", turns: [
+  ["p", "Good evening. How can I help you?", "Selamat malam. Ada yang bisa saya bantu?"],
+  ["u", ["I think I've lost my wallet on the train.", "I think I lost my wallet in the train since.", "I think I've lose my wallet on the train."], "Akibatnya masih terasa sekarang: present perfect (I've lost). Naik kereta: on the train."],
+  ["p", "I'm sorry to hear that. When did you last see it?", "Saya turut prihatin. Kapan terakhir Anda melihatnya?"],
+  ["u", ["I had it when I got on the train at about six.", "I have it when I got on the train about six.", "I was had it when I get on the train at six."], "Waktu spesifik di masa lalu memakai past simple: I had, I got on."],
+  ["p", "Can you describe it?", "Bisa jelaskan bentuknya?"],
+  ["u", ["It's a small brown leather wallet with my ID card inside.", "It's a leather brown small wallet with my ID card inside.", "It's small wallet brown of leather with ID inside."], "Urutan kata sifat: ukuran → warna → bahan (small brown leather)."],
+  ["p", "OK. We'll contact you if someone hands it in.", "Baik. Kami akan menghubungi Anda kalau ada yang menyerahkannya."],
+  ["u", ["Thank you. Should I also cancel my bank cards?", "Thank you. Should I also to cancel my bank cards?", "Thank you. I should also cancel my bank cards?"], "Should + kata kerja dasar, tanpa to. Pertanyaan: Should I …?"],
+  ["p", "Yes, that would be a good idea, just in case.", "Ya, itu ide bagus, untuk berjaga-jaga."],
+  ["u", ["I'll do that right away. Thanks for your help.", "I'll do that right away. Thanks for your helps.", "I do that right now away. Thanks your help."], "Help sebagai kata benda tidak memakai -s."],
+  ["p", "You're welcome. Good luck!", "Sama-sama. Semoga berhasil!"]
+] },
+{ title: "Wawancara kerja paruh waktu", place: "Toko buku Lentera", who: "Bu Sinta", turns: [
+  ["p", "Thanks for coming. Why do you want to work here?", "Terima kasih sudah datang. Kenapa ingin bekerja di sini?"],
+  ["u", ["I love books, and I enjoy helping people find what they need.", "I love books, and I enjoy to help people find what they need.", "I'm love books, and I enjoy help people."], "Enjoy + -ing: enjoy helping."],
+  ["p", "Have you worked in a shop before?", "Pernah bekerja di toko sebelumnya?"],
+  ["u", ["Yes, I worked in a café for six months last year.", "Yes, I have worked in a café for six months last year.", "Yes, I work in a café since six months."], "Ada waktu spesifik (last year) → past simple, bukan present perfect."],
+  ["p", "How many hours can you work each week?", "Berapa jam per minggu Anda bisa bekerja?"],
+  ["u", ["I can work about fifteen hours, mostly at weekends.", "I can work about fifteen hours, mostly in weekends.", "I can working about fifteen hours, mostly weekend."], "At weekends (British) / on weekends (American). Can + kata kerja dasar."],
+  ["p", "What would you do if a customer was rude to you?", "Apa yang akan Anda lakukan kalau pelanggan bersikap kasar?"],
+  ["u", ["I would stay calm and try to understand the problem.", "I will stay calm and try understand the problem.", "I would staying calm and trying to understand."], "Situasi andaian: would + kata kerja dasar. Try to + verb."],
+  ["p", "Good answer. Do you have any questions?", "Jawaban bagus. Ada pertanyaan?"],
+  ["u", ["Yes. When would I be able to start?", "Yes. When I would be able to start?", "Yes. When can I able to start?"], "Urutan pertanyaan: When would I …? Be able to = bisa."],
+  ["p", "Next Monday, if that suits you.", "Senin depan, kalau Anda bisa."]
+] }],
+upper: [
+{ title: "Negosiasi harga sewa", place: "Melihat apartemen", who: "Mr. Tan", turns: [
+  ["p", "So, what do you think of the flat?", "Jadi, bagaimana menurut Anda apartemennya?"],
+  ["u", ["It's lovely, but the rent is a bit higher than I'd expected.", "It's lovely, but the rent is a bit higher than I expect it.", "It's lovely, but rent is bit more high than I'd expected."], "Bandingkan dengan harapan sebelumnya: than I'd (I had) expected."],
+  ["p", "Well, it's in a very good location.", "Yah, lokasinya sangat strategis."],
+  ["u", ["That's true. Would you consider lowering it if I signed for a year?", "That's true. Would you consider to lower it if I signed for a year?", "True. Will you considering lower if I sign one year?"], "Consider + -ing. Tawaran andaian: would … if + past."],
+  ["p", "I might be able to take off five percent.", "Mungkin saya bisa potong lima persen."],
+  ["u", ["Could you make it ten if I paid three months in advance?", "Could you make it ten if I pay three months in advanced?", "Can you make ten if I paid three month advance?"], "In advance = di muka. Tawaran: Could you … if I paid …?"],
+  ["p", "Let's meet in the middle: seven and a half percent.", "Kita ambil tengahnya: tujuh setengah persen."],
+  ["u", ["That sounds fair. Are the bills included in the rent?", "That sounds fair. Are the bills include in the rent?", "That sound fair. Bills is included in rent?"], "Pasif: are included. Sounds memakai -s."],
+  ["p", "Water is included, but electricity isn't.", "Air sudah termasuk, tapi listrik tidak."],
+  ["u", ["I see. In that case, I'd like to go ahead.", "I see. In that case, I'd like going ahead.", "I see. In this case, I'd like to going ahead."], "Go ahead = lanjut. I'd like to + kata kerja dasar."],
+  ["p", "Wonderful. I'll draw up the contract.", "Bagus. Saya akan menyiapkan kontraknya."]
+] },
+{ title: "Minta kenaikan gaji", place: "Ruang manajer", who: "Pak Arif", turns: [
+  ["p", "You wanted to see me?", "Anda ingin bertemu saya?"],
+  ["u", ["Yes, thanks for making time. I'd like to discuss my salary.", "Yes, thanks for make time. I'd like to discuss about my salary.", "Yes, thank for making time. I'd like discussing my salary."], "Discuss tidak diikuti about. Thanks for + -ing."],
+  ["p", "I see. Go on.", "Begitu. Silakan lanjutkan."],
+  ["u", ["Over the past year, I've taken on several new responsibilities.", "Over the past year, I took on several new responsibility since.", "In the past year, I've took several new responsibilities."], "Periode sampai sekarang: present perfect (I've taken on)."],
+  ["p", "That's true. You've also trained the new staff.", "Benar. Anda juga melatih staf baru."],
+  ["u", ["Exactly. That's why I feel a ten percent increase would be fair.", "Exactly. That's why I feel a ten percents increase would be fair.", "Exactly. That's because I feel increase ten percent is fair would."], "Ten percent tanpa -s saat menjadi kata sifat (a ten percent increase)."],
+  ["p", "The budget is tight this year. I can't promise that much.", "Anggaran tahun ini ketat. Saya tidak bisa menjanjikan sebanyak itu."],
+  ["u", ["I understand. Would you be willing to review it in six months?", "I understand. Would you be willing reviewing it in six months?", "I understand. Will you willing to review in six month?"], "Be willing to + kata kerja dasar."],
+  ["p", "That's reasonable. Let's set a date.", "Itu masuk akal. Mari tentukan tanggalnya."],
+  ["u", ["Thank you. I really appreciate your support.", "Thank you. I really appreciate for your support.", "Thank you. I'm really appreciate your support."], "Appreciate langsung diikuti objek, tanpa for."],
+  ["p", "You're welcome. Keep up the good work.", "Sama-sama. Pertahankan kerja bagus Anda."]
+] },
+{ title: "Kembalikan barang rusak", place: "Toko elektronik", who: "Staf toko", turns: [
+  ["p", "Hi there. How can I help?", "Halo. Ada yang bisa dibantu?"],
+  ["u", ["I bought these headphones last week, but the left side has stopped working.", "I bought these headphones last week, but the left side stopped to work.", "I buy these headphones last week, but left side has stop working."], "Stop + -ing = berhenti melakukan. Has stopped: masih rusak sekarang."],
+  ["p", "I'm sorry about that. Do you have the receipt?", "Mohon maaf. Ada struknya?"],
+  ["u", ["Yes, here it is. They're still under warranty, aren't they?", "Yes, here it is. They're still under warranty, isn't it?", "Yes, here is it. They still under warranty, no?"], "Question tag mengikuti subjek: They're …, aren't they?"],
+  ["p", "Yes, they are. Would you like a refund or a replacement?", "Ya. Mau uang kembali atau penggantian?"],
+  ["u", ["I'd rather have a replacement, if you have them in stock.", "I'd rather to have a replacement, if you have them in stock.", "I rather have replacement, if you are in stock."], "I'd rather + kata kerja dasar, tanpa to."],
+  ["p", "Let me check… I'm afraid we've sold out.", "Saya cek dulu… Sayangnya sudah habis."],
+  ["u", ["In that case, could you order a pair for me?", "In that case, could you order a pair to me?", "In this case, you could order pair for me?"], "Order something for someone. Permintaan sopan: Could you …?"],
+  ["p", "Sure. They should arrive within five days.", "Bisa. Seharusnya tiba dalam lima hari."],
+  ["u", ["Great. Would you mind calling me when they arrive?", "Great. Would you mind to call me when they arrive?", "Great. Would you mind call me when they will arrive?"], "Would you mind + -ing. Setelah when untuk masa depan tetap present."],
+  ["p", "Not at all. I'll take your number now.", "Tentu saja. Saya catat nomor Anda sekarang."]
+] }],
+adv: [
+{ title: "Presentasi ke klien", place: "Ruang rapat klien", who: "Ms. Rivera", turns: [
+  ["p", "Thanks for coming in. Shall we get started?", "Terima kasih sudah datang. Kita mulai?"],
+  ["u", ["Certainly. I'd like to begin by outlining the main objectives.", "Certainly. I'd like to begin with outline the main objectives.", "Certainly. I like begin by outlining main objective."], "Begin by + -ing = memulai dengan."],
+  ["p", "Please do. Our main concern is the budget.", "Silakan. Perhatian utama kami adalah anggaran."],
+  ["u", ["Understood. We've designed the proposal with that very much in mind.", "Understood. We've designed the proposal with that very in mind.", "Understood. We designed proposal with that much in the mind."], "With something in mind = dengan mempertimbangkan sesuatu."],
+  ["p", "How soon could you deliver the first phase?", "Seberapa cepat tahap pertama bisa diselesaikan?"],
+  ["u", ["Provided we receive approval this week, we could deliver it by mid-April.", "Provided we will receive approval this week, we could deliver it until mid-April.", "Providing we receiving approval, we deliver by middle April could."], "Provided (that) + present untuk syarat. By = paling lambat; until = sampai."],
+  ["p", "That's ambitious. What happens if there are delays?", "Itu ambisius. Bagaimana kalau ada keterlambatan?"],
+  ["u", ["Should any delays occur, we'd notify you immediately and adjust the schedule.", "Should any delays will occur, we'd notify you immediately.", "If any delays should occurring, we notify you immediate."], "Inversi formal: Should + subjek + kata kerja dasar = jika."],
+  ["p", "I appreciate the transparency. Any questions for us?", "Saya menghargai keterbukaannya. Ada pertanyaan untuk kami?"],
+  ["u", ["Just one: who will be our main point of contact on your side?", "Just one: who will be our main point of contact in your side?", "Only one: who is going be the main contact point of your side?"], "On your side = di pihak Anda. Point of contact = narahubung."],
+  ["p", "That would be me. I look forward to working with you.", "Saya sendiri. Saya menantikan kerja sama dengan Anda."]
+] },
+{ title: "Memberi masukan ke rekan", place: "Ruang kerja tim", who: "Raka", turns: [
+  ["p", "Have you had a chance to look at my report?", "Sudah sempat lihat laporanku?"],
+  ["u", ["I have. Overall, it's really well researched.", "I have. Overall, it's really well-researching.", "I did have. Overall, it's really researched well done."], "Have you …? dijawab I have. Well researched = diriset dengan baik."],
+  ["p", "Thanks. Is there anything I could improve?", "Terima kasih. Ada yang bisa aku perbaiki?"],
+  ["u", ["The conclusion could be a little more concise, if I'm honest.", "The conclusion could be a little more concisely, if I'm honest.", "Conclusion could is more concise, if honest I am."], "Setelah be memakai kata sifat (concise), bukan kata keterangan."],
+  ["p", "Fair point. Anything else?", "Masuk akal. Ada lagi?"],
+  ["u", ["It might be worth adding a chart to illustrate the main trend.", "It might be worth to add a chart to illustrate the main trend.", "It might worth adding chart for illustrating main trend."], "It's worth + -ing = layak dilakukan."],
+  ["p", "Good idea. I hadn't thought of that.", "Ide bagus. Aku tidak terpikir."],
+  ["u", ["Other than that, I wouldn't change a thing.", "Other than that, I wouldn't change anything thing.", "Except of that, I won't change nothing."], "Hindari negatif ganda. Other than that = selain itu."],
+  ["p", "That's really helpful. Thanks for taking the time.", "Sangat membantu. Terima kasih sudah meluangkan waktu."],
+  ["u", ["No problem at all. Let me know if you'd like me to look at it again.", "No problem at all. Let me know if you'd like me looking at it again.", "No problem. Let me knowing if you want I look again."], "Would like someone to do something."],
+  ["p", "Will do!", "Pasti!"]
+] },
+{ title: "Debat lingkungan", place: "Forum diskusi kampus", who: "Dr. Lim", turns: [
+  ["p", "Some argue that individual action makes little difference to climate change. What's your view?", "Ada yang berpendapat tindakan individu tidak banyak berpengaruh pada perubahan iklim. Bagaimana pandangan Anda?"],
+  ["u", ["While I accept that governments play a bigger role, individual choices still matter.", "While I accept that governments play bigger role, individual choices still matters.", "Although I accept governments are playing bigger role, but individual choices matter."], "While/although tidak dipasangkan dengan but. Choices (jamak) → matter."],
+  ["p", "Could you give an example?", "Bisa beri contoh?"],
+  ["u", ["Take transport: if millions switched to public transport, emissions would fall significantly.", "Take transport: if millions switch to public transport, emissions would fall significantly.", "For transport: if millions would switch, emissions fall significant."], "Conditional kedua: if + past, would + kata kerja dasar."],
+  ["p", "But isn't that unrealistic in many cities?", "Tapi bukankah itu tidak realistis di banyak kota?"],
+  ["u", ["That's precisely why investment in infrastructure is so crucial.", "That's precisely why investment in infrastructure are so crucial.", "This is precise why investing infrastructure is so crucial."], "Investment (tunggal) → is. Precisely = justru."],
+  ["p", "So you see the two as connected?", "Jadi Anda melihat keduanya saling terkait?"],
+  ["u", ["Absolutely. Policy shapes behaviour, and public demand, in turn, shapes policy.", "Absolutely. Policy shapes behaviour, and public demand, in turn, shape policy.", "Absolutely. Policy is shaping behaviour, and in turn public demand shaping policy."], "Subjek tunggal (public demand) → shapes."],
+  ["p", "An interesting perspective. Any final thoughts?", "Perspektif menarik. Ada pemikiran penutup?"],
+  ["u", ["Only that we can't afford to wait for a perfect solution.", "Only that we can't afford waiting for a perfect solution.", "Only we can't afford to wait perfect solution."], "Can't afford to + kata kerja dasar."],
+  ["p", "Thank you. That's a good note to end on.", "Terima kasih. Itu penutup yang bagus."]
+] }],
+expert: [
+{ title: "Menangani klien kecewa", place: "Panggilan video dengan klien", who: "Ms. Becker", turns: [
+  ["p", "Frankly, we're very disappointed with the quality of the last delivery.", "Terus terang, kami sangat kecewa dengan kualitas pengiriman terakhir."],
+  ["u", ["I'm sorry to hear that, and I appreciate you raising it with us directly.", "I'm sorry to hear that, and I appreciate you to raise it with us directly.", "Sorry hearing that, and I'm appreciating you raised it to us direct."], "Appreciate + (someone) + -ing."],
+  ["p", "Several units arrived damaged, and we've had complaints from our own customers.", "Beberapa unit tiba dalam keadaan rusak, dan kami menerima komplain dari pelanggan kami."],
+  ["u", ["That's clearly unacceptable. We'll replace every damaged unit at no extra cost.", "That's clearly unacceptable. We'll replace every damaged units at no extra cost.", "That's clear unacceptable. We replace all damaged unit with no extra costs."], "Every + kata benda tunggal: every damaged unit."],
+  ["p", "And how do we know this won't happen again?", "Dan bagaimana kami tahu ini tidak akan terulang?"],
+  ["u", ["We've already reviewed our packaging process and introduced an additional quality check.", "We've already reviewed our packaging process and introduced additional quality check.", "We already have review packaging process and introducing extra checking quality."], "Hasil tindakan yang sudah selesai: present perfect (we've reviewed … introduced)."],
+  ["p", "I'd like that in writing.", "Saya ingin itu secara tertulis."],
+  ["u", ["Of course. I'll send you a detailed action plan by close of business today.", "Of course. I'll send you a detailed action plan until close of business today.", "Of course. I'm sending you detail action plan before business close today."], "By close of business (COB) = paling lambat akhir jam kerja."],
+  ["p", "Very well. We'll be monitoring the next order closely.", "Baiklah. Kami akan memantau pesanan berikutnya dengan saksama."],
+  ["u", ["Understood. We value this partnership and intend to regain your confidence.", "Understood. We value this partnership and intend regaining your confidence.", "Understood. We are valuing this partnership and intend to regain the your confidence."], "Intend to + kata kerja dasar. Value biasanya tidak dipakai dalam bentuk -ing."],
+  ["p", "Thank you. I look forward to the plan.", "Terima kasih. Saya menantikan rencananya."]
+] },
+{ title: "Memimpin rapat strategi", place: "Rapat direksi", who: "Mr. Hartono", turns: [
+  ["p", "Right, let's begin. What's the first item on the agenda?", "Baik, kita mulai. Apa agenda pertama?"],
+  ["u", ["The first item is our expansion into Vietnam, which has been under discussion for some time.", "The first item is our expansion into Vietnam, which is under discussion since some time.", "First item is expansion to Vietnam, that has discussed for some time."], "Durasi sampai sekarang: has been + for. Which untuk klausa tambahan."],
+  ["p", "Where do we stand on that?", "Bagaimana posisi kita soal itu?"],
+  ["u", ["The feasibility study is complete, and the findings are broadly encouraging.", "The feasibility study is completed, and the findings is broadly encouraging.", "Feasibility study finished, and findings are broad encouraged."], "Findings (jamak) → are. Encouraging = menggembirakan."],
+  ["p", "Any significant risks?", "Ada risiko yang signifikan?"],
+  ["u", ["The main one is regulatory uncertainty, though it's by no means insurmountable.", "The main one is regulatory uncertainty, though it's by no mean insurmountable.", "Main risk is uncertainty of regulation, but it's no means insurmountable."], "By no means = sama sekali tidak (frasa tetap)."],
+  ["p", "I'd like us to reach a decision today if possible.", "Saya ingin kita memutuskan hari ini kalau bisa."],
+  ["u", ["In that case, I propose we approve the first phase, subject to legal review.", "In that case, I propose we approving the first phase, subject to legal review.", "In that case, I propose to we approve first phase, subjected legal review."], "Propose (that) we + kata kerja dasar. Subject to = dengan syarat."],
+  ["p", "Does anyone object? … No? Then it's agreed.", "Ada yang keberatan? … Tidak? Kalau begitu disetujui."],
+  ["u", ["Excellent. I'll circulate the minutes and assign action points by tomorrow.", "Excellent. I'll circulate the minutes and assign action points until tomorrow.", "Excellent. I'll be circulate minutes and assigning action points tomorrow by."], "By tomorrow = paling lambat besok."],
+  ["p", "Good. Let's move on to the next item.", "Bagus. Mari lanjut ke agenda berikutnya."]
+] },
+{ title: "Wawancara media", place: "Studio radio bisnis", who: "Host Jenna", turns: [
+  ["p", "Your company has just announced record profits. How do you account for that success?", "Perusahaan Anda baru mengumumkan laba tertinggi. Bagaimana Anda menjelaskan keberhasilan itu?"],
+  ["u", ["It's largely down to our team's willingness to adapt in a rapidly changing market.", "It's largely down to our team's willingness for adapting in a rapidly changing market.", "It's large because of team willing to adapt in rapid change market."], "Down to = berkat/karena. Willingness to + kata kerja."],
+  ["p", "Critics say you've grown at the expense of your employees. Is that fair?", "Kritikus bilang Anda tumbuh dengan mengorbankan karyawan. Apakah itu adil?"],
+  ["u", ["I'd respectfully disagree. We've actually increased wages above inflation for three years running.", "I'd respectfully disagree. We actually increased wages above inflation for three years running since.", "I respectful disagree. We have actual increase wages above inflation three years run."], "Three years running = tiga tahun berturut-turut; present perfect untuk periode sampai sekarang."],
+  ["p", "What are the biggest challenges ahead?", "Apa tantangan terbesar ke depan?"],
+  ["u", ["Undoubtedly, attracting talent; competition for skilled staff has never been fiercer.", "Undoubtedly, attracting talent; competition for skilled staff has never been more fiercer.", "No doubt, attract talent; competition of skilled staffs never was fiercer."], "Hindari perbandingan ganda: fiercer, bukan more fiercer."],
+  ["p", "And where do you see the company in five years?", "Di mana Anda melihat perusahaan lima tahun lagi?"],
+  ["u", ["Ideally, we'll have established ourselves as the regional market leader.", "Ideally, we'll have establish ourselves as the regional market leader.", "Ideally, we will establishing ourself regional market leader."], "Future perfect: will have + past participle (established)."],
+  ["p", "Ambitious. Thank you for joining us today.", "Ambisius. Terima kasih sudah bergabung hari ini."],
+  ["u", ["It's been a pleasure. Thank you for having me.", "It's been a pleasure. Thank you for have me.", "It was been pleasure. Thanks to having me."], "Ucapan penutup wawancara: Thank you for having me."],
+  ["p", "That was the CEO of Nusantara Tech. Back after the break.", "Itu tadi CEO Nusantara Tech. Kembali setelah jeda."]
+] }]
+};
+
 // Dibuat otomatis oleh tools/gen-wardrobe.py dari tools/costumes.py. Jangan disunting langsung.
 const COSTUME = {"color": [{"id": "violet", "n": "Ungu Bubu", "p": 0, "fill": "#5b5bf0", "u": null}, {"id": "mint", "n": "Mint", "p": 100, "fill": "#2fb88c", "u": null}, {"id": "coral", "n": "Koral", "p": 100, "fill": "#ff7a59", "u": null}, {"id": "sky", "n": "Langit", "p": 150, "fill": "#3f8cf0", "u": null}, {"id": "candy", "n": "Permen", "p": 150, "fill": "#ec5f9a", "u": null}, {"id": "orange", "n": "Jeruk", "p": 150, "fill": "#f59f1b", "u": null}, {"id": "teal", "n": "Toska", "p": 200, "fill": "#14a3a3", "u": null}, {"id": "moss", "n": "Lumut", "p": 200, "fill": "#6a9f3a", "u": null}, {"id": "grape", "n": "Anggur", "p": 250, "fill": "#8e44c9", "u": null}, {"id": "red", "n": "Merah cabai", "p": 250, "fill": "#e5484d", "u": null}, {"id": "choco", "n": "Cokelat", "p": 300, "fill": "#8b5e3c", "u": null}, {"id": "slate", "n": "Abu batu", "p": 300, "fill": "#64748b", "u": null}, {"id": "night", "n": "Malam", "p": 400, "fill": "#2b2d55", "u": null}, {"id": "berry", "n": "Beri", "p": 400, "fill": "#b8326b", "u": null}, {"id": "sea", "n": "Laut dalam", "p": 500, "fill": "#1f5fa8", "u": null}, {"id": "gold", "n": "Emas", "p": null, "fill": "url(#bbGold)", "u": ["c2", "Lulus Tes Level C2"]}, {"id": "rainbow", "n": "Pelangi", "p": null, "fill": "url(#bbRain)", "u": ["streak30", "Streak 30 hari"]}, {"id": "galaxy", "n": "Galaksi", "p": null, "fill": "url(#bbGal)", "u": ["stars36", "3 bintang di 36 pelajaran"]}], "hat": [{"id": "none", "n": "Tanpa topi", "p": 0, "svg": "", "u": null, "layer": "hat"}, {"id": "party", "n": "Topi pesta", "p": 120, "svg": "<path d=\"M43 -26 L57 6 H29 Z\" fill=\"#ff7a59\"/><path d=\"M36 -8 H50 M33 0 H53\" stroke=\"#fff\" stroke-width=\"3\"/><circle cx=\"43\" cy=\"-27\" r=\"5\" fill=\"#ffc845\"/>", "u": null, "layer": "hat"}, {"id": "beanie", "n": "Kupluk", "p": 150, "svg": "<path d=\"M17 8 Q43 -28 69 8 Z\" fill=\"#34c79a\"/><rect x=\"14\" y=\"3\" width=\"58\" height=\"9\" rx=\"4.5\" fill=\"#21a37b\"/><circle cx=\"43\" cy=\"-13\" r=\"6\" fill=\"#21a37b\"/>", "u": null, "layer": "hat"}, {"id": "cap", "n": "Topi pet", "p": 150, "svg": "<path d=\"M18 8 Q20 -16 43 -16 Q66 -16 68 8 Z\" fill=\"#3f8cf0\"/><path d=\"M60 6 Q80 4 88 10 Q72 12 58 10 Z\" fill=\"#2c6fd1\"/><circle cx=\"43\" cy=\"-16\" r=\"3\" fill=\"#2c6fd1\"/>", "u": null, "layer": "hat"}, {"id": "beret", "n": "Baret", "p": 180, "svg": "<ellipse cx=\"40\" cy=\"4\" rx=\"30\" ry=\"9\" fill=\"#e5484d\"/><path d=\"M14 6 Q40 -16 68 2\" fill=\"#e5484d\"/><circle cx=\"42\" cy=\"-8\" r=\"3\" fill=\"#b8323a\"/>", "u": null, "layer": "hat"}, {"id": "bunny", "n": "Telinga kelinci", "p": 200, "svg": "<path d=\"M28 6 Q20 -30 30 -32 Q38 -30 36 6 Z\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><path d=\"M50 6 Q48 -30 56 -32 Q66 -30 58 6 Z\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><path d=\"M30 2 Q26 -22 31 -25 Q34 -22 33 2 Z\" fill=\"#ff9bb3\"/><path d=\"M53 2 Q52 -22 56 -25 Q60 -22 56 2 Z\" fill=\"#ff9bb3\"/>", "u": null, "layer": "hat"}, {"id": "cat", "n": "Telinga kucing", "p": 200, "svg": "<path d=\"M14 10 L18 -14 L36 4 Z\" fill=\"#24264a\"/><path d=\"M72 10 L68 -14 L50 4 Z\" fill=\"#24264a\"/><path d=\"M19 4 L21 -6 L29 3 Z\" fill=\"#ff9bb3\"/><path d=\"M67 4 L65 -6 L57 3 Z\" fill=\"#ff9bb3\"/>", "u": null, "layer": "hat"}, {"id": "flower", "n": "Mahkota bunga", "p": 250, "svg": "<path d=\"M14 6 Q43 -6 72 6\" fill=\"none\" stroke=\"#6a9f3a\" stroke-width=\"4\"/><g><circle cx=\"20\" cy=\"3\" r=\"6\" fill=\"#ff9bb3\"/><circle cx=\"32\" cy=\"-1\" r=\"6\" fill=\"#ffc845\"/><circle cx=\"44\" cy=\"-2\" r=\"6\" fill=\"#ff7a59\"/><circle cx=\"56\" cy=\"-1\" r=\"6\" fill=\"#ec5f9a\"/><circle cx=\"68\" cy=\"3\" r=\"6\" fill=\"#ffc845\"/></g><g fill=\"#fff\"><circle cx=\"20\" cy=\"3\" r=\"2\"/><circle cx=\"32\" cy=\"-1\" r=\"2\"/><circle cx=\"44\" cy=\"-2\" r=\"2\"/><circle cx=\"56\" cy=\"-1\" r=\"2\"/><circle cx=\"68\" cy=\"3\" r=\"2\"/></g>", "u": null, "layer": "hat"}, {"id": "chef", "n": "Topi koki", "p": 250, "svg": "<rect x=\"24\" y=\"-6\" width=\"38\" height=\"14\" rx=\"3\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><circle cx=\"30\" cy=\"-12\" r=\"10\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><circle cx=\"43\" cy=\"-18\" r=\"12\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><circle cx=\"56\" cy=\"-12\" r=\"10\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"2\"/><rect x=\"25\" y=\"-8\" width=\"36\" height=\"8\" fill=\"#fff\"/>", "u": null, "layer": "hat"}, {"id": "cowboy", "n": "Topi koboi", "p": 300, "svg": "<path d=\"M2 4 Q10 12 43 10 Q76 12 84 4 Q74 2 66 6 Z\" fill=\"#8b5e3c\"/><path d=\"M24 6 Q24 -18 43 -16 Q62 -18 62 6 Z\" fill=\"#a8743f\"/><rect x=\"24\" y=\"0\" width=\"38\" height=\"5\" fill=\"#5b3a1e\"/>", "u": null, "layer": "hat"}, {"id": "pirate", "n": "Topi bajak laut", "p": 350, "svg": "<path d=\"M8 8 Q43 -30 78 8 Q43 0 8 8 Z\" fill=\"#24264a\"/><circle cx=\"43\" cy=\"-4\" r=\"5\" fill=\"#fff\"/><path d=\"M39 2 L47 6 M47 2 L39 6\" stroke=\"#fff\" stroke-width=\"2\"/>", "u": null, "layer": "hat"}, {"id": "wizard", "n": "Topi penyihir", "p": 400, "svg": "<path d=\"M43 -34 L64 6 H22 Z\" fill=\"#5b3fb8\"/><ellipse cx=\"43\" cy=\"6\" rx=\"30\" ry=\"6\" fill=\"#4a2f9e\"/><path d=\"M40 -14 l2 4 4 .6-3 3 .7 4-3.7-2-3.7 2 .7-4-3-3 4-.6z\" fill=\"#ffc845\"/>", "u": null, "layer": "hat"}, {"id": "tophat", "n": "Topi tinggi", "p": 450, "svg": "<ellipse cx=\"43\" cy=\"6\" rx=\"30\" ry=\"5\" fill=\"#24264a\"/><rect x=\"27\" y=\"-24\" width=\"32\" height=\"30\" rx=\"3\" fill=\"#24264a\"/><rect x=\"27\" y=\"-2\" width=\"32\" height=\"5\" fill=\"#e5484d\"/>", "u": null, "layer": "hat"}, {"id": "propeller", "n": "Topi baling-baling", "p": 500, "svg": "<path d=\"M18 8 Q43 -22 68 8 Z\" fill=\"#ffc845\"/><path d=\"M18 8 Q30 -12 43 -14 L43 8 Z\" fill=\"#e5484d\"/><rect x=\"41.5\" y=\"-22\" width=\"3\" height=\"9\" fill=\"#24264a\"/><ellipse cx=\"33\" cy=\"-22\" rx=\"10\" ry=\"3\" fill=\"#3f8cf0\"/><ellipse cx=\"53\" cy=\"-22\" rx=\"10\" ry=\"3\" fill=\"#34c79a\"/>", "u": null, "layer": "hat"}, {"id": "astro", "n": "Helm astronot", "p": 700, "svg": "<path d=\"M10 30 Q10 -18 43 -18 Q76 -18 76 30\" fill=\"none\" stroke=\"#e6e9f2\" stroke-width=\"7\"/><path d=\"M14 30 Q14 -12 43 -12 Q72 -12 72 30\" fill=\"rgba(160,200,255,.22)\"/><rect x=\"6\" y=\"24\" width=\"10\" height=\"16\" rx=\"3\" fill=\"#cfd5e3\"/><rect x=\"70\" y=\"24\" width=\"10\" height=\"16\" rx=\"3\" fill=\"#cfd5e3\"/>", "u": null, "layer": "hat"}, {"id": "crown", "n": "Mahkota juara", "p": null, "svg": "<path d=\"M23 7 L23 -12 L33 -2 L43 -18 L53 -2 L63 -12 L63 7 Z\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"2.5\" stroke-linejoin=\"round\"/><circle cx=\"43\" cy=\"-1\" r=\"3\" fill=\"#ff7a59\"/><circle cx=\"30\" cy=\"2\" r=\"2\" fill=\"#3f8cf0\"/><circle cx=\"56\" cy=\"2\" r=\"2\" fill=\"#34c79a\"/>", "u": ["alltests", "Lulus semua tes level A1–C2"], "layer": "hat"}, {"id": "toga", "n": "Toga emas", "p": null, "svg": "<rect x=\"27\" y=\"-2\" width=\"32\" height=\"10\" rx=\"3\" fill=\"#24264a\"/><path d=\"M43 -16 L80 -4 L43 8 L6 -4 Z\" fill=\"#24264a\"/><path d=\"M72 -3v15\" stroke=\"#ffc845\" stroke-width=\"2.5\"/><circle cx=\"72\" cy=\"14\" r=\"3.5\" fill=\"#ffc845\"/>", "u": ["cert", "Dapat sertifikat pertama"], "layer": "hat"}, {"id": "detective", "n": "Topi detektif", "p": null, "svg": "<path d=\"M12 8 Q14 -16 43 -16 Q72 -16 74 8 Z\" fill=\"#a8743f\"/><path d=\"M12 8 Q43 -2 74 8 Q43 14 12 8 Z\" fill=\"#8b5e3c\"/><path d=\"M20 -2 Q43 -10 66 -2\" fill=\"none\" stroke=\"#5b3a1e\" stroke-width=\"3\"/>", "u": ["talk12", "Selesaikan 12 percakapan"], "layer": "hat"}], "face": [{"id": "none", "n": "Tanpa", "p": 0, "svg": "", "u": null, "layer": "face"}, {"id": "round", "n": "Kacamata bulat", "p": 100, "svg": "<circle cx=\"32\" cy=\"32\" r=\"10\" fill=\"rgba(255,255,255,.18)\" stroke=\"#24264a\" stroke-width=\"3\"/><circle cx=\"54\" cy=\"32\" r=\"10\" fill=\"rgba(255,255,255,.18)\" stroke=\"#24264a\" stroke-width=\"3\"/><path d=\"M42 31h2\" stroke=\"#24264a\" stroke-width=\"3\" stroke-linecap=\"round\"/>", "u": null, "layer": "face"}, {"id": "square", "n": "Kacamata kotak", "p": 120, "svg": "<rect x=\"21\" y=\"24\" width=\"21\" height=\"16\" rx=\"3\" fill=\"rgba(255,255,255,.18)\" stroke=\"#24264a\" stroke-width=\"3\"/><rect x=\"44\" y=\"24\" width=\"21\" height=\"16\" rx=\"3\" fill=\"rgba(255,255,255,.18)\" stroke=\"#24264a\" stroke-width=\"3\"/>", "u": null, "layer": "face"}, {"id": "sun", "n": "Kacamata hitam", "p": 150, "svg": "<rect x=\"19\" y=\"24\" width=\"22\" height=\"15\" rx=\"6\" fill=\"#24264a\"/><rect x=\"45\" y=\"24\" width=\"22\" height=\"15\" rx=\"6\" fill=\"#24264a\"/><path d=\"M41 29h4\" stroke=\"#24264a\" stroke-width=\"3\"/><path d=\"M24 28h6M50 28h6\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\".7\"/>", "u": null, "layer": "face"}, {"id": "heart", "n": "Kacamata hati", "p": 180, "svg": "<path d=\"M32 42 L22 31 A5.5 5.5 0 0 1 32 24 A5.5 5.5 0 0 1 42 31 Z\" fill=\"#ec5f9a\"/><path d=\"M54 42 L44 31 A5.5 5.5 0 0 1 54 24 A5.5 5.5 0 0 1 64 31 Z\" fill=\"#ec5f9a\"/>", "u": null, "layer": "face"}, {"id": "star", "n": "Kacamata bintang", "p": 200, "svg": "<path d=\"M32 21l3.3 6.7 7.4 1.1-5.4 5.2 1.3 7.4-6.6-3.5-6.6 3.5 1.3-7.4-5.4-5.2 7.4-1.1z\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"1.5\"/><path d=\"M54 21l3.3 6.7 7.4 1.1-5.4 5.2 1.3 7.4-6.6-3.5-6.6 3.5 1.3-7.4-5.4-5.2 7.4-1.1z\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"1.5\"/>", "u": null, "layer": "face"}, {"id": "cateye", "n": "Kacamata kucing", "p": 200, "svg": "<path d=\"M20 28 Q24 22 40 26 Q40 38 30 38 Q20 38 20 28 Z\" fill=\"rgba(255,255,255,.2)\" stroke=\"#e5484d\" stroke-width=\"3\"/><path d=\"M66 28 Q62 22 46 26 Q46 38 56 38 Q66 38 66 28 Z\" fill=\"rgba(255,255,255,.2)\" stroke=\"#e5484d\" stroke-width=\"3\"/>", "u": null, "layer": "face"}, {"id": "goggles", "n": "Kacamata renang", "p": 220, "svg": "<path d=\"M10 30 H76\" stroke=\"#3f8cf0\" stroke-width=\"4\"/><ellipse cx=\"32\" cy=\"31\" rx=\"11\" ry=\"9\" fill=\"rgba(63,140,240,.35)\" stroke=\"#2c6fd1\" stroke-width=\"3\"/><ellipse cx=\"54\" cy=\"31\" rx=\"11\" ry=\"9\" fill=\"rgba(63,140,240,.35)\" stroke=\"#2c6fd1\" stroke-width=\"3\"/>", "u": null, "layer": "face"}, {"id": "threed", "n": "Kacamata 3D", "p": 250, "svg": "<rect x=\"19\" y=\"24\" width=\"48\" height=\"15\" rx=\"3\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"1.5\"/><rect x=\"22\" y=\"26\" width=\"17\" height=\"11\" rx=\"2\" fill=\"rgba(229,72,77,.75)\"/><rect x=\"47\" y=\"26\" width=\"17\" height=\"11\" rx=\"2\" fill=\"rgba(63,140,240,.75)\"/>", "u": null, "layer": "face"}, {"id": "hero", "n": "Topeng pahlawan", "p": 300, "svg": "<path d=\"M14 26 Q43 18 72 26 Q72 40 58 38 Q50 36 43 33 Q36 36 28 38 Q14 40 14 26 Z\" fill=\"#e5484d\"/><ellipse cx=\"31\" cy=\"30\" rx=\"5\" ry=\"4\" fill=\"#fff\"/><ellipse cx=\"55\" cy=\"30\" rx=\"5\" ry=\"4\" fill=\"#fff\"/>", "u": null, "layer": "face"}, {"id": "patch", "n": "Penutup mata", "p": 300, "svg": "<path d=\"M14 18 L72 40\" stroke=\"#24264a\" stroke-width=\"2.5\"/><ellipse cx=\"54\" cy=\"32\" rx=\"9\" ry=\"8\" fill=\"#24264a\"/>", "u": null, "layer": "face"}, {"id": "mustache", "n": "Kumis", "p": 350, "svg": "<path d=\"M43 44 Q36 38 28 42 Q24 46 30 47 Q36 46 43 44 Q50 46 56 47 Q62 46 58 42 Q50 38 43 44 Z\" fill=\"#24264a\"/>", "u": null, "layer": "face"}, {"id": "freckle", "n": "Bintik bintang", "p": 350, "svg": "<g fill=\"#ffc845\"><path d=\"M22 42l1 2 2 .3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1L19 44.3l2-.3z\"/><path d=\"M64 42l1 2 2 .3-1.5 1.4.4 2.1-1.9-1-1.9 1 .4-2.1L61 44.3l2-.3z\"/></g>", "u": null, "layer": "face"}, {"id": "visor", "n": "Visor masa depan", "p": 450, "svg": "<path d=\"M16 24 Q43 18 70 24 L68 38 Q43 42 18 38 Z\" fill=\"rgba(52,199,154,.55)\" stroke=\"#21a37b\" stroke-width=\"2\"/><path d=\"M22 28 H40\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\".8\"/>", "u": null, "layer": "face"}, {"id": "diving", "n": "Masker selam", "p": 500, "svg": "<rect x=\"16\" y=\"20\" width=\"54\" height=\"22\" rx=\"10\" fill=\"rgba(160,210,255,.45)\" stroke=\"#f59f1b\" stroke-width=\"4\"/><path d=\"M76 10 V40\" stroke=\"#f59f1b\" stroke-width=\"5\" stroke-linecap=\"round\"/>", "u": null, "layer": "face"}, {"id": "monocle", "n": "Monokel", "p": null, "svg": "<circle cx=\"54\" cy=\"32\" r=\"10\" fill=\"rgba(255,255,255,.18)\" stroke=\"#d9a21f\" stroke-width=\"3\"/><path d=\"M64 34 Q70 50 64 62\" fill=\"none\" stroke=\"#d9a21f\" stroke-width=\"1.5\"/>", "u": ["examc1", "Simulasi tes dengan hasil C1"], "layer": "face"}, {"id": "reader", "n": "Kacamata baca emas", "p": null, "svg": "<path d=\"M20 34 H40 V30 Q30 26 20 30 Z M46 34 H66 V30 Q56 26 46 30 Z\" fill=\"rgba(255,255,255,.2)\" stroke=\"#d9a21f\" stroke-width=\"3\" stroke-linejoin=\"round\"/><path d=\"M40 32 H46\" stroke=\"#d9a21f\" stroke-width=\"3\"/>", "u": ["read18", "Selesaikan 18 bacaan"], "layer": "face"}, {"id": "goldstar", "n": "Bintang emas", "p": null, "svg": "<path d=\"M32 19l3.8 7.7 8.5 1.2-6.2 6 1.5 8.5-7.6-4-7.6 4 1.5-8.5-6.2-6 8.5-1.2z\" fill=\"#ffe07a\" stroke=\"#c98a00\" stroke-width=\"2\"/><path d=\"M54 19l3.8 7.7 8.5 1.2-6.2 6 1.5 8.5-7.6-4-7.6 4 1.5-8.5-6.2-6 8.5-1.2z\" fill=\"#ffe07a\" stroke=\"#c98a00\" stroke-width=\"2\"/>", "u": ["perfect10", "Skor 100% sebanyak 10 kali"], "layer": "face"}], "acc": [{"id": "none", "n": "Tanpa", "p": 0, "svg": "", "u": null, "layer": "front"}, {"id": "bow", "n": "Dasi kupu-kupu", "p": 100, "svg": "<path d=\"M33 60 L43 66 L33 72 Z M53 60 L43 66 L53 72 Z\" fill=\"#ff7a59\"/><circle cx=\"43\" cy=\"66\" r=\"3.5\" fill=\"#d9583a\"/>", "u": null, "layer": "front"}, {"id": "tie", "n": "Dasi kantor", "p": 120, "svg": "<path d=\"M39 62 H47 L45 67 L49 84 L43 90 L37 84 L41 67 Z\" fill=\"#3f8cf0\"/><path d=\"M40 72 L46 70 M39 78 L47 76\" stroke=\"#2c6fd1\" stroke-width=\"1.5\"/>", "u": null, "layer": "front"}, {"id": "scarf", "n": "Syal", "p": 150, "svg": "<path d=\"M16 58 Q43 70 70 58 L70 66 Q43 78 16 66 Z\" fill=\"#ffc845\"/><path d=\"M58 64 L64 84 L56 84 L52 66 Z\" fill=\"#d9a21f\"/>", "u": null, "layer": "front"}, {"id": "flowerpin", "n": "Bunga di kepala", "p": 150, "svg": "<g transform=\"translate(66 10)\"><circle cx=\"0\" cy=\"-6\" r=\"5\" fill=\"#ff9bb3\"/><circle cx=\"6\" cy=\"0\" r=\"5\" fill=\"#ff9bb3\"/><circle cx=\"0\" cy=\"6\" r=\"5\" fill=\"#ff9bb3\"/><circle cx=\"-6\" cy=\"0\" r=\"5\" fill=\"#ff9bb3\"/><circle cx=\"0\" cy=\"0\" r=\"4\" fill=\"#ffc845\"/></g>", "u": null, "layer": "front"}, {"id": "bell", "n": "Kalung lonceng", "p": 180, "svg": "<path d=\"M20 62 Q43 72 66 62\" fill=\"none\" stroke=\"#e5484d\" stroke-width=\"4\"/><circle cx=\"43\" cy=\"72\" r=\"6\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"2\"/><path d=\"M39 72 H47\" stroke=\"#d9a21f\" stroke-width=\"1.5\"/>", "u": null, "layer": "front"}, {"id": "pearls", "n": "Kalung mutiara", "p": 200, "svg": "<g fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"1\"><circle cx=\"20\" cy=\"54\" r=\"3\"/><circle cx=\"26\" cy=\"57.5\" r=\"3\"/><circle cx=\"33\" cy=\"60\" r=\"3\"/><circle cx=\"41\" cy=\"61\" r=\"3\"/><circle cx=\"49\" cy=\"61\" r=\"3\"/><circle cx=\"56\" cy=\"60\" r=\"3\"/><circle cx=\"62\" cy=\"57.5\" r=\"3\"/><circle cx=\"68\" cy=\"54\" r=\"3\"/></g>", "u": null, "layer": "front"}, {"id": "phones", "n": "Headphone", "p": 250, "svg": "<path d=\"M10 34 Q43 -12 76 34\" fill=\"none\" stroke=\"#24264a\" stroke-width=\"6\" stroke-linecap=\"round\"/><rect x=\"3\" y=\"26\" width=\"12\" height=\"20\" rx=\"5\" fill=\"#ff7a59\"/><rect x=\"71\" y=\"26\" width=\"12\" height=\"20\" rx=\"5\" fill=\"#ff7a59\"/>", "u": null, "layer": "front"}, {"id": "book", "n": "Buku", "p": 250, "svg": "<g transform=\"translate(78 44) rotate(10)\"><rect x=\"-10\" y=\"-12\" width=\"20\" height=\"26\" rx=\"2\" fill=\"#3f8cf0\"/><rect x=\"-7\" y=\"-9\" width=\"14\" height=\"5\" rx=\"1\" fill=\"#fff\" opacity=\".8\"/><rect x=\"8\" y=\"-12\" width=\"3\" height=\"26\" fill=\"#2c6fd1\"/></g>", "u": null, "layer": "front"}, {"id": "mic", "n": "Mikrofon", "p": 300, "svg": "<g transform=\"translate(80 40) rotate(20)\"><rect x=\"-2.5\" y=\"2\" width=\"5\" height=\"22\" rx=\"2\" fill=\"#24264a\"/><circle cx=\"0\" cy=\"-2\" r=\"8\" fill=\"#64748b\"/><path d=\"M-6 -4 H6 M-6 0 H6\" stroke=\"#fff\" stroke-width=\"1\" opacity=\".6\"/></g>", "u": null, "layer": "front"}, {"id": "balloon", "n": "Balon", "p": 300, "svg": "<path d=\"M78 70 Q82 40 86 16\" fill=\"none\" stroke=\"#55587a\" stroke-width=\"1.5\"/><ellipse cx=\"86\" cy=\"2\" rx=\"11\" ry=\"14\" fill=\"#e5484d\"/><path d=\"M82 -4 Q84 -8 88 -8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2\" stroke-linecap=\"round\" opacity=\".7\"/>", "u": null, "layer": "back"}, {"id": "cape", "n": "Jubah pahlawan", "p": 400, "svg": "<path d=\"M14 20 Q4 60 0 84 Q43 74 86 84 Q82 60 72 20 Z\" fill=\"#e5484d\"/>", "u": null, "layer": "back"}, {"id": "backpack", "n": "Ransel", "p": 400, "svg": "<rect x=\"62\" y=\"16\" width=\"26\" height=\"40\" rx=\"9\" fill=\"#f59f1b\"/><rect x=\"66\" y=\"34\" width=\"18\" height=\"14\" rx=\"4\" fill=\"#d9831a\"/><path d=\"M66 18 Q60 30 64 50\" fill=\"none\" stroke=\"#d9831a\" stroke-width=\"4\"/>", "u": null, "layer": "back"}, {"id": "lanyard", "n": "Kartu pelajar", "p": 450, "svg": "<path d=\"M24 58 L43 74 L62 58\" fill=\"none\" stroke=\"#3f8cf0\" stroke-width=\"3\"/><rect x=\"35\" y=\"72\" width=\"16\" height=\"20\" rx=\"3\" fill=\"#fff\" stroke=\"#dbe4f7\" stroke-width=\"1.5\"/><rect x=\"38\" y=\"76\" width=\"10\" height=\"7\" rx=\"1\" fill=\"#c8f0df\"/><path d=\"M38 87 H48\" stroke=\"#55587a\" stroke-width=\"1.5\"/>", "u": null, "layer": "front"}, {"id": "umbrella", "n": "Payung", "p": 500, "svg": "<path d=\"M58 -6 Q80 -26 102 -6 Z\" fill=\"#14a3a3\"/><path d=\"M80 -6 V52 Q80 58 74 56\" fill=\"none\" stroke=\"#24264a\" stroke-width=\"2.5\" stroke-linecap=\"round\"/>", "u": null, "layer": "back"}, {"id": "medal", "n": "Medali juara", "p": null, "svg": "<path d=\"M33 56 L39 70 M53 56 L47 70\" stroke=\"#3f8cf0\" stroke-width=\"5\"/><circle cx=\"43\" cy=\"76\" r=\"9\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"2.5\"/><path d=\"M43 71l1.5 3 3.3.5-2.4 2.3.6 3.3-3-1.6-3 1.6.6-3.3-2.4-2.3 3.3-.5z\" fill=\"#fff\"/>", "u": ["streak7", "Streak 7 hari"], "layer": "front"}, {"id": "trophy", "n": "Piala", "p": null, "svg": "<g transform=\"translate(82 46)\"><path d=\"M-9 -14 H9 V-4 Q9 6 0 7 Q-9 6 -9 -4 Z\" fill=\"#ffc845\" stroke=\"#d9a21f\" stroke-width=\"2\"/><path d=\"M-9 -10 Q-15 -10 -14 -4 Q-13 1 -8 0 M9 -10 Q15 -10 14 -4 Q13 1 8 0\" fill=\"none\" stroke=\"#d9a21f\" stroke-width=\"2\"/><rect x=\"-2\" y=\"7\" width=\"4\" height=\"6\" fill=\"#d9a21f\"/><rect x=\"-7\" y=\"13\" width=\"14\" height=\"5\" rx=\"1.5\" fill=\"#8b5e3c\"/></g>", "u": ["exam90", "Skor simulasi tes 90 ke atas"], "layer": "front"}, {"id": "wings", "n": "Sayap", "p": null, "svg": "<path d=\"M12 24 Q-14 4 -12 34 Q-8 50 14 44 Z\" fill=\"#e6e6ff\" stroke=\"#9aa6d8\" stroke-width=\"2\"/><path d=\"M74 24 Q100 4 98 34 Q94 50 72 44 Z\" fill=\"#e6e6ff\" stroke=\"#9aa6d8\" stroke-width=\"2\"/><path d=\"M-4 22 Q2 30 4 40 M90 22 Q84 30 82 40\" fill=\"none\" stroke=\"#9aa6d8\" stroke-width=\"2\"/>", "u": ["streak100", "Streak 100 hari"], "layer": "back"}]};
 const COSTUME_DEFS = "<defs><linearGradient id=\"bbGold\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffe07a\"/><stop offset=\".55\" stop-color=\"#f2b705\"/><stop offset=\"1\" stop-color=\"#c98a00\"/></linearGradient><linearGradient id=\"bbRain\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#ff6b6b\"/><stop offset=\".25\" stop-color=\"#ffc845\"/><stop offset=\".5\" stop-color=\"#34c79a\"/><stop offset=\".75\" stop-color=\"#3f8cf0\"/><stop offset=\"1\" stop-color=\"#8e44c9\"/></linearGradient><radialGradient id=\"bbGal\" cx=\".3\" cy=\".3\" r=\".9\"><stop offset=\"0\" stop-color=\"#7b5cff\"/><stop offset=\".6\" stop-color=\"#2b1d6b\"/><stop offset=\"1\" stop-color=\"#120c33\"/></radialGradient></defs>";
@@ -4276,6 +4696,7 @@ const ICONS = {
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   shirt: '<path d="M8 3l4 2.5L16 3l5 3.5-2.5 4-2.5-1.2V21H8V9.3L5.5 10.5 3 6.5z"/>',
   moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  spark: '<path d="M12 3l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.4z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>',
   box: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 11v4"/><path d="M5 9a7 5 0 0 1 14 0"/>'
 };
 const I = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -4328,14 +4749,16 @@ LEVELS.forEach((L, li) => {
 LEVELS.forEach(L => {
   const R = READING[L.id];
   if (R) {
-    L.reads = [R, ...(READING2[L.id] || [])].map((r, k) => {
+    L.reads = [R, ...(READING2[L.id] || []), ...(READING3[L.id] || [])].map((r, k) => {
       const o = { title: r.title, text: r.text, k, sid: k ? L.id + "_" + k : L.id, qs: r.qs.trim().split("\n").map(x => x.trim()).filter(Boolean).map(parseLine) };
       o.qs.forEach((q, n) => { q.key = "r_" + L.id + (k ? k + 1 : "") + ":" + n; q.li = L.i; QMAP[q.key] = q; });
       return o;
     });
     L.read = L.reads[0];
   }
-  L.speak = (SPEAK[L.id] || []).concat(SPEAK2[L.id] || []);
+  // Praktik berbicara: 5 topik × 6 kalimat. L.speak = semua kalimat (untuk hitungan).
+  L.topics = (SPEAKT[L.id] || []).map((t, k) => ({ title: t.title, s: t.s, k }));
+  L.speak = L.topics.flatMap(t => t.s);
 });
 const NQ = LESSONS.reduce((n, x) => n + x.qs.length, 0) + LEVELS.reduce((n, L) => n + (L.reads || []).reduce((m, r) => m + r.qs.length, 0), 0);
 const RANKS = [[0, "Rakyat Biasa"], [200, "Murid Istana"], [600, "Pengawal"], [1500, "Kesatria"], [3000, "Penyihir Kata"], [5000, "Panglima"], [8000, "Penasihat Raja"], [12000, "Bangsawan"], [17000, "Penguasa Bahasa"], [25000, "Raja Bahasa"]];
@@ -4357,6 +4780,14 @@ function hydrate(o) {
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
   Object.keys(s.known).forEach(k => { if (!s.known[k] || typeof s.known[k] !== "object") s.known[k] = { b: 1, d: td }; });
+  // Progres berbicara lama (per level, indeks kalimat) → per topik.
+  LEVELS.forEach(L => {
+    const old = s.spoke[L.id]; if (!old || typeof old !== "object") return;
+    const list = (SPEAK[L.id] || []).concat(SPEAK2[L.id] || []);
+    Object.keys(old).forEach(i => { const en = list[+i] && list[+i][0]; if (!en) return;
+      L.topics.forEach(T => T.s.forEach((x, j) => { if (x[0] === en) { const key = L.id + ":" + T.k; s.spoke[key] = Object.assign({}, s.spoke[key], { [j]: 1 }); } })); });
+    delete s.spoke[L.id];
+  });
   { const OLD = { 30: 250, 50: 500, 100: 1000 }; if (OLD[s.goal]) s.goal = OLD[s.goal]; if (!GOALS.includes(s.goal)) s.goal = 500; }
   s.name = typeof s.name === "string" ? s.name.slice(0, 24) : "";
   if (!["auto", "light", "dark"].includes(s.theme)) s.theme = "auto";
@@ -4387,7 +4818,9 @@ const wrongItems = () => Object.keys(S.wrong).filter(k => S.wrong[k].d <= dkey()
 const wrongLater = () => Object.keys(S.wrong).filter(k => S.wrong[k].d > dkey() && QMAP[k]).length;
 const isKnown = w => !!(S.known[w] && S.known[w].b >= 1);
 const knownCount = () => VOCAB.filter(v => isKnown(v.w)).length;
-const spokeN = L => Object.keys(S.spoke[L.id] || {}).length;
+const topicN = (L, t) => Object.keys(S.spoke[L.id + ":" + t] || {}).length;
+const topicDone = (L, t) => topicN(L, t) >= L.topics[t].s.length;
+const spokeN = L => L.topics.reduce((n, T) => n + topicN(L, T.k), 0);
 const spokeTotal = () => LEVELS.reduce((n, L) => n + spokeN(L), 0);
 const streakNow = () => (S.lastDay === dkey() || S.lastDay === dayAgo(1)) ? S.streak : 0;
 function rankOf(xp) { let k = 0; RANKS.forEach((r, i) => { if (xp >= r[0]) k = i; }); const n = RANKS[k + 1]; return { name: RANKS[k][1], at: RANKS[k][0], next: n ? { at: n[0], name: n[1] } : null }; }
@@ -4404,8 +4837,8 @@ function addCoins(n) { S.coins += n; S.coinsAll += n; }
 const SPECIAL = {
   c2: () => !!S.cert.expert, streak30: () => S.best >= 30, streak100: () => S.best >= 100, streak7: () => S.best >= 7,
   stars36: () => LESSONS.every(x => starsOf(x) === 3), alltests: () => LEVELS.every(L => S.cert[L.id]), cert: () => Object.keys(S.cert).length > 0,
-  talk12: () => TALKS.every(T => S.talk[T.id] != null), examc1: () => S.exams.some(e => e.li >= 4), exam90: () => S.exams.some(e => e.sc >= 90),
-  read18: () => LEVELS.every(L => L.reads.every(r => S.read[r.sid] != null)), perfect10: () => S.perf >= 10
+  talk12: () => TALKS.filter(T => S.talk[T.id] != null).length >= 12, examc1: () => S.exams.some(e => e.li >= 4), exam90: () => S.exams.some(e => e.sc >= 90),
+  read18: () => Object.keys(S.read).length >= 18, perfect10: () => S.perf >= 10
 };
 const spOpen = it => it.p === null && !!(it.u && SPECIAL[it.u[0]] && SPECIAL[it.u[0]]());
 const ownsItem = (cat, it) => it.p === 0 || !!S.owned[cat + ":" + it.id] || spOpen(it);
@@ -4423,21 +4856,31 @@ const roundPassed = (x, r) => r === 1 ? !!S.done[x.id] || (S.scores[x.id] || 0) 
 const roundOpen = (x, r) => r === 1 || roundPassed(x, r - 1);
 const starsOf = x => [1, 2, 3].filter(r => roundPassed(x, r)).length;
 const starHTML = x => { const n = starsOf(x); return `<span class="stars" role="img" aria-label="${n} dari 3 bintang">${[1, 2, 3].map(k => `<i class="${k <= n ? "on" : ""}">${k <= n ? "★" : "☆"}</i>`).join("")}</span>`; };
-// Daftar percakapan: dua per level.
-const TALKS = []; LEVELS.forEach((L, li) => [[L.id, TALK[L.id]], [L.id + "2", TALK2[L.id]]].forEach(([id, t]) => { if (t) TALKS.push(Object.assign({ id, li }, t)); }));
+// Daftar percakapan: lima per level.
+const TALKS = []; LEVELS.forEach((L, li) => [[L.id, TALK[L.id]], [L.id + "2", TALK2[L.id]], ...(TALK3[L.id] || []).map((t, k) => [L.id + (k + 3), t])].forEach(([id, t]) => { if (t) TALKS.push(Object.assign({ id, li }, t)); }));
 // Semua materi di rute: pelajaran, bacaan, latihan berbicara, percakapan, dan tes level.
 function routeProgress() {
   const c = { lesson: [0, 0], read: [0, 0], speak: [0, 0], talk: [0, 0], test: [0, 0] };
   LEVELS.forEach(L => {
     L.lessons.forEach(x => { c.lesson[1]++; if (S.done[x.id]) c.lesson[0]++; });
     (L.reads || []).forEach(r => { c.read[1]++; if (S.read[r.sid] != null) c.read[0]++; });
-    if (L.speak.length) { c.speak[1]++; if (spokeN(L) >= L.speak.length) c.speak[0]++; }
+    L.topics.forEach(T => { c.speak[1]++; if (topicDone(L, T.k)) c.speak[0]++; });
     c.test[1]++; if (S.cert[L.id]) c.test[0]++;
   });
   TALKS.forEach(T => { c.talk[1]++; if (S.talk[T.id] != null) c.talk[0]++; });
   c.all = Object.values(c).reduce((a, v) => [a[0] + v[0], a[1] + v[1]], [0, 0]);
   return c;
 }
+// Praktik keterampilan per level: babak 1 bacaan, babak 2 berbicara, babak 3 percakapan (5 topik per babak).
+const SKB = [["Bacaan", "book"], ["Berbicara", "mic"], ["Percakapan", "chat"]];
+const levelTalks = li => TALKS.map((T, n) => ({ T, n })).filter(x => x.T.li === li);
+function skillCounts(li) {
+  const L = LEVELS[li];
+  return [(L.reads || []).filter(r => S.read[r.sid] != null).length, L.topics.filter(T => topicDone(L, T.k)).length, levelTalks(li).filter(x => S.talk[x.T.id] != null).length];
+}
+const skillTotals = li => [(LEVELS[li].reads || []).length, LEVELS[li].topics.length, levelTalks(li).length];
+const skillDone = li => skillCounts(li).reduce((a, b) => a + b, 0);
+const skillFirst = li => { const c = skillCounts(li), t = skillTotals(li); const b = c.findIndex((v, i) => v < t[i]); return b < 0 ? 0 : b; };
 const nCount = o => Object.keys(o || {}).length;
 const stars3 = () => LESSONS.filter(x => starsOf(x) === 3).length;
 const ownedCostumes = () => { let n = 0; Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { if (ownsItem(c, it)) n++; })); return n; };
@@ -4484,10 +4927,14 @@ const BADGES = [
   { id: "route50", r: 2, n: "Penjelajah rute", d: "Selesaikan 50 materi di rute", ic: "map", t: () => routeProgress().all[0] >= 50, p: () => routeProgress().all[0] / 50 },
   { id: "routeAll", r: 4, n: "Rute tuntas", d: "Selesaikan semua materi dari A1 sampai C2", ic: "map", t: () => { const a = routeProgress().all; return a[0] >= a[1]; }, p: () => { const a = routeProgress().all; return a[0] / a[1]; } },
   { id: "read6", r: 1, n: "Rajin membaca", d: "Kerjakan 6 bacaan", ic: "book", t: () => routeProgress().read[0] >= 6, p: () => routeProgress().read[0] / 6 },
-  { id: "read18", r: 3, n: "Kutu buku", d: "Kerjakan semua 18 bacaan", ic: "book", t: () => routeProgress().read[0] >= 18, p: () => routeProgress().read[0] / 18 },
+  { id: "read18", r: 3, n: "Kutu buku", d: "Kerjakan 18 bacaan", ic: "book", t: () => routeProgress().read[0] >= 18, p: () => routeProgress().read[0] / 18 },
   { id: "speak36", r: 2, n: "Suara percaya diri", d: "Ucapkan 36 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 36, p: () => spokeTotal() / 36 },
-  { id: "speak72", r: 3, n: "Lidah fasih", d: "Ucapkan semua 72 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 72, p: () => spokeTotal() / 72 },
-  { id: "talk12", r: 3, n: "Diplomat", d: "Selesaikan semua 12 percakapan", ic: "chat", t: () => TALKS.every(T => S.talk[T.id] != null), p: () => TALKS.filter(T => S.talk[T.id] != null).length / TALKS.length },
+  { id: "speak72", r: 3, n: "Lidah fasih", d: "Ucapkan 72 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 72, p: () => spokeTotal() / 72 },
+  { id: "talk12", r: 3, n: "Diplomat", d: "Selesaikan 12 percakapan", ic: "chat", t: () => routeProgress().talk[0] >= 12, p: () => routeProgress().talk[0] / 12 },
+  { id: "read30", r: 4, n: "Perpustakaan berjalan", d: "Kerjakan semua 30 bacaan", ic: "book", t: () => routeProgress().read[0] >= 30, p: () => routeProgress().read[0] / 30 },
+  { id: "speak180", r: 4, n: "Orator", d: "Ucapkan semua 180 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 180, p: () => spokeTotal() / 180 },
+  { id: "talk30", r: 4, n: "Duta bahasa", d: "Selesaikan semua 30 percakapan", ic: "chat", t: () => routeProgress().talk[0] >= 30, p: () => routeProgress().talk[0] / 30 },
+  { id: "route_skill1", r: 2, n: "Serba bisa", d: "Tuntaskan 15 topik Praktik di satu level", ic: "spark", t: () => LEVELS.some(L => skillDone(L.i) >= 15), p: () => Math.max(...LEVELS.map(L => skillDone(L.i))) / 15 },
   { id: "talkPerfect", r: 2, n: "Lawan bicara ideal", d: "Skor 100% di 5 percakapan", ic: "chat", t: () => Object.values(S.talk).filter(v => v === 100).length >= 5, p: () => Object.values(S.talk).filter(v => v === 100).length / 5 },
   { id: "test1", r: 1, n: "Lulus ujian", d: "Lulus satu tes level", ic: "flag", t: () => nCount(S.cert) >= 1, p: () => nCount(S.cert) },
   { id: "test3", r: 2, n: "Tiga sertifikat", d: "Lulus 3 tes level", ic: "award", t: () => nCount(S.cert) >= 3, p: () => nCount(S.cert) / 3 },
@@ -4680,7 +5127,7 @@ function confetti() {
 /* ================= router ================= */
 let ROUTE = { v: "home", a: [] }, H = {}, QUIZ = null, TICK = null, QT = null;
 const VIEWS = {};
-const SECTION = { badges: "profile", wardrobe: "wardrobe", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", practice: "practice", flash: "practice", profile: "profile" };
+const SECTION = { badges: "profile", wardrobe: "wardrobe", settings: "profile", exam: "practice", mine: "practice", talk: "practice", home: "home", lesson: "home", read: "home", speak: "home", skill: "home", practice: "practice", flash: "practice", profile: "profile" };
 function toTop() { try { window.scrollTo(0, 0); } catch (e) {} }
 /* Setiap layar punya alamat (#rute, #pelajaran-0-1, …) agar tombol kembali di HP bekerja.
    Sesi kuis/game memakai #kuis; menekan kembali saat kuis memunculkan konfirmasi keluar. */
@@ -4689,7 +5136,8 @@ function hashOf(v, a) {
   switch (v) {
     case "lesson": return "#pelajaran-" + a[0] + "-" + a[1];
     case "read": return "#bacaan-" + a[0] + (a[1] ? "-" + a[1] : "");
-    case "speak": return "#bicara-" + a[0];
+    case "speak": return "#bicara-" + a[0] + "-" + (a[1] || 0);
+    case "skill": return "#praktik-" + a[0] + "-" + (a[1] || 0);
     case "talk": return a[0] != null ? "#ngobrol-" + a[0] : "#ngobrol";
     case "flash": return "#flashcard-" + (a[0] || "all");
     case "practice": return "#latihan";
@@ -4719,7 +5167,8 @@ function parseHash(h) {
     case "pelajaran": { const li = n(p[1]), j = n(p[2]); return LEVELS[li] && LEVELS[li].lessons[j] ? { v: "lesson", a: [li, j] } : null; }
     case "bacaan": { const li = n(p[1]), k = n(p[2]) || 0; return LEVELS[li] && LEVELS[li].reads && LEVELS[li].reads[k] ? { v: "read", a: [li, k] } : null; }
     case "ngobrol": { const k = n(p[1]); return { v: "talk", a: isNaN(k) ? [] : [k] }; }
-    case "bicara": { const li = n(p[1]); return LEVELS[li] ? { v: "speak", a: [li] } : null; }
+    case "bicara": { const li = n(p[1]), t = n(p[2]) || 0; return LEVELS[li] && LEVELS[li].topics[t] ? { v: "speak", a: [li, t] } : null; }
+    case "praktik": { const li = n(p[1]), b = Math.min(2, n(p[2]) || 0); return LEVELS[li] ? { v: "skill", a: [li, b] } : null; }
     default: return null;
   }
 }
@@ -4840,9 +5289,10 @@ VIEWS.home = function () {
         const st = S.done[x.id] ? "done" : (next && next.id === x.id ? "cur" : "todo");
         return `<li><button class="lrow ${st}" data-a="open" data-l="${L.i}" data-j="${x.j}"><span class="n">${st === "done" ? I("check") : x.j + 1}</span><span class="grow"><b>${esc(x.title)}</b><small>3 babak · ${x.qs.length} soal</small></span>${st === "cur" ? "" : starHTML(x)}${st === "cur" ? '<span class="go">Mulai</span>' : ""}</button></li>`;
       }).join("")}
-      ${(L.reads || []).map(r => `<li><button class="lrow${S.read[r.sid] != null ? " done" : ""}" data-a="read" data-l="${L.i}" data-k="${r.k}"><span class="n">${I("book")}</span><span><b>Bacaan: ${esc(r.title)}</b><small>${r.qs.length} soal pemahaman${S.read[r.sid] != null ? " · terbaik " + S.read[r.sid] + "%" : ""}</small></span></button></li>`).join("")}
-      ${L.speak.length ? `<li><button class="lrow${spokeN(L) >= L.speak.length ? " done" : ""}" data-a="speak" data-l="${L.i}"><span class="n">${I("mic")}</span><span><b>Latihan berbicara</b><small>${spokeN(L)} dari ${L.speak.length} kalimat lancar</small></span></button></li>` : ""}
-      ${TALKS.map((T, n) => T.li !== L.i ? "" : `<li><button class="lrow${S.talk[T.id] != null ? " done" : ""}" data-a="talk" data-l="${n}"><span class="n">${I("chat")}</span><span><b>Percakapan: ${esc(T.title)}</b><small>Ngobrol bersama ${esc(T.who)}${S.talk[T.id] != null ? " · terbaik " + S.talk[T.id] + "%" : ""}</small></span></button></li>`).join("")}
+      ${(() => { const c = skillCounts(L.i), t = skillTotals(L.i), d = c.reduce((a, b) => a + b, 0), tt = t.reduce((a, b) => a + b, 0);
+        return `<li><button class="lrow skillrow${d >= tt ? " done" : ""}" data-a="skill" data-l="${L.i}"><span class="n">${d >= tt ? I("check") : I("spark")}</span><span class="grow"><b>Praktik keterampilan ${L.cefr}</b><small>3 babak · ${tt} topik</small>
+          <span class="skchips">${SKB.map(([n, ic], b) => `<span class="${c[b] >= t[b] ? "ok" : ""}">${I(ic)}<b>${c[b]}/${t[b]}</b><i>${n}</i></span>`).join("")}</span>
+          <span class="pbar"><i style="width:${d / tt * 100}%"></i></span></span><span class="skn">${d}/${tt}</span></button></li>`; })()}
       <li><button class="lrow test${dn === n ? " done" : ""}" data-a="test" data-l="${L.i}"><span class="n">${I("flag")}</span><span><b>Tes level ${L.cefr}</b><small>20 soal acak · lulus 75% menandai level selesai</small></span></button></li></ol></details>`;
   };
   app.innerHTML = `<div class="home">
@@ -4873,8 +5323,7 @@ VIEWS.home = function () {
     allopen() { const all = OPENLV.size === LEVELS.length; $$("details.lvcard").forEach(dd => { dd.open = !all; }); },
     test(el) { levelTest(+el.dataset.l); },
     read(el) { nav("read", +el.dataset.l, +el.dataset.k || 0); },
-    speak(el) { nav("speak", +el.dataset.l); },
-    talk(el) { TALKFROM = "home"; nav("talk", +el.dataset.l); },
+    skill(el) { const li = +el.dataset.l; nav("skill", li, skillFirst(li)); },
     wknow(el) { const w = el.dataset.w; if (!isKnown(w)) S.known[w] = { b: 1, d: addDays(INT[1]) }; newBadges(); save(); const y = window.scrollY; rerender(); try { window.scrollTo(0, y); } catch (e) {} sfx.ok(); },
     cont() { nav("lesson", next.li, next.j); },
     flash() { nav("flash"); },
@@ -5005,14 +5454,14 @@ VIEWS.lesson = function (li, j, tab = "m") {
 function routeSteps(li) {
   const L = LEVELS[li], out = L.lessons.map(x => ({ t: "lesson", li, j: x.j, title: x.title }));
   (L.reads || []).forEach(r => out.push({ t: "read", li, k: r.k, title: "Bacaan: " + r.title }));
-  if (L.speak.length) out.push({ t: "speak", li, title: "Latihan berbicara " + L.cefr });
+  L.topics.forEach(T => out.push({ t: "speak", li, k: T.k, title: "Berbicara: " + T.title }));
   TALKS.forEach((T, n) => { if (T.li === li) out.push({ t: "talk", li, n, title: "Percakapan: " + T.title }); });
   out.push({ t: "test", li, title: "Tes level " + L.cefr });
   return out;
 }
 // Langkah sesudah langkah tertentu; sesudah tes level lanjut ke pelajaran pertama level berikutnya.
 function stepAfter(t, li, key) {
-  const st = routeSteps(li), i = st.findIndex(x => x.t === t && (t === "lesson" ? x.j === key : t === "read" ? x.k === key : t === "talk" ? x.n === key : true));
+  const st = routeSteps(li), i = st.findIndex(x => x.t === t && (t === "lesson" ? x.j === key : t === "read" || t === "speak" ? x.k === key : t === "talk" ? x.n === key : true));
   if (i >= 0 && i + 1 < st.length) return st[i + 1];
   return li + 1 < LEVELS.length ? routeSteps(li + 1)[0] : null;
 }
@@ -5020,11 +5469,13 @@ function goStep(x) {
   if (!x) return nav("home");
   if (x.t === "lesson") nav("lesson", x.li, x.j);
   else if (x.t === "read") nav("read", x.li, x.k);
-  else if (x.t === "speak") nav("speak", x.li);
-  else if (x.t === "talk") { TALKFROM = "home"; nav("talk", x.n); }
+  else if (x.t === "speak") nav("speak", x.li, x.k);
+  else if (x.t === "talk") { TALKFROM = ["skill", x.li, 2]; nav("talk", x.n); }
   else levelTest(x.li);
 }
 const stepLabel = x => !x ? "" : x.t === "test" ? "Lanjut ke " + x.title : x.t === "lesson" && x.j === 0 ? "Lanjut ke Level " + LEVELS[x.li].cefr : "Lanjut ke materi berikutnya";
+// Ketika langkah berikut pindah babak, labelnya menyebut babaknya.
+const stepLabel2 = (x, from) => x && x.t !== from && ["read", "speak", "talk"].includes(x.t) ? "Lanjut ke Babak " + (["read", "speak", "talk"].indexOf(x.t) + 1) + ": " + SKB[["read", "speak", "talk"].indexOf(x.t)][0] : stepLabel(x);
 // Pelajaran sesudah (li, j): lanjut di level yang sama, atau pelajaran pertama level berikutnya.
 function nextOf(li, j) { const L = LEVELS[li]; if (j + 1 < L.lessons.length) return { li, j: j + 1, title: L.lessons[j + 1].title }; if (li + 1 < LEVELS.length) return { li: li + 1, j: 0, title: LEVELS[li + 1].lessons[0].title }; return null; }
 function lessonQuiz(li, j, r = 1) {
@@ -5421,20 +5872,20 @@ VIEWS.read = function (li, k = 0) {
   if (!L || !L.reads || !L.reads[k]) return nav("home");
   const R = L.reads[k], full = R.text.join(" ").replace(/<br>/g, ". ");
   app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
-    <div><button class="back" data-g="home">${I("left")} Rute</button>
-    <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Bacaan · ${L.name}</p><h1>${esc(R.title)}</h1></div></div></div>
+    <div><button class="back" data-a="toskill">${I("left")} Praktik ${L.cefr}</button>
+    <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Babak 1 · Bacaan ${k + 1} dari ${L.reads.length}</p><h1>${esc(R.title)}</h1></div></div></div>
     ${canSpeak() ? `<div class="pair"><button class="btn ghost" data-a="listen">${I("headphones")} Dengarkan</button><button class="btn ghost" data-a="slow">Lambat</button></div>` : ""}
     <article class="card reading">${R.text.map(p => `<p>${p}</p>`).join("")}</article>
     <p class="muted">Baca sampai selesai, lalu jawab ${R.qs.length} soal. Teksnya tetap bisa dibuka saat menjawab.</p>
     <button class="btn lv" data-a="go">Jawab soal ${I("right")}</button></div>`;
-  H = { listen() { speak(full); }, slow() { speak(full, true); }, go() { startRead(li, k); } };
+  H = { listen() { speak(full); }, slow() { speak(full, true); }, go() { startRead(li, k); }, toskill() { nav("skill", li, 0); } };
 };
 function startRead(li, k = 0) {
   const L = LEVELS[li], R = L.reads[k];
   runQuiz(R.qs.slice(), {
     title: "Bacaan · " + R.title, li, pass: 60, bonus: true, passMsg: "Pemahaman bacaan Anda bagus.",
     back: () => nav("read", li, k), again: () => startRead(li, k),
-    next: () => goStep(stepAfter("read", li, k)), nextLabel: stepLabel(stepAfter("read", li, k)),
+    next: () => goStep(stepAfter("read", li, k)), nextLabel: stepLabel2(stepAfter("read", li, k), "read"),
     ctx: `<details class="ctx"><summary>Lihat bacaan</summary>${R.text.map(p => `<p>${p}</p>`).join("")}</details>`,
     onEnd(p) { S.read[R.sid] = Math.max(S.read[R.sid] || 0, p); }
   });
@@ -5452,32 +5903,35 @@ function sayScore(target, heard) {
   let hit = 0; T.forEach(w => { const k = pool.indexOf(w); if (k >= 0) { hit++; pool.splice(k, 1); } });
   return Math.round(hit / T.length * 100);
 }
-VIEWS.speak = function (li) {
+VIEWS.speak = function (li, t = 0) {
   const L = LEVELS[li];
-  if (!L || !L.speak.length) return nav("home");
-  let k = 0, st = "idle", heard = "", pct = 0;
-  const done = () => S.spoke[L.id] || {};
+  if (!L || !L.topics[t]) return nav("home");
+  const TP = L.topics[t], SS = TP.s, key = L.id + ":" + t;
+  let k = Math.max(0, SS.findIndex((_, n) => !(S.spoke[key] || {})[n])), st = "idle", heard = "", pct = 0;
+  const done = () => S.spoke[key] || {};
+  const nx = stepAfter("speak", li, t);
   const draw = () => {
-    const [en, tr] = L.speak[k], ok = done()[k];
+    const [en, tr] = SS[k], ok = done()[k];
     const fb = st === "ok" || st === "no" ? `<div class="fb ${st}"><p class="fb-h"><span>${st === "ok" ? "Lancar!" : "Coba lagi"}</span><span class="plus">${pct}% cocok</span></p><p>Terdengar: <b>${esc(heard || "(tidak ada suara)")}</b></p>${st === "no" ? "<p>Ucapkan pelan dan jelas. Targetnya 80% kata cocok.</p>" : ""}</div>`
       : st === "err" ? `<div class="fb no"><p>${esc(heard)}</p></div>` : "";
     app.innerHTML = `<div class="narrow stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
-      <div><button class="back" data-g="home">${I("left")} Rute</button>
-      <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Latihan berbicara · ${spokeN(L)}/${L.speak.length} lancar</p><h1>Ucapkan kalimat ini</h1></div></div></div>
-      <div class="dots" role="group" aria-label="Pilih kalimat">${L.speak.map((_, n) => `<button class="${n === k ? "cur" : ""}${done()[n] ? " ok" : ""}" data-a="jump" data-k="${n}" aria-label="Kalimat ${n + 1}${done()[n] ? ", lancar" : ""}"></button>`).join("")}</div>
-      <div class="tcard say${st === "ok" ? " ok" : st === "no" ? " no" : ""}"><span class="tag">Kalimat ${k + 1} dari ${L.speak.length}${ok ? " · lancar" : ""}</span><p class="qtext tq">${esc(en)}</p><span class="muted" style="font-weight:600">${esc(tr)}</span></div>
+      <div><button class="back" data-a="toskill">${I("left")} Praktik ${L.cefr}</button>
+      <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">Babak 2 · Topik ${t + 1} dari ${L.topics.length} · ${topicN(L, t)}/${SS.length} lancar</p><h1>${esc(TP.title)}</h1></div></div></div>
+      <div class="dots" role="group" aria-label="Pilih kalimat">${SS.map((_, n) => `<button class="${n === k ? "cur" : ""}${done()[n] ? " ok" : ""}" data-a="jump" data-k="${n}" aria-label="Kalimat ${n + 1}${done()[n] ? ", lancar" : ""}"></button>`).join("")}</div>
+      <div class="tcard say${st === "ok" ? " ok" : st === "no" ? " no" : ""}"><span class="tag">Kalimat ${k + 1} dari ${SS.length}${ok ? " · lancar" : ""}</span><p class="qtext tq">${esc(en)}</p><span class="muted" style="font-weight:600">${esc(tr)}</span></div>
       ${canSpeak() ? `<div class="pair"><button class="btn ghost" data-say="${esc(en)}">${I("speaker")} Dengar</button><button class="btn ghost" data-a="slow">Lambat</button></div>` : ""}
       ${SR ? `<button class="btn ${st === "rec" ? "bad" : "blue"}" data-a="rec">${I("mic")} ${st === "rec" ? "Mendengarkan… ketuk untuk berhenti" : "Ketuk lalu ucapkan"}</button>`
            : `<div class="card"><p><b>Penilaian suara tidak tersedia di browser ini.</b> Buka English Path di Chrome (Android atau komputer) agar ucapan Anda dinilai otomatis. Untuk sekarang: dengarkan, tirukan dengan suara keras, lalu tandai sendiri.</p></div><button class="btn blue" data-a="self">Saya sudah mengucapkannya</button>`}
       <div aria-live="polite">${fb}</div>
-      <div class="pair"><button class="btn ghost" data-a="prev"${k === 0 ? " disabled" : ""}>Sebelumnya</button><button class="btn lv" data-a="next">${k + 1 < L.speak.length ? "Berikutnya" : "Lanjut ke materi berikutnya"}</button></div></div>`;
+      <div class="pair"><button class="btn ghost" data-a="prev"${k === 0 ? " disabled" : ""}>Sebelumnya</button><button class="btn lv" data-a="next">${k + 1 < SS.length ? "Berikutnya" : nx ? stepLabel2(nx, "speak").replace("materi berikutnya", "topik berikutnya") : "Selesai"}</button></div></div>`;
   };
-  const pass = () => { if (done()[k]) return; S.spoke[L.id] = Object.assign({}, done(), { [k]: 1 }); addXp(5); addCoins(1); newBadges(); save(); chrome(); };
+  const pass = () => { if (done()[k]) return; S.spoke[key] = Object.assign({}, done(), { [k]: 1 }); addXp(5); addCoins(1); newBadges(); save(); chrome(); };
   H = {
     jump(el) { stopRec(); k = +el.dataset.k; st = "idle"; draw(); },
     prev() { stopRec(); if (k > 0) { k--; st = "idle"; draw(); } },
-    next() { stopRec(); if (k + 1 < L.speak.length) { k++; st = "idle"; draw(); } else goStep(stepAfter("speak", li)); },
-    slow() { speak(L.speak[k][0], true); },
+    next() { stopRec(); if (k + 1 < SS.length) { k++; st = "idle"; draw(); } else goStep(nx); },
+    toskill() { stopRec(); nav("skill", li, 1); },
+    slow() { speak(SS[k][0], true); },
     self() { pass(); st = "ok"; pct = 100; heard = "(ditandai sendiri)"; sfx.ok(); draw(); },
     rec() {
       if (st === "rec") { try { REC && REC.stop(); } catch (e) {} return; }
@@ -5486,7 +5940,7 @@ VIEWS.speak = function (li) {
         const r = REC = new SR(); r.lang = "en-US"; r.interimResults = false; r.maxAlternatives = 3;
         r.onresult = e => {
           const alts = [...e.results[0]].map(x => x.transcript); let best = -1, bh = alts[0] || "";
-          alts.forEach(a => { const sc = sayScore(L.speak[k][0], a); if (sc > best) { best = sc; bh = a; } });
+          alts.forEach(a => { const sc = sayScore(SS[k][0], a); if (sc > best) { best = sc; bh = a; } });
           heard = bh; pct = Math.max(0, best); st = pct >= 80 ? "ok" : "no";
           if (st === "ok") { pass(); sfx.ok(); } else sfx.no();
           draw();
@@ -5808,11 +6262,11 @@ VIEWS.talk = function (n) {
     const [mood, line] = resultMood(pct, pct >= 60);
     reply.innerHTML = `<div class="talkend"><div class="greet">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><b>${score} dari ${nU} tepat</b><span>${line} +${bonus} XP</span></div></div>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
-      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn ${pct >= 60 ? "ghost" : "lv"}" data-a="exit">Selesai</button></div>${pct >= 60 ? `<button class="btn lv" data-a="nextstep">${stepLabel(stepAfter("talk", li, n))} ${I("right")}</button>` : ""}<button class="btn ghost" data-g="home">${I("map")} Kembali ke beranda</button></div>`;
+      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn ${pct >= 60 ? "ghost" : "lv"}" data-a="exit">Selesai</button></div>${pct >= 60 ? `<button class="btn lv" data-a="nextstep">${stepLabel2(stepAfter("talk", li, n), "talk")} ${I("right")}</button>` : ""}<button class="btn ghost" data-g="home">${I("map")} Kembali ke beranda</button></div>`;
     if (pct >= 60) { sfx.win(); confetti(); }
   }
   H = {
-    exit() { const f = TALKFROM; TALKFROM = "talk"; nav(f); },
+    exit() { const f = [].concat(TALKFROM); TALKFROM = "talk"; nav(...f); },
     again() { rerender(); },
     nextstep() { TALKFROM = "talk"; goStep(stepAfter("talk", li, n)); },
     share() { shareCard({ kind: "result", li, pct: Math.round(score / nU * 100), title: T.title, sub: "Percakapan " + L.cefr + " · " + L.name }); },
@@ -6079,6 +6533,31 @@ VIEWS.wardrobe = function () {
 };
 
 /* ================= koleksi lencana ================= */
+/* ================= praktik keterampilan ================= */
+VIEWS.skill = function (li, b = 0) {
+  const L = LEVELS[li];
+  if (!L) return nav("home");
+  b = Math.max(0, Math.min(2, +b || 0));
+  const c = skillCounts(li), t = skillTotals(li), d = c.reduce((x, y) => x + y, 0), tt = t.reduce((x, y) => x + y, 0);
+  const row = (done, ic, title, sub, a, k, isNew) => `<li><button class="lrow${done ? " done" : ""}" data-a="${a}" data-k="${k}"><span class="n">${I(done ? "check" : ic)}</span><span class="grow"><b>${esc(title)}${isNew && !done ? ' <span class="newtag">Baru</span>' : ""}</b><small>${sub}</small></span>${I("right")}</button></li>`;
+  const list = b === 0 ? L.reads.map(r => row(S.read[r.sid] != null, "book", r.title, r.qs.length + " soal pemahaman" + (S.read[r.sid] != null ? " · terbaik " + S.read[r.sid] + "%" : ""), "rd", r.k, r.k >= 3))
+    : b === 1 ? L.topics.map(T => row(topicDone(L, T.k), "mic", T.title, topicN(L, T.k) + " dari " + T.s.length + " kalimat lancar", "sp", T.k, true))
+    : levelTalks(li).map(({ T, n }, j) => row(S.talk[T.id] != null, "chat", T.title, "Ngobrol bersama " + esc(T.who) + (S.talk[T.id] != null ? " · terbaik " + S.talk[T.id] + "%" : ""), "tk", n, j >= 2));
+  app.innerHTML = `<div class="skpage stack" style="--lv:var(--l${li + 1});--ldk:var(--ld${li + 1})">
+    <div><button class="back" data-g="home">${I("left")} Rute</button>
+    <div class="lesson-h"><span class="roundel">${L.cefr}</span><div><p class="eyebrow">${L.name} · ${d} dari ${tt} topik selesai</p><h1>Praktik ${L.cefr}</h1></div></div>
+    <span class="pbar skbar"><i style="width:${d / tt * 100}%"></i></span></div>
+    <div class="skwrap"><div class="sktabs" role="tablist" aria-label="Babak">${SKB.map(([n, ic], k) => `<button role="tab" aria-selected="${k === b}" data-a="tab" data-b="${k}" class="${c[k] >= t[k] ? "full" : ""}"><span class="skic">${I(c[k] >= t[k] ? "check" : ic)}</span><span><b>Babak ${k + 1}</b><small>${n} ${c[k]}/${t[k]}</small></span></button>`).join("")}</div>
+    <section class="card sklist" role="tabpanel" aria-label="${SKB[b][0]}"><ol class="lrows">${list.join("")}</ol></section></div>
+    <p class="muted">${b === 0 ? "Baca teksnya, lalu jawab 5 soal pemahaman." : b === 1 ? "Topik selesai kalau keenam kalimatnya diucapkan dengan lancar." : "Pilih balasan yang paling tepat dalam obrolan."} Babak bisa dikerjakan dalam urutan apa saja.</p></div>`;
+  H = {
+    tab(el) { nav("skill", li, +el.dataset.b); },
+    rd(el) { nav("read", li, +el.dataset.k); },
+    sp(el) { nav("speak", li, +el.dataset.k); },
+    tk(el) { TALKFROM = ["skill", li, 2]; nav("talk", +el.dataset.k); }
+  };
+};
+
 VIEWS.badges = function () {
   let show = "all", tier = 0;
   app.innerHTML = `<div class="narrow stack">

@@ -8,12 +8,14 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
   const errs = []; p.on("pageerror", e => errs.push(e.message));
   await p.goto(url); await p.evaluate(() => localStorage.setItem("englishpath_v1", JSON.stringify({ onb: 1 }))); await p.reload();
   const seq = await p.evaluate(() => routeSteps(0).map(x => x.t + (x.j ?? x.k ?? x.n ?? "")).join(","));
-  ok(seq === "lesson0,lesson1,lesson2,lesson3,lesson4,lesson5,read0,read1,read2,speak,talk0,talk1,test", "urutan A1: " + seq);
+  ok(seq === "lesson0,lesson1,lesson2,lesson3,lesson4,lesson5,read0,read1,read2,read3,read4,speak0,speak1,speak2,speak3,speak4,talk0,talk1,talk2,talk3,talk4,test", "urutan A1: " + seq);
   const chk = async (t, li, key, want) => { const s = await p.evaluate(([t, li, key]) => { const x = stepAfter(t, li, key); return x ? x.t + ":" + x.li + ":" + (x.j ?? x.k ?? x.n ?? "") : "null"; }, [t, li, key]); ok(s === want, `${t} ${li}/${key} → ${s}`); };
   await chk("lesson", 0, 5, "read:0:0");
-  await chk("read", 0, 2, "speak:0:");
-  await chk("speak", 0, undefined, "talk:0:0");
-  await chk("talk", 0, 1, "test:0:");
+  await chk("read", 0, 2, "read:0:3");
+  await chk("read", 0, 4, "speak:0:0");
+  await chk("speak", 0, 4, "talk:0:0");
+  await chk("talk", 0, 1, "talk:0:2");
+  await chk("talk", 0, 4, "test:0:");
   await chk("test", 0, undefined, "lesson:1:0");
   await chk("lesson", 0, 0, "lesson:0:1");
   await chk("test", 5, undefined, "null");

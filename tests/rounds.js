@@ -9,7 +9,7 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
   await p.goto(url); await p.evaluate(() => localStorage.setItem("englishpath_v1", JSON.stringify({ onb: 1, name: "Dewi" }))); await p.reload();
   ok(await p.evaluate(() => LESSONS.every(x => x.qs.length === 60)), "36 pelajaran × 60 soal");
   ok(await p.evaluate(() => VOCAB.length) > 500, "kosakata: " + await p.evaluate(() => VOCAB.length) + " kata");
-  ok(await p.evaluate(() => TALKS.length === 12 && LEVELS.every(L => L.reads.length === 3 && L.speak.length === 12)), "12 percakapan, 3 bacaan & 12 kalimat bicara per level");
+  ok(await p.evaluate(() => TALKS.length === 30 && LEVELS.every(L => L.reads.length === 5 && L.topics.length === 5 && L.speak.length === 30)), "30 percakapan, 5 bacaan & 5 topik bicara per level");
   await p.evaluate(() => nav("lesson", 0, 0, "q")); await p.waitForTimeout(200);
   ok(await p.locator('.round[data-r="2"]').isDisabled() && await p.locator('.round[data-r="3"]').isDisabled(), "babak 2 & 3 terkunci");
   await p.screenshot({ path: "/tmp/ep-shots/r-locked.png" });
