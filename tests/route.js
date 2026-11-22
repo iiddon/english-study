@@ -31,6 +31,7 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
       btn.click(); document.querySelector("#chk").click(); });
     await p.click("#nx");
   }
+  ok(await p.locator('.quiz [data-g="home"]').count() === 1, "hasil: tombol Kembali ke beranda ada");
   ok(await p.locator('[data-a="next"]').count() === 1, "hasil bacaan: tombol " + (await p.locator('[data-a="next"]').textContent()).trim());
   await p.click('[data-a="next"]');
   ok(await p.evaluate(() => ROUTE.v === "read" && ROUTE.a[1] === 1), "bacaan 1 → bacaan 2");

@@ -5045,6 +5045,7 @@ function runQuiz(items, o) {
       ${certBtn}${goNext ? `<button class="btn lv" data-a="next">${o.nextLabel || "Pelajaran berikutnya"} ${I("right")}</button>` : ""}${shareBtn}
       ${missed.length ? `<button class="btn ${goNext ? "ghost" : "lv"}" data-a="redo">Ulangi ${missed.length} soal yang salah</button>` : ""}
       <div class="pair"><button class="btn ghost" data-a="again">Dari awal</button><button class="btn ghost" data-a="back">Kembali</button></div>
+      <button class="btn ghost" data-g="home">${I("map")} Kembali ke beranda</button>
       ${missed.length ? `<h2 style="margin-top:12px">Yang perlu diulang</h2><ul class="missed">${missed.map(m => `<li>${esc(m.t === "o" || m.t === "l" ? m.tr : m.q)}<br><b>${esc(answerOf(m))}</b>${m.e ? `<small>${esc(m.e)}</small>` : ""}</li>`).join("")}</ul>` : ""}</div>`;
     H = {
       next() { o.next(); }, again() { o.again(); }, back() { o.back(); },
@@ -5155,7 +5156,7 @@ function matchGame(pool, o) {
       <h1>${rec ? "Rekor baru!" : miss ? "Semua pasangan ketemu" : "Tanpa salah!"}</h1>
       <dl class="stats3"><div><dt>Waktu</dt><dd>${secs} dtk</dd></div><div><dt>Salah pasang</dt><dd>${miss}</dd></div><div><dt>XP didapat</dt><dd>+${xp}</dd></div></dl>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
-      <button class="btn lv" data-a="again">Main lagi</button><button class="btn ghost" data-a="back">Kembali</button></div>`;
+      <button class="btn lv" data-a="again">Main lagi</button><button class="btn ghost" data-a="back">Kembali</button><button class="btn ghost" data-g="home">${I("map")} Kembali ke beranda</button></div>`;
     H = { again() { o.again(); }, back() { o.back(); } };
     toTop();
   }
@@ -5646,7 +5647,7 @@ VIEWS.talk = function (n) {
     const [mood, line] = resultMood(pct, pct >= 60);
     reply.innerHTML = `<div class="talkend"><div class="greet">${BUBU(56, "react " + mood, "Bubu", mood)}<div class="say"><b>${score} dari ${nU} tepat</b><span>${line} +${bonus} XP</span></div></div>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
-      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn ${pct >= 60 ? "ghost" : "lv"}" data-a="exit">Selesai</button></div>${pct >= 60 ? `<button class="btn lv" data-a="nextstep">${stepLabel(stepAfter("talk", li, n))} ${I("right")}</button>` : ""}</div>`;
+      <div class="pair">${pct >= 60 ? `<button class="btn ghost" data-a="share">${I("share")} Bagikan</button>` : `<button class="btn ghost" data-a="again">Ulangi</button>`}<button class="btn ${pct >= 60 ? "ghost" : "lv"}" data-a="exit">Selesai</button></div>${pct >= 60 ? `<button class="btn lv" data-a="nextstep">${stepLabel(stepAfter("talk", li, n))} ${I("right")}</button>` : ""}<button class="btn ghost" data-g="home">${I("map")} Kembali ke beranda</button></div>`;
     if (pct >= 60) { sfx.win(); confetti(); }
   }
   H = {
@@ -5780,7 +5781,8 @@ function examResult(items, res, tm, timeUp) {
     <div class="card stack"><h2>Per level</h2>${LEVELS.map((l, li) => byLv[li] == null ? "" : `<div class="skrow" style="--ldk:var(--ld${li + 1})"><span class="skn">${l.cefr}</span><span class="skbar"><i style="width:${byLv[li] * 100}%"></i></span><span class="skv">${Math.round(byLv[li] * 100)}%</span></div>`).join("")}<p class="muted">Level dianggap dikuasai jika 60% soalnya benar, berurutan dari A1.</p></div>
     ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
     <div class="card stack"><h2>Saran berikutnya</h2><p class="muted">Bagian terlemahmu: <b>${weak.n}</b>.${wrongKeys.length ? " " + wrongKeys.length + " soal yang salah sudah masuk ke Ulangan hari ini." : ""}</p><button class="btn lv" data-a="tip">${tip[0]} ${I("right")}</button></div>
-    <div class="pair"><button class="btn ghost" data-a="again">Tes lagi</button><button class="btn ghost" data-a="back">Selesai</button></div></div>`;
+    <div class="pair"><button class="btn ghost" data-a="again">Tes lagi</button><button class="btn ghost" data-a="back">Selesai</button></div>
+    <button class="btn ghost" data-g="home">${I("map")} Kembali ke beranda</button></div>`;
   H = { tip: tip[1], again: startExam, back() { nav("exam"); } };
   if (sc >= 60) { sfx.win(); confetti(); }
   chrome(); toTop();
