@@ -1594,7 +1594,10 @@ VIEWS.talk = function (n) {
   const bubble = m => m.who === "p"
     ? `<div class="msg p"><span class="av" aria-hidden="true">${initial}</span><div class="bub"><span class="who">${esc(T.who)}</span><span lang="en">${esc(m.t)}</span><small>${esc(m.tr)}</small></div>${spk(m.t)}</div>`
     : `<div class="msg u${m.ok ? "" : " fixed"}"><div class="bub"><span lang="en">${esc(m.t)}</span>${m.ok ? "" : "<small>Balasan yang tepat</small>"}</div></div>`;
-  const drawChat = () => { chat.innerHTML = log.map(bubble).join("") + (k < turns.length && turns[k][0] === "p" ? '<div class="msg p typing"><span class="av">' + initial + '</span><div class="bub"><i></i><i></i><i></i></div></div>' : ""); try { chat.scrollTo({ top: chat.scrollHeight, behavior: "smooth" }); } catch (e) { chat.scrollTop = chat.scrollHeight; } };
+  const drawChat = () => { chat.innerHTML = log.map(bubble).join("") + (k < turns.length && turns[k][0] === "p" ? '<div class="msg p typing"><span class="av">' + initial + '</span><div class="bub"><i></i><i></i><i></i></div></div>' : ""); stick(); };
+  // Obrolan selalu menempel di pesan terbaru, juga saat panel balasan berubah tinggi dan area chat menyusut.
+  const stick = () => { const go = () => { chat.scrollTop = chat.scrollHeight; }; go(); requestAnimationFrame(go); setTimeout(go, 120); };
+  try { const ro = new ResizeObserver(() => { if (ROUTE.v === "talk") chat.scrollTop = chat.scrollHeight; }); ro.observe(chat); } catch (e) {}
   const reduced = (() => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } })();
   function step() {
     if (ROUTE.v !== "talk") return;
@@ -1607,6 +1610,7 @@ VIEWS.talk = function (n) {
     }
     sel = null; locked = false; opts = shuffle(t[1].map((x, n) => ({ x: talkLine(x), ok: n === 0 })));
     reply.innerHTML = `<p class="eyebrow">Pilih balasanmu</p><div class="opts">${opts.map((o, n) => `<button class="opt" data-a="pick" data-k="${n}" lang="en"><span>${esc(o.x)}</span></button>`).join("")}</div><button class="btn lv" data-a="send" id="chk" disabled>${I("chat")} Kirim</button>`;
+    stick();
   }
   function done() {
     const pct = Math.round(score / nU * 100), first = S.talk[T.id] == null;
@@ -1634,6 +1638,7 @@ VIEWS.talk = function (n) {
       const mood = ok ? "happy" : "oops";
       reply.insertAdjacentHTML("beforeend", `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(44, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Kurang pas"}</span>${ok ? '<span class="plus">+5 XP</span>' : ""}</p><p class="bline">${esc(t[2])}</p></div></div><button class="btn ${ok ? "good" : "bad"}" data-a="cont" id="nx">Lanjut</button></div>`);
       try { $("#nx").focus({ preventScroll: true }); } catch (e) {}
+      stick();
       H.cont = () => { log.push({ who: "u", t: talkLine(t[1][0]), ok }); k++; step(); };
     }
   };
