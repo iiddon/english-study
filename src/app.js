@@ -110,7 +110,7 @@ LEVELS.forEach(L => {
   L.speak = (SPEAK[L.id] || []).concat(SPEAK2[L.id] || []);
 });
 const NQ = LESSONS.reduce((n, x) => n + x.qs.length, 0) + LEVELS.reduce((n, L) => n + (L.reads || []).reduce((m, r) => m + r.qs.length, 0), 0);
-const RANKS = [[0, "Penumpang baru"], [200, "Komuter"], [600, "Penjelajah"], [1500, "Navigator"], [3000, "Kondektur"], [5000, "Masinis"]];
+const RANKS = [[0, "Penumpang baru"], [200, "Komuter"], [600, "Penjelajah"], [1500, "Navigator"], [3000, "Kondektur"], [5000, "Masinis"], [8000, "Kepala Stasiun"], [12000, "Pengatur Jalur"], [17000, "Arsitek Rel"], [25000, "Legenda Rel"]];
 const KIND = { m: "Pilihan ganda", t: "Isian", f: "Benar/salah", o: "Susun kalimat" };
 
 /* ================= state ================= */
@@ -120,7 +120,7 @@ let S = fresh();
 function hydrate(o) {
   const s = Object.assign(fresh(), o || {});
   ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert", "mine", "sk", "rounds", "owned", "seenSp"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
-  ["xp", "streak", "best", "ans", "cor", "combo", "matchBest", "ts", "resetAt", "chests", "onb"].forEach(k => { s[k] = Number(s[k]) || 0; });
+  ["xp", "streak", "best", "ans", "cor", "combo", "ccur", "matchBest", "ts", "resetAt", "chests", "onb"].forEach(k => { s[k] = Number(s[k]) || 0; });
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
   Object.keys(s.known).forEach(k => { if (!s.known[k] || typeof s.known[k] !== "object") s.known[k] = { b: 1, d: td }; });
@@ -766,7 +766,9 @@ function runQuiz(items, o) {
   clearInterval(TICK); TICK = null; stopSpeak();
   document.body.classList.add("focus");
   const N = items.length, lv = o.li != null ? ` style="--lv:var(--l${o.li + 1});--ldk:var(--ld${o.li + 1})"` : "";
-  let i = 0, right = 0, combo = 0, maxCombo = 0, gained = 0, answered = false, st = {};
+  // Combo berjalan disimpan (S.ccur), jadi berlanjut ke materi berikutnya sampai ada jawaban salah.
+  const carried = o.silent ? 0 : (S.ccur || 0);
+  let i = 0, right = 0, combo = carried, maxCombo = 0, gained = 0, answered = false, st = {};
   const missed = [], res = [];
   const deadline = o.limit ? Date.now() + o.limit * 1000 : 0;
   const mmss = ms => { const t = Math.max(0, Math.ceil(ms / 1000)); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
@@ -776,7 +778,7 @@ function runQuiz(items, o) {
     if (el) { el.lastChild.textContent = mmss(left); el.classList.toggle("warn", left < 60000); }
     if (left <= 0) { clearInterval(QT); QT = null; if (i < N) { while (res.length < N) res.push(false); i = N; o.timeUp = true; finish(); } }
   }, 500);
-  const comboHTML = () => combo >= 3 ? `<span class="combo">${combo}× combo</span>` : "";
+  const comboHTML = () => combo >= 3 ? `<span class="combo"${combo === carried && carried ? ' title="Lanjutan dari materi sebelumnya"' : ""}>${combo}× combo${combo === carried && carried ? " · lanjut" : ""}</span>` : "";
 
   function drawOrd() {
     const used = new Set(st.ans);
@@ -824,13 +826,13 @@ function runQuiz(items, o) {
     if (o.silent) { i++; return show(); }
     S.ans++;
     { const cat = c.t === "l" ? "l" : c.key && c.key.startsWith("r_") ? "r" : "g", v = S.sk[cat] || [0, 0]; S.sk[cat] = [v[0] + 1, v[1] + (ok ? 1 : 0)]; }
-    if (ok) { right++; combo++; maxCombo = Math.max(maxCombo, combo); S.cor++; { const td = dkey(); S.dc[td] = (S.dc[td] || 0) + 1; S.dcombo[td] = Math.max(S.dcombo[td] || 0, combo); } if (combo > S.combo) S.combo = combo; if (c.key) srsHit(S.wrong, c.key, true); addXp(10); addCoins(1); gained += 10; sfx.ok(); }
-    else { combo = 0; if (c.key) srsHit(S.wrong, c.key, false); missed.push(c); sfx.no(); }
+    if (ok) { right++; combo++; S.ccur = combo; maxCombo = Math.max(maxCombo, combo); S.cor++; { const td = dkey(); S.dc[td] = (S.dc[td] || 0) + 1; S.dcombo[td] = Math.max(S.dcombo[td] || 0, combo); } if (combo > S.combo) S.combo = combo; if (c.key) srsHit(S.wrong, c.key, true); addXp(10); addCoins(1); gained += 10; sfx.ok(); }
+    else { combo = 0; S.ccur = 0; if (c.key) srsHit(S.wrong, c.key, false); missed.push(c); sfx.no(); }
     save();
     const blk = $$(".blocks span")[i]; if (blk) blk.className = ok ? "ok" : "no";
     const pg = $(".prog i"); if (pg) pg.style.width = (i + 1) / N * 100 + "%";
     $("#combo").innerHTML = comboHTML();
-    const milestone = ok && COMBO_LINES[combo];
+    const milestone = ok && (COMBO_LINES[combo] || (combo > 20 && combo % 10 === 0 ? "Combo " + combo + "×! Tak terbendung!" : ""));
     if (milestone) { const cb = $("#combo .combo"); if (cb) cb.classList.add("boom"); buzz([15, 40, 15]); }
     const mood = !ok ? "oops" : milestone ? "wow" : "happy", line = !ok ? pick(NO_LINES) : milestone || pick(OK_LINES);
     $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(50, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Belum tepat"}</span>${ok ? '<span class="plus">+10 XP</span><span class="plus coin">' + COIN + '+1</span>' : ""}</p><p class="bline">${line}</p></div></div>
@@ -865,7 +867,7 @@ function runQuiz(items, o) {
       <div class="res-top">${ring(pct / 100, pct + "%", right + " dari " + N + " benar", "big")}<div><h1>${head}</h1><p class="muted">${sub}</p></div></div>
       <div class="greet res-bubu">${BUBU(58, "react " + mood, "Bubu", mood)}<div class="say"><span>${mline}</span></div></div>
       ${coinGain > 0 ? `<button class="coinpill" data-g="wardrobe">${COIN}<span><b>+${coinGain} koin</b> · total ${S.coins}</span>${I("right")}</button>` : ""}
-      <dl class="stats3"><div><dt>XP didapat</dt><dd>+${gained + bonus}</dd></div><div><dt>Combo terbaik</dt><dd>${maxCombo}×</dd></div><div><dt>Perlu diulang</dt><dd>${missed.length}</dd></div></dl>
+      <dl class="stats3"><div><dt>XP didapat</dt><dd>+${gained + bonus}</dd></div><div><dt>Combo terbaik</dt><dd>${maxCombo}×</dd>${S.ccur >= 3 ? `<small class="carry">${S.ccur}× berlanjut</small>` : ""}</div><div><dt>Perlu diulang</dt><dd>${missed.length}</dd></div></dl>
       ${nb.map(b => `<div class="newbadge">${I(b.ic)}<div><b>${b.k || "Lencana baru"}: ${b.n}</b><span>${b.d}</span></div></div>`).join("")}
       ${certBtn}${goNext ? `<button class="btn lv" data-a="next">${o.nextLabel || "Pelajaran berikutnya"} ${I("right")}</button>` : ""}${shareBtn}
       ${missed.length ? `<button class="btn ${goNext ? "ghost" : "lv"}" data-a="redo">Ulangi ${missed.length} soal yang salah</button>` : ""}
@@ -1484,7 +1486,7 @@ VIEWS.talk = function (n) {
     send() {
       if (locked || sel == null) return; locked = true;
       const t = turns[k], ok = opts[sel].ok; asked++;
-      if (ok) { score++; addXp(5); addCoins(1); sfx.ok(); } else sfx.no();
+      if (ok) { score++; addXp(5); addCoins(1); S.ccur = (S.ccur || 0) + 1; if (S.ccur > S.combo) S.combo = S.ccur; sfx.ok(); } else { S.ccur = 0; sfx.no(); }
       $("#tc").textContent = asked + "/" + nU;
       $$("#reply .opt").forEach((b, n) => { b.disabled = true; b.classList.remove("sel"); if (opts[n].ok) b.classList.add("right"); else if (n === sel) b.classList.add("wrong"); });
       $("#chk").remove(); save(); chrome();

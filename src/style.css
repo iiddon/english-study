@@ -727,6 +727,7 @@ body.wardpage .shell{padding-bottom:0}
 @media (max-height:700px){.wnote{display:none}.wstage{padding:8px 14px}.wbig{width:128px;height:140px;padding-top:32px}.witem{min-height:108px}.wname{font-size:19px}}
 @media (prefers-reduced-motion:reduce){.bubu.bob{animation:none}}
 
+.stats3 .carry{display:block;margin-top:4px;font:800 12px/1.2 var(--body);color:var(--muted)}
 /* ---------- mode gelap: token yang sama, nilai gelap ---------- */
 :root[data-theme="dark"]{
   --bg:#141629; --surface:#1f2238; --soft:#262a45; --line:#32375c;
