@@ -26,7 +26,7 @@ const ok = (c, m) => { if (!c) { console.log("FAIL", m); process.exitCode = 1; }
   ok((await p.textContent(".stats3")).includes("8× berlanjut"), "hasil menampilkan combo berlanjut");
   await play(ms.slice(8, 12), 1);
   ok(await p.evaluate(() => S.ccur === 2 && S.combo === 9), "salah di soal 2 → combo reset, rekor 9 tetap");
-  ok(await p.evaluate(() => rankOf(26000).name === "Legenda Rel" && rankOf(9000).name === "Kepala Stasiun" && rankOf(5000).next.at === 8000), "peringkat baru sampai Legenda Rel 25.000");
+  ok(await p.evaluate(() => rankOf(26000).name === "Raja Bahasa" && rankOf(9000).name === "Penasihat Raja" && rankOf(5000).next.at === 8000), "peringkat Kerajaan sampai Raja Bahasa 25.000");
   ok(errs.length === 0, "tanpa error " + errs.join("|"));
   await b.close();
 })();

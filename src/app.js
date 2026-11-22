@@ -110,7 +110,7 @@ LEVELS.forEach(L => {
   L.speak = (SPEAK[L.id] || []).concat(SPEAK2[L.id] || []);
 });
 const NQ = LESSONS.reduce((n, x) => n + x.qs.length, 0) + LEVELS.reduce((n, L) => n + (L.reads || []).reduce((m, r) => m + r.qs.length, 0), 0);
-const RANKS = [[0, "Penumpang baru"], [200, "Komuter"], [600, "Penjelajah"], [1500, "Navigator"], [3000, "Kondektur"], [5000, "Masinis"], [8000, "Kepala Stasiun"], [12000, "Pengatur Jalur"], [17000, "Arsitek Rel"], [25000, "Legenda Rel"]];
+const RANKS = [[0, "Rakyat Biasa"], [200, "Murid Istana"], [600, "Pengawal"], [1500, "Kesatria"], [3000, "Penyihir Kata"], [5000, "Panglima"], [8000, "Penasihat Raja"], [12000, "Bangsawan"], [17000, "Penguasa Bahasa"], [25000, "Raja Bahasa"]];
 const KIND = { m: "Pilihan ganda", t: "Isian", f: "Benar/salah", o: "Susun kalimat" };
 
 /* ================= state ================= */
