@@ -1,6 +1,6 @@
 // Service worker English Path: aplikasi tetap jalan tanpa internet.
 // Naikkan VERSION setiap rilis agar cache lama dibersihkan.
-const VERSION = "ep-2026-11-22g";
+const VERSION = "ep-2026-11-22h";
 const CORE = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/favicon.svg", "./icons/favicon-32.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {

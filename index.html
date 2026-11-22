@@ -753,6 +753,16 @@ body.wardpage .shell{padding-bottom:0}
 @media (prefers-reduced-motion:reduce){.bubu.bob{animation:none}}
 
 .stats3 .carry{display:block;margin-top:4px;font:800 12px/1.2 var(--body);color:var(--muted)}
+/* ---------- tingkat lencana ---------- */
+.badge .tier{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:99px;font:800 10.5px/1.3 var(--body);font-style:normal;text-transform:uppercase;letter-spacing:.04em;vertical-align:2px;background:var(--soft);color:var(--muted)}
+.badge.t2 .tier{background:#e6ebf5;color:#4a5472}
+.badge.t3 .tier{background:var(--sun-l);color:var(--xp-ink)}
+.badge.t4 .tier{background:var(--ink);color:var(--sun)}
+.badge.on.t4{box-shadow:0 0 0 3px var(--sun),var(--sh)}
+:root[data-theme="dark"] .badge.t2 .tier{background:#3a3f63;color:#d5dbf2}
+:root[data-theme="dark"] .badge.t4 .tier{background:#000}
+.statlist dt{white-space:nowrap}
+
 /* ---------- mode gelap: token yang sama, nilai gelap ---------- */
 :root[data-theme="dark"]{
   --bg:#141629; --surface:#1f2238; --soft:#262a45; --line:#32375c;
@@ -4224,6 +4234,7 @@ const ICONS = {
   gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
   shirt: '<path d="M8 3l4 2.5L16 3l5 3.5-2.5 4-2.5-1.2V21H8V9.3L5.5 10.5 3 6.5z"/>',
+  moon: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
   box: '<rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 11v4"/><path d="M5 9a7 5 0 0 1 14 0"/>'
 };
 const I = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
@@ -4296,7 +4307,8 @@ let S = fresh();
 function hydrate(o) {
   const s = Object.assign(fresh(), o || {});
   ["done", "scores", "days", "wrong", "known", "badges", "dc", "dcombo", "read", "spoke", "talk", "cert", "mine", "sk", "rounds", "owned", "seenSp"].forEach(k => { if (!s[k] || typeof s[k] !== "object") s[k] = {}; });
-  ["xp", "streak", "best", "ans", "cor", "combo", "ccur", "matchBest", "ts", "resetAt", "chests", "onb"].forEach(k => { s[k] = Number(s[k]) || 0; });
+  ["xp", "streak", "best", "ans", "cor", "combo", "ccur", "matchBest", "ts", "resetAt", "chests", "onb", "dailyN"].forEach(k => { s[k] = Number(s[k]) || 0; });
+  if (!s.fl || typeof s.fl !== "object") s.fl = {};
   const td = dkey();
   Object.keys(s.wrong).forEach(k => { if (!s.wrong[k] || typeof s.wrong[k] !== "object") s.wrong[k] = { b: 0, d: td }; });
   Object.keys(s.known).forEach(k => { if (!s.known[k] || typeof s.known[k] !== "object") s.known[k] = { b: 1, d: td }; });
@@ -4339,6 +4351,7 @@ function addXp(n) {
   const before = S.streak;
   if (S.lastDay !== t) { S.streak = (S.lastDay === dayAgo(1) ? S.streak : 0) + 1; S.lastDay = t; S.best = Math.max(S.best, S.streak); if (S.streak % 7 === 0 && S.streak !== before) { addCoins(25); setTimeout(() => toast("Streak " + S.streak + " hari: +25 koin!"), 600); } }
   S.xp += n; S.days[t] = (S.days[t] || 0) + n;
+  { const h = new Date().getHours(); if (!S.fl) S.fl = {}; if (h < 6) S.fl.early = 1; if (h >= 22) S.fl.night = 1; }
   ["days", "dc", "dcombo"].forEach(m => { const ks = Object.keys(S[m]).sort(); while (ks.length > 60) delete S[m][ks.shift()]; });
 }
 // Koin: mata uang Lemari Bubu, terpisah dari XP.
@@ -4365,6 +4378,24 @@ const roundPassed = (x, r) => r === 1 ? !!S.done[x.id] || (S.scores[x.id] || 0) 
 const roundOpen = (x, r) => r === 1 || roundPassed(x, r - 1);
 const starsOf = x => [1, 2, 3].filter(r => roundPassed(x, r)).length;
 const starHTML = x => { const n = starsOf(x); return `<span class="stars" role="img" aria-label="${n} dari 3 bintang">${[1, 2, 3].map(k => `<i class="${k <= n ? "on" : ""}">${k <= n ? "★" : "☆"}</i>`).join("")}</span>`; };
+// Semua materi di rute: pelajaran, bacaan, latihan berbicara, percakapan, dan tes level.
+function routeProgress() {
+  const c = { lesson: [0, 0], read: [0, 0], speak: [0, 0], talk: [0, 0], test: [0, 0] };
+  LEVELS.forEach(L => {
+    L.lessons.forEach(x => { c.lesson[1]++; if (S.done[x.id]) c.lesson[0]++; });
+    (L.reads || []).forEach(r => { c.read[1]++; if (S.read[r.sid] != null) c.read[0]++; });
+    if (L.speak.length) { c.speak[1]++; if (spokeN(L) >= L.speak.length) c.speak[0]++; }
+    c.test[1]++; if (S.cert[L.id]) c.test[0]++;
+  });
+  TALKS.forEach(T => { c.talk[1]++; if (S.talk[T.id] != null) c.talk[0]++; });
+  c.all = Object.values(c).reduce((a, v) => [a[0] + v[0], a[1] + v[1]], [0, 0]);
+  return c;
+}
+const nCount = o => Object.keys(o || {}).length;
+const stars3 = () => LESSONS.filter(x => starsOf(x) === 3).length;
+const ownedCostumes = () => { let n = 0; Object.keys(COSTUME).forEach(c => COSTUME[c].forEach(it => { if (ownsItem(c, it)) n++; })); return n; };
+// r: tingkat kelangkaan 1 perunggu, 2 perak, 3 emas, 4 legendaris. p: progres 0..1 untuk "hampir dapat".
+const TIER = ["", "Perunggu", "Perak", "Emas", "Legendaris"];
 const BADGES = [
   { id: "first", n: "Langkah pertama", d: "Selesaikan 1 pelajaran", ic: "flag", t: () => doneCount() >= 1 },
   { id: "s3", n: "Tiga hari", d: "Belajar 3 hari beruntun", ic: "flame", t: () => S.best >= 3 },
@@ -4382,15 +4413,66 @@ const BADGES = [
   { id: "star5", n: "Tuntas", d: "Raih 3 bintang di 5 pelajaran", ic: "star", t: () => LESSONS.filter(x => starsOf(x) === 3).length >= 5 },
   { id: "chest", n: "Pemburu peti", d: "Buka peti misi harian", ic: "box", t: () => S.chests >= 1 },
   { id: "xp1000", n: "1.000 XP", d: "Kumpulkan 1.000 XP", ic: "star", t: () => S.xp >= 1000 },
-  ...LEVELS.map(L => ({ id: "lv_" + L.id, n: "Jalur " + L.cefr, d: "Selesaikan semua pelajaran " + L.name, ic: "award", t: () => L.lessons.every(x => S.done[x.id]) }))
+  { id: "s14", r: 2, n: "Dua minggu", d: "Belajar 14 hari beruntun", ic: "flame", t: () => S.best >= 14, p: () => S.best / 14 },
+  { id: "s30", r: 3, n: "Sebulan konsisten", d: "Belajar 30 hari beruntun", ic: "flame", t: () => S.best >= 30, p: () => S.best / 30 },
+  { id: "s60", r: 3, n: "Dua bulan membara", d: "Belajar 60 hari beruntun", ic: "flame", t: () => S.best >= 60, p: () => S.best / 60 },
+  { id: "s100", r: 4, n: "Seratus hari", d: "Belajar 100 hari beruntun", ic: "flame", t: () => S.best >= 100, p: () => S.best / 100 },
+  { id: "s365", r: 4, n: "Setahun setia", d: "Belajar 365 hari beruntun", ic: "flame", t: () => S.best >= 365, p: () => S.best / 365 },
+  { id: "xp2500", r: 1, n: "2.500 XP", d: "Kumpulkan 2.500 XP", ic: "star", t: () => S.xp >= 2500, p: () => S.xp / 2500 },
+  { id: "xp5000", r: 2, n: "5.000 XP", d: "Kumpulkan 5.000 XP", ic: "star", t: () => S.xp >= 5000, p: () => S.xp / 5000 },
+  { id: "xp10k", r: 3, n: "10.000 XP", d: "Kumpulkan 10.000 XP", ic: "star", t: () => S.xp >= 10000, p: () => S.xp / 10000 },
+  { id: "xp25k", r: 4, n: "Raja Bahasa", d: "Kumpulkan 25.000 XP", ic: "award", t: () => S.xp >= 25000, p: () => S.xp / 25000 },
+  { id: "c1000", r: 2, n: "1.000 benar", d: "Jawab 1.000 soal dengan benar", ic: "check", t: () => S.cor >= 1000, p: () => S.cor / 1000 },
+  { id: "c2500", r: 3, n: "2.500 benar", d: "Jawab 2.500 soal dengan benar", ic: "check", t: () => S.cor >= 2500, p: () => S.cor / 2500 },
+  { id: "c5000", r: 4, n: "5.000 benar", d: "Jawab 5.000 soal dengan benar", ic: "check", t: () => S.cor >= 5000, p: () => S.cor / 5000 },
+  { id: "combo20", r: 2, n: "Combo 20", d: "20 jawaban benar berturut-turut", ic: "zap", t: () => S.combo >= 20, p: () => S.combo / 20 },
+  { id: "combo50", r: 3, n: "Combo 50", d: "50 jawaban benar berturut-turut", ic: "zap", t: () => S.combo >= 50, p: () => S.combo / 50 },
+  { id: "combo100", r: 4, n: "Tak terbendung", d: "100 jawaban benar berturut-turut", ic: "zap", t: () => S.combo >= 100, p: () => S.combo / 100 },
+  { id: "perf10", r: 2, n: "Sepuluh sempurna", d: "Skor 100% sebanyak 10 kali", ic: "target", t: () => S.perf >= 10, p: () => S.perf / 10 },
+  { id: "perf25", r: 3, n: "Perfeksionis", d: "Skor 100% sebanyak 25 kali", ic: "target", t: () => S.perf >= 25, p: () => S.perf / 25 },
+  { id: "perf50", r: 4, n: "Tanpa cela", d: "Skor 100% sebanyak 50 kali", ic: "target", t: () => S.perf >= 50, p: () => S.perf / 50 },
+  { id: "star15", r: 2, n: "Bintang 15", d: "Raih 3 bintang di 15 pelajaran", ic: "star", t: () => stars3() >= 15, p: () => stars3() / 15 },
+  { id: "star36", r: 4, n: "Semua bintang", d: "Raih 3 bintang di semua 36 pelajaran", ic: "star", t: () => stars3() >= 36, p: () => stars3() / 36 },
+  { id: "route25", r: 1, n: "Pejalan rute", d: "Selesaikan 25 materi di rute", ic: "map", t: () => routeProgress().all[0] >= 25, p: () => routeProgress().all[0] / 25 },
+  { id: "route50", r: 2, n: "Penjelajah rute", d: "Selesaikan 50 materi di rute", ic: "map", t: () => routeProgress().all[0] >= 50, p: () => routeProgress().all[0] / 50 },
+  { id: "routeAll", r: 4, n: "Rute tuntas", d: "Selesaikan semua materi dari A1 sampai C2", ic: "map", t: () => { const a = routeProgress().all; return a[0] >= a[1]; }, p: () => { const a = routeProgress().all; return a[0] / a[1]; } },
+  { id: "read6", r: 1, n: "Rajin membaca", d: "Kerjakan 6 bacaan", ic: "book", t: () => routeProgress().read[0] >= 6, p: () => routeProgress().read[0] / 6 },
+  { id: "read18", r: 3, n: "Kutu buku", d: "Kerjakan semua 18 bacaan", ic: "book", t: () => routeProgress().read[0] >= 18, p: () => routeProgress().read[0] / 18 },
+  { id: "speak36", r: 2, n: "Suara percaya diri", d: "Ucapkan 36 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 36, p: () => spokeTotal() / 36 },
+  { id: "speak72", r: 3, n: "Lidah fasih", d: "Ucapkan semua 72 kalimat dengan lancar", ic: "mic", t: () => spokeTotal() >= 72, p: () => spokeTotal() / 72 },
+  { id: "talk12", r: 3, n: "Diplomat", d: "Selesaikan semua 12 percakapan", ic: "chat", t: () => TALKS.every(T => S.talk[T.id] != null), p: () => TALKS.filter(T => S.talk[T.id] != null).length / TALKS.length },
+  { id: "talkPerfect", r: 2, n: "Lawan bicara ideal", d: "Skor 100% di 5 percakapan", ic: "chat", t: () => Object.values(S.talk).filter(v => v === 100).length >= 5, p: () => Object.values(S.talk).filter(v => v === 100).length / 5 },
+  { id: "test1", r: 1, n: "Lulus ujian", d: "Lulus satu tes level", ic: "flag", t: () => nCount(S.cert) >= 1, p: () => nCount(S.cert) },
+  { id: "test3", r: 2, n: "Tiga sertifikat", d: "Lulus 3 tes level", ic: "award", t: () => nCount(S.cert) >= 3, p: () => nCount(S.cert) / 3 },
+  { id: "testAll", r: 4, n: "Sertifikat lengkap", d: "Lulus semua tes level A1–C2", ic: "award", t: () => nCount(S.cert) >= 6, p: () => nCount(S.cert) / 6 },
+  { id: "exam5", r: 2, n: "Rajin ujian", d: "Selesaikan 5 simulasi tes", ic: "timer", t: () => S.exams.length >= 5, p: () => S.exams.length / 5 },
+  { id: "exam90", r: 3, n: "Nilai A", d: "Skor 90 ke atas di simulasi tes", ic: "timer", t: () => S.exams.some(e => e.sc >= 90), p: () => Math.max(0, ...S.exams.map(e => e.sc)) / 90 },
+  { id: "examC2", r: 4, n: "Level C2", d: "Simulasi tes dengan hasil C2", ic: "timer", t: () => S.exams.some(e => e.li >= 5), p: () => (Math.max(-1, ...S.exams.map(e => e.li)) + 1) / 6 },
+  { id: "w100", r: 2, n: "100 kata", d: "Hafal 100 kata di flashcard", ic: "layers", t: () => knownCount() >= 100, p: () => knownCount() / 100 },
+  { id: "w300", r: 3, n: "300 kata", d: "Hafal 300 kata di flashcard", ic: "layers", t: () => knownCount() >= 300, p: () => knownCount() / 300 },
+  { id: "wAll", r: 4, n: "Kamus berjalan", d: "Hafal semua kata di flashcard", ic: "layers", t: () => knownCount() >= VOCAB.length, p: () => knownCount() / VOCAB.length },
+  { id: "mine100", r: 2, n: "Kamus tebal", d: "Simpan 100 kata di Kataku", ic: "bookmark", t: () => nCount(S.mine) >= 100, p: () => nCount(S.mine) / 100 },
+  { id: "chest10", r: 1, n: "Kolektor peti", d: "Buka 10 peti misi harian", ic: "box", t: () => S.chests >= 10, p: () => S.chests / 10 },
+  { id: "chest50", r: 3, n: "Harta karun", d: "Buka 50 peti misi harian", ic: "box", t: () => S.chests >= 50, p: () => S.chests / 50 },
+  { id: "chest100", r: 4, n: "Raja peti", d: "Buka 100 peti misi harian", ic: "box", t: () => S.chests >= 100, p: () => S.chests / 100 },
+  { id: "daily7", r: 1, n: "Penantang", d: "Selesaikan 7 tantangan harian", ic: "calendar", t: () => S.dailyN >= 7, p: () => S.dailyN / 7 },
+  { id: "daily30", r: 3, n: "Penantang sejati", d: "Selesaikan 30 tantangan harian", ic: "calendar", t: () => S.dailyN >= 30, p: () => S.dailyN / 30 },
+  { id: "coin500", r: 2, n: "Celengan", d: "Kumpulkan total 500 koin", ic: "star", t: () => S.coinsAll >= 500, p: () => S.coinsAll / 500 },
+  { id: "coin2000", r: 3, n: "Saudagar", d: "Kumpulkan total 2.000 koin", ic: "star", t: () => S.coinsAll >= 2000, p: () => S.coinsAll / 2000 },
+  { id: "closet10", r: 1, n: "Gaya pertama", d: "Punya 10 kostum Bubu", ic: "shirt", t: () => ownedCostumes() >= 10, p: () => ownedCostumes() / 10 },
+  { id: "closet30", r: 2, n: "Fashionista", d: "Punya 30 kostum Bubu", ic: "shirt", t: () => ownedCostumes() >= 30, p: () => ownedCostumes() / 30 },
+  { id: "closetAll", r: 4, n: "Lemari penuh", d: "Punya semua 72 kostum Bubu", ic: "shirt", t: () => ownedCostumes() >= 72, p: () => ownedCostumes() / 72 },
+  { id: "early", r: 2, n: "Burung pagi", d: "Belajar sebelum jam 6 pagi", ic: "sun", t: () => !!(S.fl && S.fl.early), p: () => 0 },
+  { id: "night", r: 2, n: "Burung hantu", d: "Belajar setelah jam 10 malam", ic: "moon", t: () => !!(S.fl && S.fl.night), p: () => 0 },
+  ...LEVELS.map(L => ({ id: "lv_" + L.id, n: "Jalur " + L.cefr, d: "Selesaikan semua pelajaran " + L.name, ic: "award", r: 2, t: () => L.lessons.every(x => S.done[x.id]) }))
 ];
 const BPROG = {
   first: () => doneCount(), s3: () => S.best / 3, s7: () => S.best / 7, perfect: () => Math.max(0, ...Object.values(S.scores)) / 100, combo10: () => S.combo / 10,
   c100: () => S.cor / 100, c500: () => S.cor / 500, w30: () => knownCount() / 30, reader: () => Math.max(0, ...Object.values(S.read)) / 60, speaker: () => spokeTotal() / 10,
   chest: () => S.chests, star5: () => LESSONS.filter(x => starsOf(x) === 3).length / 5, xp1000: () => S.xp / 1000, talk3: () => Object.keys(S.talk).length / 3, exam1: () => S.exams.length, mine20: () => Object.keys(S.mine).length / 20
 };
-const badgeProg = b => { const f = BPROG[b.id]; if (f) return Math.min(1, f() || 0); const L = LEVELS.find(l => "lv_" + l.id === b.id); return L ? L.lessons.filter(x => S.done[x.id]).length / L.lessons.length : 0; };
-const badgeHTML = (b, prog) => `<div class="badge${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><small>${b.d}</small>${prog && !S.badges[b.id] ? `<span class="bprog" aria-label="Progres ${Math.round(badgeProg(b) * 100)}%"><i style="width:${badgeProg(b) * 100}%"></i></span>` : ""}</span></div>`;
+const badgeProg = b => { if (b.p) return Math.min(1, Math.max(0, b.p() || 0)); const f = BPROG[b.id]; if (f) return Math.min(1, f() || 0); const L = LEVELS.find(l => "lv_" + l.id === b.id); return L ? L.lessons.filter(x => S.done[x.id]).length / L.lessons.length : 0; };
+const badgeHTML = (b, prog) => `<div class="badge t${b.r || 1}${S.badges[b.id] ? " on" : ""}"><span class="bi">${I(b.ic)}</span><span><b>${b.n}</b><em class="tier">${TIER[b.r || 1]}</em><small>${b.d}</small>${prog && !S.badges[b.id] ? `<span class="bprog" aria-label="Progres ${Math.round(badgeProg(b) * 100)}%"><i style="width:${badgeProg(b) * 100}%"></i></span>` : ""}</span></div>`;
 function badgeSummary() {
   const got = BADGES.filter(b => S.badges[b.id]), near = BADGES.filter(b => !S.badges[b.id]).map(b => [b, badgeProg(b)]).sort((x, y) => y[1] - x[1]).slice(0, 3).map(x => x[0]);
   return `${got.length ? `<div class="badges">${got.map(b => badgeHTML(b)).join("")}</div>` : `<p class="muted">Belum ada lencana. Selesaikan pelajaran pertamamu untuk mendapat yang pertama.</p>`}
@@ -4419,6 +4501,7 @@ function merge(a, b) {
   out.read = maxMap("read"); out.talk = maxMap("talk"); out.rounds = maxMap("rounds");
   out.owned = Object.assign({}, a.owned, b.owned); out.seenSp = Object.assign({}, a.seenSp, b.seenSp);
   out.coinsAll = Math.max(a.coinsAll || 0, b.coinsAll || 0); out.perf = Math.max(a.perf || 0, b.perf || 0);
+  out.dailyN = Math.max(a.dailyN || 0, b.dailyN || 0); out.fl = Object.assign({}, a.fl, b.fl);
   out.mine = Object.assign({}, a.mine, b.mine);
   { const k = {}; [a.sk || {}, b.sk || {}].forEach(o => Object.keys(o).forEach(c => { const v = o[c]; if (Array.isArray(v) && (!k[c] || v[0] > k[c][0])) k[c] = v; })); out.sk = k; }
   { const seen = {}; [...(a.exams || []), ...(b.exams || [])].forEach(e => { if (e && e.at) seen[e.at] = e; }); out.exams = Object.values(seen).sort((x, y) => x.at - y.at).slice(-12); }
@@ -4902,7 +4985,7 @@ function startDaily() {
   const first = S.daily !== dkey();
   runQuiz(shuffle(opened().flatMap(x => x.qs)).slice(0, 10), {
     title: "Tantangan harian", back: here(), again: startDaily, extra: () => first ? 30 : 0,
-    msg: first ? "Bonus harian 30 XP sudah masuk." : "Bonus harian sudah diambil hari ini.", onEnd() { S.daily = dkey(); }
+    msg: first ? "Bonus harian 30 XP sudah masuk." : "Bonus harian sudah diambil hari ini.", onEnd() { if (S.daily !== dkey()) S.dailyN = (S.dailyN || 0) + 1; S.daily = dkey(); }
   });
 }
 function startMistakes() {
@@ -5394,13 +5477,13 @@ VIEWS.welcome = function (step = 0) {
 /* ================= profile ================= */
 VIEWS.profile = function () {
   const r = rankOf(S.xp), acc = S.ans ? Math.round(S.cor / S.ans * 100) : 0, got = BADGES.filter(b => S.badges[b.id]).length;
-  const stat = (k, v) => `<div><dt>${k}</dt><dd>${v}</dd></div>`;
+  const stat = (k, v) => `<div><dt>${k}</dt><dd>${v}</dd></div>`, rp = routeProgress();
   app.innerHTML = `<div class="narrow stack">
     <div class="rank"><div class="rank-h"><p class="eyebrow">Peringkat ${S.name ? esc(S.name) : "Anda"}</p><button class="iconbtn" data-g="settings" aria-label="Pengaturan">${I("gear")}</button></div><h1>${r.name}</h1>
       ${r.next ? `<div class="bar"><i style="width:${(S.xp - r.at) / (r.next.at - r.at) * 100}%"></i></div><p class="muted">${S.xp} XP. ${r.next.at - S.xp} XP lagi menuju ${r.next.name}.</p>` : `<p class="muted">${S.xp} XP. Ini peringkat tertinggi.</p>`}</div>
     <section class="card stack statcard" aria-label="Statistik">
-      <dl class="statrow">${stat("Streak", streakNow() + " hr")}${stat("Pelajaran", doneCount() + "/" + LESSONS.length)}${stat("Akurasi", acc + "%")}${stat("Kata hafal", knownCount())}</dl>
-      <details class="more"><summary>Statistik lengkap ${I("down")}</summary><dl class="statlist">${stat("Hari beruntun", streakNow())}${stat("Rekor beruntun", S.best + " hari")}${stat("Pelajaran selesai", doneCount() + " dari " + LESSONS.length)}${stat("Akurasi", acc + "%")}${stat("Soal dijawab", S.ans)}${stat("Jawaban benar", S.cor)}${stat("Combo terbaik", S.combo + "×")}${stat("Kata hafal", knownCount())}${stat("Kata di Kataku", Object.keys(S.mine).length)}${stat("Simulasi tes", S.exams.length + "×")}</dl></details>
+      <dl class="statrow">${stat("Streak", streakNow() + " hr")}${stat("Materi", rp.all[0] + "/" + rp.all[1])}${stat("Akurasi", acc + "%")}${stat("Kata hafal", knownCount())}</dl>
+      <details class="more"><summary>Statistik lengkap ${I("down")}</summary><dl class="statlist">${stat("Hari beruntun", streakNow())}${stat("Rekor beruntun", S.best + " hari")}${stat("Materi selesai", rp.all[0] + " dari " + rp.all[1])}${stat("· Pelajaran", rp.lesson[0] + " dari " + rp.lesson[1])}${stat("· Bacaan", rp.read[0] + " dari " + rp.read[1])}${stat("· Latihan berbicara", rp.speak[0] + " dari " + rp.speak[1])}${stat("· Percakapan", rp.talk[0] + " dari " + rp.talk[1])}${stat("· Tes level", rp.test[0] + " dari " + rp.test[1])}${stat("Lencana", nCount(S.badges) + " dari " + BADGES.length)}${stat("Akurasi", acc + "%")}${stat("Soal dijawab", S.ans)}${stat("Jawaban benar", S.cor)}${stat("Combo terbaik", S.combo + "×")}${stat("Kata hafal", knownCount())}${stat("Kata di Kataku", Object.keys(S.mine).length)}${stat("Simulasi tes", S.exams.length + "×")}</dl></details>
     </section>
     ${progressHTML(7)}
     <h2 style="margin-top:10px">Lencana · ${got} dari ${BADGES.length}</h2>

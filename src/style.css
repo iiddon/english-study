@@ -728,6 +728,16 @@ body.wardpage .shell{padding-bottom:0}
 @media (prefers-reduced-motion:reduce){.bubu.bob{animation:none}}
 
 .stats3 .carry{display:block;margin-top:4px;font:800 12px/1.2 var(--body);color:var(--muted)}
+/* ---------- tingkat lencana ---------- */
+.badge .tier{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:99px;font:800 10.5px/1.3 var(--body);font-style:normal;text-transform:uppercase;letter-spacing:.04em;vertical-align:2px;background:var(--soft);color:var(--muted)}
+.badge.t2 .tier{background:#e6ebf5;color:#4a5472}
+.badge.t3 .tier{background:var(--sun-l);color:var(--xp-ink)}
+.badge.t4 .tier{background:var(--ink);color:var(--sun)}
+.badge.on.t4{box-shadow:0 0 0 3px var(--sun),var(--sh)}
+:root[data-theme="dark"] .badge.t2 .tier{background:#3a3f63;color:#d5dbf2}
+:root[data-theme="dark"] .badge.t4 .tier{background:#000}
+.statlist dt{white-space:nowrap}
+
 /* ---------- mode gelap: token yang sama, nilai gelap ---------- */
 :root[data-theme="dark"]{
   --bg:#141629; --surface:#1f2238; --soft:#262a45; --line:#32375c;
