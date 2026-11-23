@@ -76,7 +76,6 @@ const BUBU = (size, cls = "", label = "", mood = "base", look) => {
 // Ukuran gambar Bubu untuk kanvas (kartu bagikan): kotak penuh termasuk topi.
 const bubuBox = (size, mood, look) => { const k = size / 86; const svg = BUBU(size, "", "", mood, look); const dressed = svg.includes('viewBox="-14'); return dressed ? { svg, w: 114 * k, h: 132 * k, dx: -14 * k, dy: -34 * k } : { svg, w: size, h: 92 * k, dx: 0, dy: 0 }; };
 const LOGO = (size, label) => `<span style="display:grid;place-items:center;width:${size}px;height:${size}px;border-radius:26%;background:#ffc845;box-shadow:0 4px 0 #d9a21f;flex:none" ${label ? 'role="img" aria-label="' + label + '"' : ""}>${BUBU(Math.round(size * .62), "", "", "base", false)}</span>`;
-const REPO = "https://github.com/iiddon/english-study";
 
 /* ================= content ================= */
 function parseLine(line) {
@@ -895,7 +894,6 @@ function variants(x) {
   return set;
 }
 const accepts = (answers, user) => { const u = variants(user); return answers.some(a => [...variants(a)].some(v => u.has(v))); };
-const reportUrl = c => REPO + "/issues/new?title=" + encodeURIComponent("Laporan soal " + (c.key || "")) + "&body=" + encodeURIComponent("Soal: " + (c.q || c.tr || c.s) + "\nKunci jawaban: " + answerOf(c) + "\n\nMasalahnya:\n");
 const fmtQ = s => esc(s).replace(/___/g, '<span class="blank"></span>');
 
 function runQuiz(items, o) {
@@ -975,7 +973,7 @@ function runQuiz(items, o) {
     if (milestone) { const cb = $("#combo .combo"); if (cb) cb.classList.add("boom"); buzz([15, 40, 15]); }
     const mood = !ok ? "oops" : milestone ? "wow" : "happy", line = !ok ? pick(NO_LINES) : milestone || pick(OK_LINES);
     $("#fb").innerHTML = `<div class="fb ${ok ? "ok" : "no"}"><div class="fb-top">${BUBU(50, "react " + mood, "", mood)}<div class="fb-say"><p class="fb-h"><span>${ok ? pick(PRAISE) : "Belum tepat"}</span>${ok ? '<span class="plus">+10 XP</span><span class="plus coin">' + COIN + '+1</span>' : ""}</p><p class="bline">${line}</p></div></div>
-      ${!ok || c.t === "l" ? `<p>Jawaban: <b>${esc(answerOf(c))}</b></p>` : ""}${c.t === "l" ? `<p>${esc(c.tr)}</p>` : ""}${c.e ? `<p>${esc(c.e)}</p>` : ""}${c.key ? `<a class="report" href="${reportUrl(c)}" target="_blank" rel="noopener">Ada yang salah dengan soal ini? Laporkan</a>` : ""}
+      ${!ok || c.t === "l" ? `<p>Jawaban: <b>${esc(answerOf(c))}</b></p>` : ""}${c.t === "l" ? `<p>${esc(c.tr)}</p>` : ""}${c.e ? `<p>${esc(c.e)}</p>` : ""}
       <button class="btn ${ok ? "good" : "bad"}" data-a="next" id="nx">${i + 1 < N ? "Lanjut" : "Lihat hasil"}</button></div>`;
     try { $("#nx").focus({ preventScroll: true }); } catch (e) {}
     try { $("#fb").scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) {}
