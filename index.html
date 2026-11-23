@@ -6050,8 +6050,7 @@ VIEWS.settings = function () {
     <h2 style="margin-top:10px">Hapus data</h2>
     <div class="card" style="padding-top:4px;padding-bottom:4px">
       <div class="setting"><div><b>Reset progres</b><p class="muted">Menghapus semua XP, skor, lencana, dan Kataku. Tidak bisa dibatalkan.</p></div><button class="btn ghost auto" data-a="reset">Reset</button></div>
-    </div>
-    <p class="muted">English Path gratis dan terbuka. Kode dan laporan soal: <a href="${REPO}" target="_blank" rel="noopener">github.com/iiddon/english-study</a></p></div>`;
+    </div></div>`;
   let armed = false;
   H = {
     goal(el) { S.goal = +el.dataset.v; save(); $$('[data-a="goal"]').forEach(b => b.setAttribute("aria-pressed", b === el)); const gi = $("#goalinfo"); if (gi) gi.textContent = goalInfo(); },
